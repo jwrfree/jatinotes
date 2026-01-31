@@ -34,4 +34,7 @@ export interface Category {
   posts?: {
     nodes: Post[];
   };
+  children?: {
+    nodes: Category[];
+  };
 }

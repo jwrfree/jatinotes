@@ -18,15 +18,33 @@ async function fetchAPI(query: string, { variables }: { variables?: any } = {}) 
       next: { revalidate: 60 }, // Cache for 60 seconds
     });
 
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error(`API Response Error (${res.status}):`, errorText);
+      throw new Error(`API returned status ${res.status}`);
+    }
+
     const json = await res.json();
     if (json.errors) {
       console.error('GraphQL Errors:', JSON.stringify(json.errors, null, 2));
-      throw new Error('Failed to fetch API');
+      throw new Error('Failed to fetch API: GraphQL Errors');
     }
     return json.data;
-  } catch (error) {
-    console.error('Fetch Error:', error);
-    throw new Error(`Failed to fetch API from ${API_URL}. Pastikan URL benar dan server dapat diakses.`);
+  } catch (error: any) {
+    console.error('--- Fetch API Error Details ---');
+    console.error('URL:', API_URL);
+    console.error('Error Message:', error.message);
+    if (error.cause) {
+      console.error('Error Cause:', error.cause);
+    }
+    console.error('--------------------------------');
+    
+    // Provide a more user-friendly error message for SSL issues
+    if (error.message.includes('SSL') || (error.cause && error.cause.message && error.cause.message.includes('SSL'))) {
+      throw new Error(`SSL Handshake Failed: Gagal terhubung ke ${API_URL} karena masalah SSL. Pastikan server WordPress Anda mengizinkan koneksi TLS yang kompatibel.`);
+    }
+
+    throw new Error(`Failed to fetch API from ${API_URL}. ${error.message}`);
   }
 }
 
@@ -68,14 +86,17 @@ export async function getPostBySlug(slug: string) {
         id
         databaseId
         title
+        excerpt
         content
         date
         commentCount
-        comments(first: 50, where: { orderby: COMMENT_DATE, order: ASC }) {
+        comments(first: 100, where: { orderby: COMMENT_DATE, order: ASC }) {
           nodes {
             id
+            databaseId
             content
             date
+            parentDatabaseId
             author {
               node {
                 name
@@ -195,17 +216,11 @@ export async function getPostsByCategory(slug: string) {
             id
             title
             excerpt
-            content
             slug
             date
             featuredImage {
               node {
                 sourceUrl
-              }
-            }
-            author {
-              node {
-                name
               }
             }
           }
@@ -221,6 +236,30 @@ export async function getPostsByCategory(slug: string) {
     }
   );
   return data?.category;
+}
+
+export async function searchPosts(searchTerm: string) {
+  const data = await fetchAPI(
+    `
+    query SearchPosts($search: String!) {
+      posts(first: 20, where: { search: $search }) {
+        nodes {
+          id
+          title
+          slug
+          date
+          excerpt
+        }
+      }
+    }
+  `,
+    {
+      variables: {
+        search: searchTerm,
+      },
+    }
+  );
+  return data?.posts?.nodes;
 }
 
 export async function getAllCategories() {

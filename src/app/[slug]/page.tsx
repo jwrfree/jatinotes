@@ -1,5 +1,5 @@
 import { getPageBySlug, getPostsByCategory } from "@/lib/api";
-import { calculateReadingTime } from "@/lib/utils";
+import { calculateReadingTime, stripHtml } from "@/lib/utils";
 import { sanitize } from "@/lib/sanitize";
 import Link from "next/link";
 import Image from "next/image";
@@ -7,6 +7,32 @@ import { notFound } from "next/navigation";
 import { MotionDiv, MotionSection, fadeIn, staggerContainer } from "@/components/Animations";
 import DecryptedText from "@/components/DecryptedText";
 import PostCard from "@/components/PostCard";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const page = await getPageBySlug(slug);
+
+  if (!page) {
+    const category = await getPostsByCategory(slug);
+    if (category) {
+      return {
+        title: category.name,
+        description: `Kumpulan artikel dalam kategori ${category.name}`,
+      };
+    }
+    return { title: "Page Not Found" };
+  }
+
+  return {
+    title: page.title,
+    description: stripHtml(page.excerpt || page.content || "").substring(0, 160),
+  };
+}
 
 export default async function DynamicPage({
   params,
@@ -31,7 +57,7 @@ export default async function DynamicPage({
           initial="initial"
           animate="animate"
           variants={fadeIn}
-          className="relative z-10 mx-auto max-w-4xl px-4 py-12 sm:py-24"
+          className="relative z-10 mx-auto max-w-4xl px-4 pt-28 sm:pt-40 pb-12 sm:pb-24"
         >
           <div className="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md rounded-[3rem] shadow-2xl shadow-black/5 dark:shadow-white/5 p-8 sm:p-16">
             <header className="flex flex-col mb-16">
@@ -86,7 +112,7 @@ export default async function DynamicPage({
           <div className="absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-amber-500/10 blur-[100px] rounded-full" />
         </div>
 
-        <div className="relative z-10 mx-auto max-w-6xl px-4 py-12 sm:py-24">
+        <div className="relative z-10 mx-auto max-w-6xl px-4 pt-28 sm:pt-40 pb-12 sm:pb-24">
           <div className="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md rounded-[3rem] shadow-2xl shadow-black/5 dark:shadow-white/5 p-8 sm:p-16">
             <MotionDiv 
               initial="initial"
@@ -96,7 +122,7 @@ export default async function DynamicPage({
             >
             <div className="flex items-center gap-4 mb-6">
               <div className={`h-px w-12 ${slug === "buku" ? "bg-amber-500" : "bg-primary"}`} />
-              <span className={`text-sm font-bold uppercase tracking-widest ${slug === "buku" ? "text-amber-600 dark:text-amber-400" : "text-primary"}`}>
+              <span className={`text-sm font-bold ${slug === "buku" ? "text-amber-600 dark:text-amber-400" : "text-primary"}`}>
                 Koleksi Catatan
               </span>
             </div>

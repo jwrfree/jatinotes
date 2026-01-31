@@ -64,7 +64,7 @@ export default function TableOfContents({ content }: { content: string }) {
         {toc.map((item) => (
           <li 
             key={item.id} 
-            style={{ paddingLeft: `${(item.level - 2)}rem` }}
+            className={`${item.level === 3 ? "pl-4" : ""}`}
           >
             <a
               href={`#${item.id}`}

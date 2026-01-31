@@ -10,24 +10,39 @@ import { Post, Category } from "@/lib/types";
 import PostCard from "@/components/PostCard";
 
 export const metadata: Metadata = {
-  title: "Jati Notes | Eksplorasi Teknologi & Desain",
-  description: "Catatan digital Jati tentang pengembangan web, desain UI/UX, dan teknologi terbaru menggunakan Headless WordPress.",
+  title: "Eksplorasi Teknologi & Desain",
+  description: "Catatan digital Wruhantojati tentang pengembangan web, desain UI/UX, dan teknologi terbaru menggunakan Headless WordPress.",
   openGraph: {
     title: "Jati Notes | Eksplorasi Teknologi & Desain",
-    description: "Catatan digital Jati tentang pengembangan web, desain UI/UX, dan teknologi terbaru.",
+    description: "Catatan digital Wruhantojati tentang pengembangan web, desain UI/UX, dan teknologi terbaru.",
     type: "website",
   },
 };
 
 export default async function Home() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Jati Notes",
+    "url": "https://jatinotes.com",
+    "description": "Catatan digital Wruhantojati tentang pengembangan web, desain UI/UX, dan teknologi terbaru.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Jati Notes",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://jatinotes.com/logo.png"
+      }
+    }
+  };
+
   let posts: Post[] = [];
-  let categories: Category[] = [];
   let bookCategory: Category | null = null;
   let techCategory: Category | null = null;
   let blogCategory: Category | null = null;
 
   try {
-    const [postsData, categoriesData, booksData, techData, blogData] = await Promise.all([
+    const [postsData, , booksData, techData, blogData] = await Promise.all([
       getAllPosts(),
       getAllCategories(),
       getPostsByCategory("buku"),
@@ -36,7 +51,6 @@ export default async function Home() {
     ]);
     
     const rawPosts = postsData || [];
-    categories = categoriesData || [];
     bookCategory = booksData;
     techCategory = techData;
     blogCategory = blogData;
@@ -47,11 +61,11 @@ export default async function Home() {
     const bookPosts = bookCategory?.posts?.nodes || [];
     const blogPosts = blogCategory?.posts?.nodes || [];
     
-    const techPostIdsShown = new Set(techPosts.map((p: any) => p.id));
-    const bookPostIdsShown = new Set(bookPosts.map((p: any) => p.id));
+    const techPostIdsShown = new Set(techPosts.map((p: Post) => p.id));
+    const bookPostIdsShown = new Set(bookPosts.map((p: Post) => p.id));
     
     // Blog section posts: Filter from blogCategory specifically
-    posts = blogPosts.filter((p: any) => 
+    posts = blogPosts.filter((p: Post) => 
       p.id !== featuredPost?.id && 
       !techPostIdsShown.has(p.id) && 
       !bookPostIdsShown.has(p.id)
@@ -66,7 +80,11 @@ export default async function Home() {
   }
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Background Ornaments */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full" />
@@ -78,7 +96,7 @@ export default async function Home() {
         initial="initial"
         animate="animate"
         variants={fadeIn}
-        className="relative z-10 py-24 sm:py-32"
+        className="relative z-10 pt-32 sm:pt-40 pb-24 sm:pb-32"
       >
         <div className="mx-auto max-w-5xl px-6">
           <div className="max-w-2xl">
@@ -86,7 +104,7 @@ export default async function Home() {
               Mengapa Saya <span className="text-primary italic">Menulis?</span>
             </h1>
             <p className="text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
-              Saya percaya bahwa menulis adalah cara terbaik untuk menjernihkan pikiran. Di sini, saya mendokumentasikan perjalanan saya memahami teknologi, desain, dan kompleksitas dunia web modern—bukan sebagai guru, tapi sebagai pembelajar abadi.
+              Saya percaya bahwa menulis adalah cara terbaik untuk menjernihkan pikiran. Di sini, saya mendokumentasikan perjalanan saya memahami teknologi, desain, dan kompleksitas dunia web modern.
             </p>
           </div>
         </div>
@@ -161,8 +179,8 @@ export default async function Home() {
                         className="flex flex-col md:flex-row md:items-center justify-between py-6 border-b border-zinc-100 dark:border-zinc-800 hover:border-primary/30 transition-colors"
                       >
                         <div className="flex-1 space-y-2">
-                          <div className="flex items-center gap-3 text-[10px] font-medium text-zinc-400 uppercase tracking-widest">
-                            <span>{calculateReadingTime(post.content || "")} MIN BACA</span>
+                          <div className="flex items-center gap-3 text-[10px] font-medium text-zinc-400">
+                            <span>{calculateReadingTime(post.content || "")} menit baca</span>
                           </div>
                           <h3 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-primary transition-colors">
                             {post.title}
@@ -173,7 +191,7 @@ export default async function Home() {
                           />
                         </div>
                         <div className="mt-4 md:mt-0 md:ml-8 flex items-center gap-2 text-primary opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                          <span className="text-xs font-bold uppercase tracking-tighter">Baca Catatan</span>
+                          <span className="text-xs font-bold">Baca Catatan</span>
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                           </svg>
@@ -257,9 +275,10 @@ export default async function Home() {
                   <span className="relative z-10 transition-colors duration-300 group-hover/link:text-zinc-900">membaca buku</span>
                   <span className="absolute bottom-1 left-0 w-full h-[30%] bg-amber-400/10 -z-0 transition-all duration-700 group-hover/link:h-full group-hover/link:bg-amber-300 rounded-sm" />
                   <div className="relative ml-3 inline-flex h-[0.8em] w-[1.2em] items-center justify-center overflow-hidden rounded-md bg-zinc-800 transition-transform duration-300 group-hover/link:scale-110">
-                    <img 
+                    <Image 
                       src="https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=100&auto=format&fit=crop" 
                       alt="Books"
+                      fill
                       className="h-full w-full object-cover opacity-80 group-hover/link:opacity-100"
                     />
                   </div>
@@ -279,7 +298,7 @@ export default async function Home() {
               <div className="lg:col-span-1 flex flex-col justify-center py-4">
                 {bookCategory.children?.nodes && bookCategory.children.nodes.length > 0 && (
                   <div className="relative flex flex-col">
-                    {bookCategory.children.nodes.slice(0, 5).map((cat: any, index: number) => {
+                    {bookCategory.children.nodes.slice(0, 5).map((cat: Category, index: number) => {
                       const colors = [
                         "bg-[#E5E7EB] text-zinc-700", // Soft Grey
                         "bg-[#F3E8FF] text-purple-700", // Soft Purple
@@ -307,7 +326,7 @@ export default async function Home() {
                               {cat.name}
                             </span>
                             <div className="flex items-center gap-2 shrink-0">
-                              <span className="opacity-60 text-[8px] font-black uppercase tracking-tighter">
+                              <span className="opacity-60 text-[8px] font-black">
                                 {cat.count}
                               </span>
                               <div className="w-1 h-6 bg-white/60 rounded-sm" />

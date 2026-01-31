@@ -4,6 +4,12 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { MotionDiv, fadeIn, staggerContainer } from "@/components/Animations";
 import DecryptedText from "@/components/DecryptedText";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Meet Jati",
+  description: "Kenali lebih jauh tentang Wruhantojati, kreator di balik Jati Notes.",
+};
 
 export default async function MeetJatiPage() {
   const page = await getPageBySlug("meet-jati");
@@ -27,7 +33,7 @@ export default async function MeetJatiPage() {
         <div className="absolute bottom-[10%] right-[-10%] w-[30%] h-[30%] bg-amber-500/5 blur-[100px] rounded-full" />
       </div>
 
-      <article className="relative z-10 mx-auto max-w-6xl px-4 py-12 sm:py-24">
+      <article className="relative z-10 mx-auto max-w-6xl px-4 pt-28 sm:pt-40 pb-12 sm:pb-24">
         <div className="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md rounded-[3rem] shadow-2xl shadow-black/5 dark:shadow-white/5 p-8 sm:p-16">
           <MotionDiv
             initial="initial"
@@ -40,7 +46,7 @@ export default async function MeetJatiPage() {
               <header className="flex flex-col mb-12">
                 <div className="flex items-center gap-3 mb-6">
                   <span className="h-px w-8 bg-primary" />
-                  <span className="text-sm font-bold uppercase tracking-widest text-primary">
+                  <span className="text-sm font-bold text-primary">
                     The Person Behind
                   </span>
                 </div>

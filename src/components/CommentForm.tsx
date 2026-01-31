@@ -83,10 +83,10 @@ export default function CommentForm({ postId }: { postId: number }) {
               type="text"
               id="author"
               placeholder="Masukkan nama Anda..."
-              className={`block w-full rounded-2xl border bg-white/50 px-4 py-3 text-zinc-900 backdrop-blur-sm transition-all focus:ring-4 outline-none ${
+              className={`block w-full rounded-2xl border bg-white px-4 py-3 text-zinc-900 transition-all focus:ring-4 outline-none ${
                 errors.author 
                   ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10 dark:border-red-900/50' 
-                  : 'border-zinc-200 focus:border-primary focus:ring-primary/10 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-100 dark:focus:border-primary dark:focus:ring-primary/20'
+                  : 'border-zinc-200 focus:border-primary focus:ring-primary/10 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-primary dark:focus:ring-primary/20'
               }`}
               value={formData.author}
               onChange={(e) => {
@@ -107,10 +107,10 @@ export default function CommentForm({ postId }: { postId: number }) {
               type="email"
               id="email"
               placeholder="nama@email.com"
-              className={`block w-full rounded-2xl border bg-white/50 px-4 py-3 text-zinc-900 backdrop-blur-sm transition-all focus:ring-4 outline-none ${
+              className={`block w-full rounded-2xl border bg-white px-4 py-3 text-zinc-900 transition-all focus:ring-4 outline-none ${
                 errors.authorEmail 
                   ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10 dark:border-red-900/50' 
-                  : 'border-zinc-200 focus:border-primary focus:ring-primary/10 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-100 dark:focus:border-primary dark:focus:ring-primary/20'
+                  : 'border-zinc-200 focus:border-primary focus:ring-primary/10 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-primary dark:focus:ring-primary/20'
               }`}
               value={formData.authorEmail}
               onChange={(e) => {
@@ -132,10 +132,10 @@ export default function CommentForm({ postId }: { postId: number }) {
             id="content"
             rows={5}
             placeholder="Tuliskan pemikiran Anda di sini..."
-            className={`block w-full rounded-3xl border bg-white/50 px-4 py-4 text-zinc-900 backdrop-blur-sm transition-all focus:ring-4 outline-none resize-none ${
+            className={`block w-full rounded-3xl border bg-white px-4 py-4 text-zinc-900 transition-all focus:ring-4 outline-none resize-none ${
               errors.content 
                 ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10 dark:border-red-900/50' 
-                : 'border-zinc-200 focus:border-primary focus:ring-primary/10 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-100 dark:focus:border-primary dark:focus:ring-primary/20'
+                : 'border-zinc-200 focus:border-primary focus:ring-primary/10 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-primary dark:focus:ring-primary/20'
             }`}
             value={formData.content}
             onChange={(e) => {
