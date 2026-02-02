@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Post } from "@/lib/types";
-import { calculateReadingTime } from "@/lib/utils";
 import { sanitize } from "@/lib/sanitize";
 import { MotionDiv, fadeIn } from "@/components/Animations";
 

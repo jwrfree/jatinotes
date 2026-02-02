@@ -4,12 +4,13 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
-import { Analytics } from "@vercel/analytics/next";
+import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -62,7 +63,7 @@ export default function RootLayout({
   return (
     <html lang="id" className="scroll-smooth">
       <body
-        className={`${inter.className} antialiased bg-white dark:bg-zinc-950`}
+        className={`${inter.variable} font-sans antialiased bg-white dark:bg-zinc-950`}
       >
         <div className="flex min-h-screen flex-col">
           <Navbar />

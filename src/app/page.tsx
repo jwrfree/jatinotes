@@ -59,7 +59,7 @@ export default async function Home() {
         {posts && posts.length > 0 ? (
           <div className="space-y-32">
             {/* Featured Post */}
-            <FeaturedPost post={posts[0]} label="Must Read ✨" />
+            <FeaturedPost post={posts[0]} />
 
             {/* General Grid (Blog Category Only) */}
             {blogCategory && posts && posts.length > 0 && (

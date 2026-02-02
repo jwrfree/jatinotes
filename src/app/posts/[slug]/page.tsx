@@ -3,6 +3,7 @@ import { calculateReadingTime, formatDateIndonesian, stripHtml } from "@/lib/uti
 import { sanitize, addIdsToHeadings } from "@/lib/sanitize";
 import CommentSection from "@/components/CommentSection";
 import ReadingProgress from "@/components/ReadingProgress";
+import PostMeta from "@/components/PostMeta";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -108,7 +109,7 @@ export default async function PostPage({
         <div className="flex flex-col items-center">
           {/* Main Content */}
           <div className="w-full">
-            <div className="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md rounded-[3rem] shadow-2xl shadow-black/5 dark:shadow-white/5 p-8 sm:p-16">
+            <div className="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md rounded-[3rem] border border-zinc-100 dark:border-zinc-800/50 p-8 sm:p-16">
               <MotionDiv
                 initial="initial"
                 animate="animate"
@@ -117,21 +118,18 @@ export default async function PostPage({
               >
                 <header className="flex flex-col">
                   <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl leading-tight">
-                    {post.title}
+                    {post.title.replace(/[“”]/g, '"')}
                   </h1>
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-400 dark:text-zinc-500 mt-8">
-                    <span className="font-normal tracking-wider text-zinc-400 dark:text-zinc-500">
-                      Oleh <span className="text-zinc-900 dark:text-zinc-100 font-normal">{post.author?.node?.name || "Admin"}</span> diterbitkan pada {formatDateIndonesian(post.date)}
-                    </span>
-                    <span className="w-1 h-1 bg-zinc-300 dark:bg-zinc-700 rounded-full" />
-                    <span className="bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-full font-normal text-zinc-500 dark:text-zinc-400">
-                      {calculateReadingTime(post.content || '')} menit baca
-                    </span>
-                  </div>
+                  <PostMeta 
+                    authorName={post.author?.node?.name} 
+                    date={post.date} 
+                    content={post.content || ""} 
+                    className="mt-8"
+                  />
 
                   {post.excerpt && (
                     <div 
-                      className="mt-8 text-base md:text-lg text-zinc-500 dark:text-zinc-400 leading-relaxed"
+                      className="mt-8 text-sm md:text-base text-zinc-500 dark:text-zinc-400 leading-relaxed"
                       dangerouslySetInnerHTML={{ __html: sanitize(post.excerpt) }}
                     />
                   )}
@@ -140,20 +138,21 @@ export default async function PostPage({
                 {post.featuredImage?.node?.sourceUrl && (
                   <MotionDiv 
                     variants={fadeIn}
-                    className="relative mt-12 aspect-[3/4] max-w-[400px] mx-auto overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800 shadow-2xl"
+                    className={`group relative mt-12 ${isBookReview ? 'aspect-[3/4.5] max-w-[320px]' : 'aspect-video w-full'} mx-auto overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800`}
                   >
                     <Image
                       src={post.featuredImage.node.sourceUrl}
-                      alt={post.title}
+                      alt={post.title || ''}
                       fill
                       priority
-                      className="object-cover"
+                      className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   </MotionDiv>
                 )}
 
                 <div
-                  className="mt-12 prose prose-zinc dark:prose-invert max-w-none prose-lg prose-headings:scroll-mt-28 prose-p:leading-relaxed prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-a:text-amber-500 prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50"
+                  className="mt-12 prose prose-zinc dark:prose-invert max-w-none prose-base md:prose-lg prose-headings:scroll-mt-28 prose-p:leading-relaxed prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-a:text-amber-500 prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50"
                   dangerouslySetInnerHTML={{ __html: sanitize(processedContent) }}
                 />
 
