@@ -2,8 +2,7 @@ import { getPostsByCategory } from "@/lib/api";
 import { MotionDiv, staggerContainer } from "@/components/Animations";
 import TypingText from "../../components/TypingText";
 import { Metadata } from "next";
-import BookSecondaryCard from "@/components/buku/BookSecondaryCard";
-import BookArchiveCard from "@/components/buku/BookArchiveCard";
+import PostCard from "@/components/PostCard";
 import FeaturedPost from "@/components/FeaturedPost";
 
 export const metadata: Metadata = {
@@ -67,18 +66,31 @@ export default async function BukuPage() {
 
         {/* 2. SECONDARY GRID */}
         <section className="mb-32">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {secondaryPosts.map((post, idx) => (
-              <BookSecondaryCard key={post.id} post={post} idx={idx} />
+              <PostCard 
+                key={post.id} 
+                post={post} 
+                variant="glass" 
+                isWide={idx === 1}
+              />
             ))}
           </div>
         </section>
 
         {/* 3. DENSE GRID */}
         <section>
-          <div className="flex items-center gap-4 mb-12">
-            <h2 className="text-sm font-black uppercase tracking-[0.4em] text-zinc-400">Archive & More</h2>
-            <div className="h-[1px] flex-grow bg-zinc-100 dark:bg-zinc-900" />
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <h2 className="text-sm font-black uppercase tracking-[0.4em] text-zinc-400">Archive & More</h2>
+                <div className="h-[1px] w-12 bg-zinc-200 dark:bg-zinc-800" />
+              </div>
+              <p className="max-w-md text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed">
+                Eksplorasi pemikiran tentang <span className="text-zinc-900 dark:text-zinc-100 font-medium">pengembangan diri</span>, produktivitas, dan seni menjalani hidup yang lebih bermakna melalui literatur pilihan.
+              </p>
+            </div>
+            <div className="h-[1px] flex-grow bg-zinc-100 dark:bg-zinc-900 hidden md:block" />
           </div>
           
           <MotionDiv 
@@ -86,10 +98,10 @@ export default async function BukuPage() {
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-16"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {remainingPosts.map((post) => (
-              <BookArchiveCard key={post.id} post={post} />
+              <PostCard key={post.id} post={post} variant="glass" />
             ))}
           </MotionDiv>
         </section>

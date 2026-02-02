@@ -165,7 +165,7 @@ export default async function DynamicPage({
               >
                 {posts.map((post: Post) => (
                   <MotionDiv key={post.id} variants={fadeIn}>
-                    <PostCard post={post} />
+                    <PostCard post={post} variant="minimal" />
                   </MotionDiv>
                 ))}
               </MotionDiv>

@@ -12,7 +12,7 @@ interface PostCardProps {
   post: Post;
   isWide?: boolean;
   priority?: boolean;
-  variant?: "default" | "glass";
+  variant?: "default" | "glass" | "minimal";
   accentColor?: "amber";
 }
 
@@ -34,6 +34,8 @@ export default function PostCard({
   const accentClasses = {
     amber: "group-hover:text-amber-500",
   };
+
+  const displayTitle = post.title.replace(/[“”]/g, '"');
 
   if (variant === "glass") {
     return (
@@ -57,6 +59,7 @@ export default function PostCard({
                   fill
                   priority={priority}
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
               </motion.div>
             </div>
@@ -71,7 +74,7 @@ export default function PostCard({
               <h3 className={`font-medium leading-tight text-white mb-2 transition-colors ${
                 accentClasses[accentColor]
               } ${isWide ? "text-lg md:text-xl" : "text-base"}`}>
-                {post.title}
+                {displayTitle}
               </h3>
               
               <div
@@ -85,11 +88,60 @@ export default function PostCard({
     );
   }
 
+  if (variant === "minimal") {
+    return (
+      <MotionDiv
+        ref={containerRef}
+        variants={fadeIn}
+        className={`group relative flex flex-col h-full ${
+          isWide ? "lg:col-span-2" : "lg:col-span-1"
+        }`}
+      >
+        <Link href={`/posts/${post.slug}`} className="flex flex-col h-full">
+          {post.featuredImage?.node?.sourceUrl && (
+            <div
+              className={`relative w-full overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800 transition-all duration-500 group-hover:shadow-xl ${
+                isWide ? "aspect-[16/9]" : "aspect-[3/4]"
+              }`}
+            >
+              <motion.div 
+                style={{ y, height: "120%", top: "-10%" }}
+                className="relative w-full h-full"
+              >
+                <Image
+                  src={post.featuredImage.node.sourceUrl}
+                  alt={post.title}
+                  fill
+                  priority={priority}
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              </motion.div>
+            </div>
+          )}
+          <div className="mt-6 flex flex-col flex-grow">
+            <h3
+              className={`font-bold leading-tight text-zinc-900 dark:text-zinc-100 transition-colors ${
+                accentClasses[accentColor]
+              } ${isWide ? "text-2xl" : "text-xl"}`}
+            >
+              {displayTitle}
+            </h3>
+            <div
+              className="mt-3 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2"
+              dangerouslySetInnerHTML={{ __html: sanitize(post.excerpt) }}
+            />
+          </div>
+        </Link>
+      </MotionDiv>
+    );
+  }
+
   return (
     <MotionDiv
       ref={containerRef}
       variants={fadeIn}
-      className={`group relative flex flex-col bg-white dark:bg-zinc-950 rounded-3xl overflow-hidden border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 ${
+      className={`group relative flex flex-col h-full bg-white dark:bg-zinc-950 rounded-3xl overflow-hidden border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 ${
         isWide ? "lg:col-span-2" : "lg:col-span-1"
       }`}
     >
@@ -109,6 +161,7 @@ export default function PostCard({
               fill
               priority={priority}
               className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </motion.div>
         </div>
@@ -120,7 +173,7 @@ export default function PostCard({
           } ${isWide ? "text-xl" : "text-lg"}`}
         >
           <Link href={`/posts/${post.slug}`}>
-            {post.title}
+            {displayTitle}
           </Link>
         </h3>
         <div
