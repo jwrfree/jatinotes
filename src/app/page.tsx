@@ -1,13 +1,13 @@
-import { getAllPosts, getAllCategories, getPostsByCategory } from "@/lib/api";
+import { getHomeData } from "@/lib/services";
 import { calculateReadingTime } from "@/lib/utils";
 import { sanitize } from "@/lib/sanitize";
 import Link from "next/link";
 import Image from "next/image";
 import { MotionDiv, MotionSection, fadeIn, staggerContainer } from "@/components/Animations";
-import DecryptedText from "@/components/DecryptedText";
 import { Metadata } from "next";
 import { Post, Category } from "@/lib/types";
 import PostCard from "@/components/PostCard";
+import DecryptedText from "@/components/DecryptedText";
 
 export const metadata: Metadata = {
   title: "Eksplorasi Teknologi & Desain",
@@ -36,48 +36,7 @@ export default async function Home() {
     }
   };
 
-  let posts: Post[] = [];
-  let bookCategory: Category | null = null;
-  let techCategory: Category | null = null;
-  let blogCategory: Category | null = null;
-
-  try {
-    const [postsData, , booksData, techData, blogData] = await Promise.all([
-      getAllPosts(),
-      getAllCategories(),
-      getPostsByCategory("buku"),
-      getPostsByCategory("teknologi"),
-      getPostsByCategory("blog")
-    ]);
-    
-    const rawPosts = postsData || [];
-    bookCategory = booksData;
-    techCategory = techData;
-    blogCategory = blogData;
-
-    // Filter posts to avoid redundancy
-    const featuredPost = rawPosts[0];
-    const techPosts = techCategory?.posts?.nodes || [];
-    const bookPosts = bookCategory?.posts?.nodes || [];
-    const blogPosts = blogCategory?.posts?.nodes || [];
-    
-    const techPostIdsShown = new Set(techPosts.map((p: Post) => p.id));
-    const bookPostIdsShown = new Set(bookPosts.map((p: Post) => p.id));
-    
-    // Blog section posts: Filter from blogCategory specifically
-    posts = blogPosts.filter((p: Post) => 
-      p.id !== featuredPost?.id && 
-      !techPostIdsShown.has(p.id) && 
-      !bookPostIdsShown.has(p.id)
-    ).slice(0, 6); // Taking 6 blog posts for the list
-
-    // Keep the first post as featured
-    if (featuredPost) {
-      posts = [featuredPost, ...posts];
-    }
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
+  const { posts, blogCategory, techCategory, bookCategory } = await getHomeData();
 
   return (
     <div className="relative min-h-screen">
@@ -168,7 +127,7 @@ export default async function Home() {
                   variants={staggerContainer}
                   className="space-y-4"
                 >
-                  {posts.map((post) => (
+                  {posts.map((post: Post) => (
                     <MotionDiv
                       key={post.id}
                       variants={fadeIn}
@@ -245,7 +204,7 @@ export default async function Home() {
               variants={staggerContainer}
               className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
             >
-              {techCategory.posts.nodes.slice(0, 7).map((post, index) => (
+              {techCategory.posts.nodes.slice(0, 7).map((post: Post, index: number) => (
                   <PostCard 
                     key={post.id} 
                     post={post} 
@@ -348,7 +307,7 @@ export default async function Home() {
               />
 
               {/* Remaining Cards following pattern: Row 2 (S, W), Row 3 (S, S, S) */}
-              {bookCategory.posts.nodes.slice(1, 6).map((post, index) => (
+              {bookCategory.posts.nodes.slice(1, 6).map((post: Post, index: number) => (
                   <PostCard 
                     key={post.id} 
                     post={post} 

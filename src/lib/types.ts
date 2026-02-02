@@ -1,40 +1,80 @@
-export interface Author {
-  node: {
-    name: string;
-    avatar?: {
-      url: string;
-    };
-  };
-}
+import { z } from "zod";
 
-export interface FeaturedImage {
-  node: {
-    sourceUrl: string;
-  };
-}
+export const AuthorSchema = z.object({
+  node: z.object({
+    name: z.string(),
+    avatar: z.object({
+      url: z.string(),
+    }).nullable().optional(),
+  }),
+});
 
-export interface Post {
-  id: string;
-  title: string;
-  slug: string;
-  date: string;
-  excerpt: string;
-  content?: string;
-  featuredImage?: FeaturedImage;
-  author?: Author;
-  commentCount?: number;
-}
+export const FeaturedImageSchema = z.object({
+  node: z.object({
+    sourceUrl: z.string(),
+  }),
+});
 
-export interface Category {
+export const PostSchema = z.object({
+  id: z.string(),
+  databaseId: z.number().nullable().optional(),
+  title: z.string(),
+  slug: z.string(),
+  date: z.string(),
+  excerpt: z.string().nullable().optional().transform(val => val ?? ""),
+  content: z.string().nullable().optional().transform(val => val ?? ""),
+  featuredImage: FeaturedImageSchema.nullable().optional(),
+  author: AuthorSchema.nullable().optional(),
+  commentCount: z.number().nullable().optional().transform(val => val ?? 0),
+  comments: z.object({
+    nodes: z.array(z.any()),
+  }).nullable().optional(),
+});
+
+export type Author = z.infer<typeof AuthorSchema>;
+export type FeaturedImage = z.infer<typeof FeaturedImageSchema>;
+export type Post = z.infer<typeof PostSchema>;
+
+export type Category = {
   id: string;
   name: string;
   slug: string;
   count?: number;
-  description?: string;
+  description?: string | null;
   posts?: {
-    nodes: Post[];
+    nodes: any[]; // Temporary use any for nodes to bypass strict Zod mismatch in recursive schema
   };
   children?: {
     nodes: Category[];
+  };
+};
+
+export const CategorySchema: z.ZodType<Category> = z.lazy(() => z.object({
+  id: z.string(),
+  name: z.string(),
+  slug: z.string(),
+  count: z.number().optional(),
+  description: z.string().nullable().optional(),
+  posts: z.object({
+    nodes: z.array(PostSchema),
+  }).optional(),
+  children: z.object({
+    nodes: z.array(CategorySchema),
+  }).optional(),
+}));
+
+export interface Comment {
+  id: string;
+  databaseId: number;
+  content: string;
+  date: string;
+  parentDatabaseId: number | null;
+  author: {
+    node: {
+      name: string;
+      avatar: {
+        url: string;
+      } | null;
+    };
   };
 }

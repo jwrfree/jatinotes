@@ -1,7 +1,6 @@
 import { getPageBySlug, getPostsByCategory } from "@/lib/api";
-import { calculateReadingTime, stripHtml } from "@/lib/utils";
+import { stripHtml } from "@/lib/utils";
 import { sanitize } from "@/lib/sanitize";
-import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { MotionDiv, MotionSection, fadeIn, staggerContainer } from "@/components/Animations";
@@ -15,23 +14,26 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  
+  // Try page first
   const page = await getPageBySlug(slug);
-
-  if (!page) {
-    const category = await getPostsByCategory(slug);
-    if (category) {
-      return {
-        title: category.name,
-        description: `Kumpulan artikel dalam kategori ${category.name}`,
-      };
-    }
-    return { title: "Page Not Found" };
+  if (page) {
+    return {
+      title: page.title,
+      description: stripHtml(page.excerpt || page.content || "").substring(0, 160),
+    };
   }
 
-  return {
-    title: page.title,
-    description: stripHtml(page.excerpt || page.content || "").substring(0, 160),
-  };
+  // Try category
+  const category = await getPostsByCategory(slug);
+  if (category) {
+    return {
+      title: category.name,
+      description: `Kumpulan artikel dalam kategori ${category.name}`,
+    };
+  }
+
+  return { title: "Halaman Tidak Ditemukan" };
 }
 
 export default async function DynamicPage({
@@ -41,8 +43,11 @@ export default async function DynamicPage({
 }) {
   const { slug } = await params;
 
-  // 1. Try to fetch as a Page
-  const page = await getPageBySlug(slug);
+  // Parallel fetch for better performance
+  const [page, category] = await Promise.all([
+    getPageBySlug(slug),
+    getPostsByCategory(slug)
+  ]);
 
   if (page) {
     return (
@@ -97,82 +102,72 @@ export default async function DynamicPage({
     );
   }
 
-  // 2. Try to fetch as a Category
-  const category = await getPostsByCategory(slug);
-
   if (category) {
-    const isSpecialCategory = ["teknologi", "buku"].includes(slug);
-    const accentColor = slug === "buku" ? "amber" : "primary";
-
+    const posts = category.posts?.nodes || [];
     return (
       <div className="relative overflow-hidden min-h-screen">
         {/* Background Ornaments */}
         <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
-          <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full" />
-          <div className="absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-amber-500/10 blur-[100px] rounded-full" />
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full" />
+          <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-amber-500/10 blur-[100px] rounded-full" />
         </div>
 
-        <div className="relative z-10 mx-auto max-w-6xl px-4 pt-28 sm:pt-40 pb-12 sm:pb-24">
+        <MotionSection 
+          initial="initial"
+          animate="animate"
+          variants={fadeIn}
+          className="relative z-10 mx-auto max-w-5xl px-6 pt-28 sm:pt-40 pb-12 sm:pb-24"
+        >
           <div className="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md rounded-[3rem] shadow-2xl shadow-black/5 dark:shadow-white/5 p-8 sm:p-16">
-            <MotionDiv 
-              initial="initial"
-              animate="animate"
-              variants={fadeIn}
-              className="mb-20"
-            >
-            <div className="flex items-center gap-4 mb-6">
-              <div className={`h-px w-12 ${slug === "buku" ? "bg-amber-500" : "bg-primary"}`} />
-              <span className={`text-sm font-bold ${slug === "buku" ? "text-amber-600 dark:text-amber-400" : "text-primary"}`}>
-                Koleksi Catatan
-              </span>
-            </div>
-            
-            <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-7xl mb-6">
-              <DecryptedText 
-                text={category.name}
-                animateOn="view"
-                revealDirection="start"
-                sequential={true}
-                useOriginalCharsOnly={false}
-                className="text-zinc-900 dark:text-zinc-50"
-                encryptedClassName={slug === "buku" ? "text-amber-500 opacity-50" : "text-primary opacity-50"}
-              />
-            </h1>
-            
-            {category.description && (
-              <p className="max-w-2xl text-lg md:text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                {category.description}
-              </p>
-            )}
-          </MotionDiv>
-
-          {category.posts?.nodes?.length > 0 ? (
-            <MotionDiv 
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-              variants={staggerContainer}
-              className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
-            >
-              {category.posts.nodes.map((post: any, index: number) => (
-                <PostCard 
-                  key={post.id} 
-                  post={post} 
-                  isWide={index % 4 === 0}
-                  variant={isSpecialCategory ? "glass" : "default"}
-                  accentColor={accentColor}
+            <header className="mb-16">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="h-px w-12 bg-primary" />
+                <span className="text-sm font-bold text-primary">
+                  Kategori: {category.name}
+                </span>
+              </div>
+              
+              <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-7xl mb-6">
+                <DecryptedText 
+                  text={category.name}
+                  animateOn="view"
+                  revealDirection="start"
+                  sequential={true}
+                  useOriginalCharsOnly={false}
+                  className="text-zinc-900 dark:text-zinc-50"
+                  encryptedClassName="text-primary opacity-50"
                 />
-              ))}
-            </MotionDiv>
-          ) : (
-            <div className="p-20 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-[3rem] text-center backdrop-blur-sm bg-white/5">
-              <h3 className="text-xl font-medium text-zinc-900 dark:text-zinc-50">Belum Ada Catatan</h3>
-              <p className="mt-2 text-zinc-500">Sedang menyusun pemikiran. Tulisan baru akan segera hadir.</p>
-            </div>
-          )}
-        </div>
+              </h1>
+              
+              {category.description && (
+                <p className="max-w-2xl text-lg md:text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                  {category.description}
+                </p>
+              )}
+            </header>
+
+            {posts.length > 0 ? (
+              <MotionDiv 
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true }}
+                variants={staggerContainer}
+                className="grid gap-8 sm:grid-cols-2 lg:grid-cols-2"
+              >
+                {posts.map((post: any) => (
+                  <MotionDiv key={post.id} variants={fadeIn}>
+                    <PostCard post={post} />
+                  </MotionDiv>
+                ))}
+              </MotionDiv>
+            ) : (
+              <div className="text-center py-20">
+                <p className="text-zinc-500 dark:text-zinc-400">Tidak ada artikel dalam kategori ini.</p>
+              </div>
+            )}
+          </div>
+        </MotionSection>
       </div>
-    </div>
     );
   }
 

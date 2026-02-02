@@ -1,19 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import { createComment } from "@/lib/api";
+import { submitCommentAction } from "@/lib/actions";
 
 export default function CommentForm({ postId }: { postId: number }) {
   const [formData, setFormData] = useState({
     author: "",
     authorEmail: "",
     content: "",
+    website: "", // Honeypot field
   });
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const validateForm = () => {
+    // Check honeypot
+    if (formData.website) {
+      console.warn("Bot detected via honeypot");
+      return false; 
+    }
+
     const newErrors: { [key: string]: string } = {};
     if (!formData.author.trim()) newErrors.author = "Nama wajib diisi";
     if (!formData.authorEmail.trim()) {
@@ -36,15 +43,15 @@ export default function CommentForm({ postId }: { postId: number }) {
     setErrors({});
 
     try {
-      const res = await createComment({
+      const res = await submitCommentAction({
         ...formData,
         postId,
       });
 
       if (res?.success) {
         setStatus("success");
-        setMessage("Komentar berhasil dikirim dan menunggu moderasi.");
-        setFormData({ author: "", authorEmail: "", content: "" });
+        setMessage(res.message);
+        setFormData({ author: "", authorEmail: "", content: "", website: "" });
         setErrors({});
       } else {
         setStatus("error");
@@ -71,6 +78,20 @@ export default function CommentForm({ postId }: { postId: number }) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Honeypot field - Hidden from users */}
+        <div className="absolute opacity-0 -z-10 h-0 w-0 overflow-hidden" aria-hidden="true">
+          <label htmlFor="website">Website</label>
+          <input
+            id="website"
+            type="text"
+            name="website"
+            tabIndex={-1}
+            autoComplete="off"
+            value={formData.website}
+            onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+          />
+        </div>
+
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-2">
             <label

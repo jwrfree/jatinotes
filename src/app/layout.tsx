@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   keywords: ["Next.js", "WordPress", "Headless CMS", "React", "Blog"],
   authors: [{ name: "Wruhantojati" }],
   creator: "Wruhantojati",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
   openGraph: {
     type: "website",
     locale: "id_ID",

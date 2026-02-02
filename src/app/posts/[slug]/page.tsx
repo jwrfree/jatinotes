@@ -159,10 +159,10 @@ export default async function PostPage({
 
                 <hr className="my-16 border-zinc-100 dark:border-zinc-800" />
 
-                <CommentSection 
-                  comments={post.comments?.nodes || []} 
-                  postId={post.databaseId} 
-                  commentCount={post.commentCount || 0} 
+                <CommentSection
+                  comments={post.comments?.nodes || []}
+                  postId={post.databaseId || 0}
+                  commentCount={post.commentCount || 0}
                 />
 
                 <div className="mt-20 flex justify-center border-t border-zinc-100 dark:border-zinc-800 pt-10">

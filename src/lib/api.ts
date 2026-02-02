@@ -1,6 +1,22 @@
+import { cache } from 'react';
+import { PostSchema, CategorySchema, Post, Category } from './types';
+import { z } from 'zod';
+import {
+  ALL_POSTS_QUERY,
+  POST_BY_SLUG_QUERY,
+  CREATE_COMMENT_MUTATION,
+  PAGE_BY_SLUG_QUERY,
+  CATEGORY_POSTS_QUERY,
+  ALL_CATEGORIES_QUERY,
+  SEARCH_POSTS_QUERY
+} from './queries';
+
 const API_URL = process.env.WORDPRESS_API_URL;
 
-async function fetchAPI(query: string, { variables }: { variables?: any } = {}) {
+async function fetchAPI(
+  query: string, 
+  { variables, revalidate = 60 }: { variables?: any, revalidate?: number | false } = {}
+) {
   const headers = { 'Content-Type': 'application/json' };
 
   if (!API_URL) {
@@ -15,7 +31,7 @@ async function fetchAPI(query: string, { variables }: { variables?: any } = {}) 
         query,
         variables,
       }),
-      next: { revalidate: 60 }, // Cache for 60 seconds
+      next: revalidate !== false ? { revalidate } : undefined,
     });
 
     if (!res.ok) {
@@ -27,99 +43,45 @@ async function fetchAPI(query: string, { variables }: { variables?: any } = {}) 
     const json = await res.json();
     if (json.errors) {
       console.error('GraphQL Errors:', JSON.stringify(json.errors, null, 2));
-      throw new Error('Failed to fetch API: GraphQL Errors');
+      const message = json.errors[0]?.message || 'Failed to fetch API: GraphQL Errors';
+      throw new Error(message);
     }
     return json.data;
   } catch (error: any) {
     console.error('--- Fetch API Error Details ---');
     console.error('URL:', API_URL);
-    console.error('Error Message:', error.message);
-    if (error.cause) {
-      console.error('Error Cause:', error.cause);
-    }
-    console.error('--------------------------------');
-    
-    // Provide a more user-friendly error message for SSL issues
-    if (error.message.includes('SSL') || (error.cause && error.cause.message && error.cause.message.includes('SSL'))) {
-      throw new Error(`SSL Handshake Failed: Gagal terhubung ke ${API_URL} karena masalah SSL. Pastikan server WordPress Anda mengizinkan koneksi TLS yang kompatibel.`);
+    if (error instanceof Error) {
+      console.error('Error Message:', error.message);
+      if (error.cause) {
+        console.error('Error Cause:', error.cause);
+      }
+      console.error('--------------------------------');
+      
+      const errorMessage = error.message;
+      const errorCause = error.cause as any;
+      
+      if (errorMessage.includes('SSL') || (errorCause && errorCause.message && errorCause.message.includes('SSL'))) {
+        throw new Error(`SSL Handshake Failed: Gagal terhubung ke ${API_URL} karena masalah SSL. Pastikan server WordPress Anda mengizinkan koneksi TLS yang kompatibel.`);
+      }
+
+      throw new Error(`Failed to fetch API from ${API_URL}. ${errorMessage}`);
     }
 
-    throw new Error(`Failed to fetch API from ${API_URL}. ${error.message}`);
+    console.error('--------------------------------');
+    throw new Error(`Failed to fetch API from ${API_URL}. Unknown error occurred.`);
   }
 }
 
-export async function getAllPosts() {
-  const data = await fetchAPI(
-    `
-    query AllPosts {
-      posts(first: 20, where: { orderby: { field: DATE, order: DESC } }) {
-        nodes {
-          id
-          title
-          excerpt
-          content
-          slug
-          date
-          featuredImage {
-            node {
-              sourceUrl
-            }
-          }
-          author {
-            node {
-              name
-            }
-          }
-        }
-      }
-    }
-  `
-  );
-  return data?.posts?.nodes;
-}
+export const getAllPosts = cache(async (): Promise<Post[]> => {
+  const data = await fetchAPI(ALL_POSTS_QUERY);
+  
+  const nodes = data?.posts?.nodes || [];
+  return z.array(PostSchema).parse(nodes);
+});
 
-export async function getPostBySlug(slug: string) {
+export const getPostBySlug = cache(async (slug: string): Promise<Post | null> => {
   const data = await fetchAPI(
-    `
-    query PostBySlug($id: ID!, $idType: PostIdType!) {
-      post(id: $id, idType: $idType) {
-        id
-        databaseId
-        title
-        excerpt
-        content
-        date
-        commentCount
-        comments(first: 100, where: { orderby: COMMENT_DATE, order: ASC }) {
-          nodes {
-            id
-            databaseId
-            content
-            date
-            parentDatabaseId
-            author {
-              node {
-                name
-                avatar {
-                  url
-                }
-              }
-            }
-          }
-        }
-        featuredImage {
-          node {
-            sourceUrl
-          }
-        }
-        author {
-          node {
-            name
-          }
-        }
-      }
-    }
-  `,
+    POST_BY_SLUG_QUERY,
     {
       variables: {
         id: slug,
@@ -127,8 +89,10 @@ export async function getPostBySlug(slug: string) {
       },
     }
   );
-  return data?.post;
-}
+  
+  if (!data?.post) return null;
+  return PostSchema.parse(data.post);
+});
 
 export async function createComment(input: {
   content: string;
@@ -137,22 +101,7 @@ export async function createComment(input: {
   postId: number;
 }) {
   const data = await fetchAPI(
-    `
-    mutation CreateComment($input: CreateCommentInput!) {
-      createComment(input: $input) {
-        success
-        comment {
-          id
-          content
-          author {
-            node {
-              name
-            }
-          }
-        }
-      }
-    }
-  `,
+    CREATE_COMMENT_MUTATION,
     {
       variables: {
         input: {
@@ -162,28 +111,15 @@ export async function createComment(input: {
           commentOn: input.postId,
         },
       },
+      revalidate: false, // Don't cache mutations
     }
   );
   return data?.createComment;
 }
 
-export async function getPageBySlug(slug: string) {
+export const getPageBySlug = cache(async (slug: string): Promise<any> => { // Adjust type as needed or use a Schema
   const data = await fetchAPI(
-    `
-    query PageBySlug($id: ID!, $idType: PageIdType!) {
-      page(id: $id, idType: $idType) {
-        id
-        title
-        content
-        date
-        featuredImage {
-          node {
-            sourceUrl
-          }
-        }
-      }
-    }
-  `,
+    PAGE_BY_SLUG_QUERY,
     {
       variables: {
         id: slug,
@@ -192,42 +128,11 @@ export async function getPageBySlug(slug: string) {
     }
   );
   return data?.page;
-}
+});
 
-export async function getPostsByCategory(slug: string) {
+export const getPostsByCategory = cache(async (slug: string): Promise<Category | null> => {
   const data = await fetchAPI(
-    `
-    query PostsByCategory($id: ID!, $idType: CategoryIdType!) {
-      category(id: $id, idType: $idType) {
-        id
-        name
-        slug
-        description
-        children(where: { hideEmpty: true }) {
-          nodes {
-            id
-            name
-            slug
-            count
-          }
-        }
-        posts(first: 20, where: { orderby: { field: DATE, order: DESC } }) {
-          nodes {
-            id
-            title
-            excerpt
-            slug
-            date
-            featuredImage {
-              node {
-                sourceUrl
-              }
-            }
-          }
-        }
-      }
-    }
-  `,
+    CATEGORY_POSTS_QUERY,
     {
       variables: {
         id: slug,
@@ -235,47 +140,25 @@ export async function getPostsByCategory(slug: string) {
       },
     }
   );
-  return data?.category;
-}
-
-export async function searchPosts(searchTerm: string) {
-  const data = await fetchAPI(
-    `
-    query SearchPosts($search: String!) {
-      posts(first: 20, where: { search: $search }) {
-        nodes {
-          id
-          title
-          slug
-          date
-          excerpt
-        }
-      }
-    }
-  `,
-    {
-      variables: {
-        search: searchTerm,
-      },
-    }
-  );
-  return data?.posts?.nodes;
-}
+  
+  if (!data?.category) return null;
+  return CategorySchema.parse(data.category);
+});
 
 export async function getAllCategories() {
-  const data = await fetchAPI(
-    `
-    query AllCategories {
-      categories(first: 10, where: { hideEmpty: true }) {
-        nodes {
-          id
-          name
-          slug
-          count
-        }
-      }
-    }
-  `
-  );
+  const data = await fetchAPI(ALL_CATEGORIES_QUERY);
   return data?.categories?.nodes;
+}
+
+export async function searchPosts(searchTerm: string): Promise<Post[]> {
+  const data = await fetchAPI(
+    SEARCH_POSTS_QUERY,
+    {
+      variables: { search: searchTerm },
+      revalidate: 3600, // Search results can be cached longer
+    }
+  );
+  
+  const nodes = data?.posts?.nodes || [];
+  return z.array(PostSchema).parse(nodes);
 }
