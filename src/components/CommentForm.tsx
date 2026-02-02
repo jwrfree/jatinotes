@@ -73,7 +73,7 @@ export default function CommentForm({ postId }: { postId: number }) {
   return (
     <div className="w-full">
       <div className="flex items-center gap-3 mb-8">
-        <div className="h-10 w-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+        <div className="h-10 w-10 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
           </svg>
@@ -113,7 +113,7 @@ export default function CommentForm({ postId }: { postId: number }) {
               className={`block w-full rounded-2xl border bg-white px-4 py-3 text-zinc-900 transition-all focus:ring-4 outline-none ${
                 errors.author 
                   ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10 dark:border-red-900/50' 
-                  : 'border-zinc-200 focus:border-primary focus:ring-primary/10 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-primary dark:focus:ring-primary/20'
+                  : 'border-zinc-200 focus:border-amber-500 focus:ring-amber-500/10 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20'
               }`}
               value={formData.author}
               onChange={(e) => {
@@ -137,7 +137,7 @@ export default function CommentForm({ postId }: { postId: number }) {
               className={`block w-full rounded-2xl border bg-white px-4 py-3 text-zinc-900 transition-all focus:ring-4 outline-none ${
                 errors.authorEmail 
                   ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10 dark:border-red-900/50' 
-                  : 'border-zinc-200 focus:border-primary focus:ring-primary/10 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-primary dark:focus:ring-primary/20'
+                  : 'border-zinc-200 focus:border-amber-500 focus:ring-amber-500/10 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20'
               }`}
               value={formData.authorEmail}
               onChange={(e) => {
@@ -162,7 +162,7 @@ export default function CommentForm({ postId }: { postId: number }) {
             className={`block w-full rounded-3xl border bg-white px-4 py-4 text-zinc-900 transition-all focus:ring-4 outline-none resize-none ${
               errors.content 
                 ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10 dark:border-red-900/50' 
-                : 'border-zinc-200 focus:border-primary focus:ring-primary/10 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-primary dark:focus:ring-primary/20'
+                : 'border-zinc-200 focus:border-amber-500 focus:ring-amber-500/10 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20'
             }`}
             value={formData.content}
             onChange={(e) => {
@@ -195,7 +195,7 @@ export default function CommentForm({ postId }: { postId: number }) {
         <button
           type="submit"
           disabled={status === "submitting"}
-          className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-primary px-8 py-4 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary-dark hover:shadow-primary/40 active:scale-95 disabled:opacity-50 disabled:active:scale-100"
+          className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-amber-500 px-8 py-4 text-sm font-bold text-white shadow-lg shadow-amber-500/20 transition-all hover:bg-amber-600 hover:shadow-amber-500/40 active:scale-95 disabled:opacity-50 disabled:active:scale-100"
         >
           {status === "submitting" ? (
             <>

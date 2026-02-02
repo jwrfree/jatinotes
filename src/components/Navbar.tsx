@@ -107,7 +107,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between px-8">
             <div className="flex-[1.5] flex items-center">
               <Link href="/" className="text-xl font-bold tracking-tighter text-zinc-900 dark:text-zinc-50 z-50">
-                Jati<span className="text-primary">Notes</span>
+                Jati<span className="text-amber-500">Notes</span>
               </Link>
             </div>
             
@@ -198,7 +198,7 @@ export default function Navbar() {
                       href={link.href} 
                       className={`relative flex items-center justify-center rounded-2xl py-4 text-lg font-semibold transition-all ${
                         isActive 
-                          ? "bg-primary text-white shadow-lg shadow-primary/25" 
+                          ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25" 
                           : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
                       }`}
                       onClick={toggleMenu}

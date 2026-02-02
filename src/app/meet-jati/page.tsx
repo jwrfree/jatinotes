@@ -29,7 +29,7 @@ export default async function MeetJatiPage() {
     <div className="relative overflow-hidden min-h-screen">
       {/* Background Ornaments */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-amber-500/5 blur-[120px] rounded-full" />
         <div className="absolute bottom-[10%] right-[-10%] w-[30%] h-[30%] bg-amber-500/5 blur-[100px] rounded-full" />
       </div>
 
@@ -45,8 +45,8 @@ export default async function MeetJatiPage() {
             <div className={page.featuredImage?.node?.sourceUrl ? 'lg:col-span-7' : ''}>
               <header className="flex flex-col mb-12">
                 <div className="flex items-center gap-3 mb-6">
-                  <span className="h-px w-8 bg-primary" />
-                  <span className="text-sm font-bold text-primary">
+                  <span className="h-px w-8 bg-amber-500" />
+                  <span className="text-sm font-bold text-amber-500">
                     The Person Behind
                   </span>
                 </div>
@@ -59,15 +59,15 @@ export default async function MeetJatiPage() {
                     sequential={true}
                     useOriginalCharsOnly={false}
                     className="text-zinc-900 dark:text-zinc-100"
-                    encryptedClassName="text-primary opacity-50"
+                    encryptedClassName="text-amber-500 opacity-50"
                   />
                 </h1>
 
-                <div className="h-1.5 w-24 bg-gradient-to-r from-primary to-amber-500 rounded-full mb-12" />
+                <div className="h-1.5 w-24 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full mb-12" />
               </header>
 
               <div
-                className="prose prose-zinc dark:prose-invert max-w-none prose-lg prose-headings:scroll-mt-28 prose-p:leading-relaxed prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-a:text-primary prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50"
+                className="prose prose-zinc dark:prose-invert max-w-none prose-lg prose-headings:scroll-mt-28 prose-p:leading-relaxed prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-a:text-amber-500 prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50"
                 dangerouslySetInnerHTML={{ __html: sanitize(page.content) }}
               />
             </div>

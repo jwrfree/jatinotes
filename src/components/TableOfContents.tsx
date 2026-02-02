@@ -72,9 +72,9 @@ export default function TableOfContents({ content }: { content: string }) {
           >
             <a
               href={`#${item.id}`}
-              className={`block transition-colors duration-200 hover:text-primary ${
+              className={`block transition-colors duration-200 hover:text-amber-500 ${
                 activeId === item.id
-                  ? "text-primary font-medium"
+                  ? "text-amber-500 font-medium"
                   : "text-zinc-500 dark:text-zinc-400"
               }`}
               onClick={(e) => {

@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { MotionDiv, fadeIn } from "@/components/Animations";
 import { Post } from "@/lib/types";
 import { calculateReadingTime } from "@/lib/utils";
@@ -9,20 +13,34 @@ interface BookArchiveCardProps {
 }
 
 export default function BookArchiveCard({ post }: BookArchiveCardProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
+
   return (
     <MotionDiv
+      ref={containerRef}
       variants={fadeIn}
       className="group"
     >
       <Link href={`/posts/${post.slug}`} className="block space-y-6">
-        <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 transition-all duration-500 group-hover:border-primary/20 group-hover:shadow-lg">
+        <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 transition-all duration-500 group-hover:border-amber-500/20 group-hover:shadow-lg">
           {post.featuredImage?.node?.sourceUrl ? (
-            <Image
-              src={post.featuredImage.node.sourceUrl}
-              alt={post.title}
-              fill
-              className="object-cover opacity-90 group-hover:opacity-100 transition-all duration-500"
-            />
+            <motion.div 
+              style={{ y, height: "120%", top: "-10%" }}
+              className="relative w-full h-full"
+            >
+              <Image
+                src={post.featuredImage.node.sourceUrl}
+                alt={post.title}
+                fill
+                className="object-cover opacity-90 group-hover:opacity-100 transition-all duration-500"
+              />
+            </motion.div>
           ) : (
             <div className="flex h-full w-full items-center justify-center text-zinc-200 dark:text-zinc-800">
               <svg className="h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,7 +50,7 @@ export default function BookArchiveCard({ post }: BookArchiveCardProps) {
           )}
         </div>
         <div className="space-y-3">
-          <div className="text-[9px] font-black uppercase tracking-widest text-zinc-400 group-hover:text-primary transition-colors">
+          <div className="text-[9px] font-black uppercase tracking-widest text-zinc-400 group-hover:text-amber-500 transition-colors">
             {post.categories?.nodes?.find(c => c.slug !== 'buku')?.name || 'Book'}
           </div>
           <h4 className="text-xl font-bold text-zinc-800 dark:text-zinc-200 leading-snug line-clamp-2 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
@@ -41,7 +59,7 @@ export default function BookArchiveCard({ post }: BookArchiveCardProps) {
           <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase">
             <span>{calculateReadingTime(post.content || "")} min read</span>
             <span className="w-1 h-1 rounded-full bg-zinc-200 dark:bg-zinc-800" />
-            <span className="group-hover:translate-x-1 transition-transform inline-flex items-center gap-1 text-primary">
+            <span className="group-hover:translate-x-1 transition-transform inline-flex items-center gap-1 text-amber-500">
               Details <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"/></svg>
             </span>
           </div>

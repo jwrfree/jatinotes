@@ -55,11 +55,11 @@ export default async function Home() {
       <HeroSection />
 
       {/* Main Content Section */}
-      <section className="relative z-10 mx-auto max-w-5xl px-6 pb-24">
+      <section className="relative z-10 mx-auto max-w-7xl px-6 pb-24">
         {posts && posts.length > 0 ? (
           <div className="space-y-32">
             {/* Featured Post */}
-            <FeaturedPost post={posts[0]} />
+            <FeaturedPost post={posts[0]} label="Must Read ✨" />
 
             {/* General Grid (Blog Category Only) */}
             {blogCategory && posts && posts.length > 0 && (
@@ -93,13 +93,13 @@ export default async function Home() {
       {/* Technology Section with Thematic Accent */}
       {techCategory && techCategory.posts?.nodes && techCategory.posts.nodes.length > 0 && (
         <section className="relative z-20 py-32 overflow-hidden bg-white dark:bg-zinc-950">
-          <div className="absolute inset-0 bg-primary/[0.02] dark:bg-primary/[0.01]" />
-          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+          <div className="absolute inset-0 bg-amber-500/[0.02] dark:bg-amber-500/[0.01]" />
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent" />
           
           {/* Fade out to reveal next section */}
           <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-white dark:from-zinc-950 to-transparent pointer-events-none" />
           
-          <div className="relative z-10 mx-auto max-w-5xl px-6">
+          <div className="relative z-10 mx-auto max-w-7xl px-6">
             <SectionHeading 
               viewAllLink={`/category/${techCategory.slug}`}
               className="mb-16"
@@ -111,7 +111,7 @@ export default async function Home() {
                 sequential={true}
                 useOriginalCharsOnly={false}
                 className="text-zinc-900 dark:text-zinc-50"
-                encryptedClassName="text-primary opacity-50"
+                encryptedClassName="text-amber-500 opacity-50"
               />
             </SectionHeading>
 
@@ -128,7 +128,7 @@ export default async function Home() {
                     post={post} 
                     isWide={index % 7 === 1 || index % 7 === 3}
                     variant="glass"
-                    accentColor="primary"
+                    accentColor="amber"
                   />
               ))}
             </MotionDiv>
@@ -141,7 +141,7 @@ export default async function Home() {
         <section className="relative z-10 -mt-32 pt-64 pb-32 overflow-hidden bg-zinc-900">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent opacity-50" />
           
-          <div className="relative z-10 mx-auto max-w-5xl px-6">
+          <div className="relative z-10 mx-auto max-w-7xl px-6">
             <SectionHeading 
               className="mb-16"
               h2ClassName="font-medium text-white leading-[1.3] md:leading-[1.2]"

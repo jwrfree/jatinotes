@@ -21,7 +21,7 @@ export default function Error({
       {/* Background Ornaments */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
         <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-red-500/5 blur-[120px] rounded-full" />
-        <div className="absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-primary/5 blur-[100px] rounded-full" />
+        <div className="absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-amber-500/5 blur-[100px] rounded-full" />
       </div>
 
       <MotionDiv
@@ -46,7 +46,7 @@ export default function Error({
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
             <button
               onClick={() => reset()}
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-500 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-amber-500/20 transition-all hover:bg-amber-600"
             >
               <RefreshCw className="h-4 w-4" />
               Coba Lagi

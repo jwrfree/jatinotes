@@ -37,7 +37,7 @@ const CommentItem = ({ comment, depth = 0 }: { comment: CommentNode; depth?: num
             : 'bg-zinc-50/50 dark:bg-zinc-800/30 border-zinc-100 dark:border-zinc-800'
         }`}
       >
-        <div className={`relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 border border-primary/10 dark:border-primary/20 shadow-sm group-hover:scale-105 transition-transform duration-300 ${depth > 0 ? 'h-10 w-10 sm:h-12 sm:w-12' : ''}`}>
+        <div className={`relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500/10 to-amber-500/5 dark:from-amber-500/20 dark:to-amber-500/10 border border-amber-500/10 dark:border-amber-500/20 shadow-sm group-hover:scale-105 transition-transform duration-300 ${depth > 0 ? 'h-10 w-10 sm:h-12 sm:w-12' : ''}`}>
           {comment.author?.node?.avatar?.url ? (
             <Image
               src={comment.author.node.avatar.url}
@@ -46,7 +46,7 @@ const CommentItem = ({ comment, depth = 0 }: { comment: CommentNode; depth?: num
               className="object-cover"
             />
           ) : (
-            <div className={`flex h-full w-full items-center justify-center font-bold text-primary/60 ${depth > 0 ? 'text-sm' : 'text-lg'}`}>
+            <div className={`flex h-full w-full items-center justify-center font-bold text-amber-500/60 ${depth > 0 ? 'text-sm' : 'text-lg'}`}>
               {comment.author?.node?.name?.charAt(0) || "U"}
             </div>
           )}
@@ -54,7 +54,7 @@ const CommentItem = ({ comment, depth = 0 }: { comment: CommentNode; depth?: num
         <div className="flex flex-col flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-2">
             <div className="flex flex-col">
-              <span className={`font-bold text-zinc-900 dark:text-zinc-100 tracking-tight group-hover:text-primary transition-colors ${depth > 0 ? 'text-sm' : 'text-base'}`}>
+              <span className={`font-bold text-zinc-900 dark:text-zinc-100 tracking-tight group-hover:text-amber-500 transition-colors ${depth > 0 ? 'text-sm' : 'text-base'}`}>
                 {comment.author?.node?.name}
               </span>
               <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500">
@@ -62,7 +62,7 @@ const CommentItem = ({ comment, depth = 0 }: { comment: CommentNode; depth?: num
               </span>
             </div>
             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-primary/10 text-primary">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-amber-500/10 text-amber-500">
                 {depth > 0 ? 'Balasan' : 'Pembaca'}
               </span>
             </div>
@@ -75,7 +75,7 @@ const CommentItem = ({ comment, depth = 0 }: { comment: CommentNode; depth?: num
           {hasChildren && (
             <button 
               onClick={() => setShowReplies(!showReplies)}
-              className="mt-4 flex items-center gap-2 text-[10px] font-bold text-primary hover:text-primary-dark transition-colors"
+              className="mt-4 flex items-center gap-2 text-[10px] font-bold text-amber-500 hover:text-amber-600 transition-colors"
             >
               <span className={`transition-transform duration-300 ${showReplies ? 'rotate-180' : ''}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3 h-3">
@@ -150,7 +150,7 @@ export default function CommentSection({ comments, postId, commentCount }: Comme
             <div className="pt-4 flex justify-center">
               <button 
                 onClick={() => setDisplayCount(prev => prev + 5)}
-                className="group flex items-center gap-3 px-8 py-3 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 text-sm font-bold hover:bg-primary hover:text-white transition-all duration-300"
+                className="group flex items-center gap-3 px-8 py-3 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 text-sm font-bold hover:bg-amber-500 hover:text-white transition-all duration-300"
               >
                 Lihat Lebih Banyak Diskusi
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 group-hover:translate-y-0.5 transition-transform">

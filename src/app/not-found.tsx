@@ -9,7 +9,7 @@ export default function NotFound() {
     <div className="relative flex min-h-[80vh] items-center justify-center overflow-hidden px-6 pt-20">
       {/* Background Ornaments */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full" />
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-amber-500/10 blur-[120px] rounded-full" />
         <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-amber-500/10 blur-[100px] rounded-full" />
       </div>
 
@@ -20,7 +20,7 @@ export default function NotFound() {
         className="relative z-10 w-full max-w-lg"
       >
         <div className="rounded-[3rem] border border-zinc-200/50 bg-white/70 p-12 text-center shadow-2xl backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-900/70">
-          <div className="mb-8 inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/10 text-4xl font-bold text-primary">
+          <div className="mb-8 inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-amber-500/10 text-4xl font-bold text-amber-500">
             404
           </div>
           

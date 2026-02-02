@@ -2,9 +2,9 @@ import { getPostsByCategory } from "@/lib/api";
 import { MotionDiv, staggerContainer } from "@/components/Animations";
 import TypingText from "../../components/TypingText";
 import { Metadata } from "next";
-import BookHero from "@/components/buku/BookHero";
 import BookSecondaryCard from "@/components/buku/BookSecondaryCard";
 import BookArchiveCard from "@/components/buku/BookArchiveCard";
+import FeaturedPost from "@/components/FeaturedPost";
 
 export const metadata: Metadata = {
   title: "Rak Buku - Jati Notes",
@@ -24,7 +24,7 @@ export default async function BukuPage() {
       {/* Editorial Background Elements */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-[10%] -right-[10%] w-[40%] h-[60%] bg-zinc-100/50 dark:bg-zinc-900/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[5%] -left-[5%] w-[30%] h-[40%] bg-primary/5 dark:bg-primary/5 blur-[100px] rounded-full" />
+        <div className="absolute bottom-[5%] -left-[5%] w-[30%] h-[40%] bg-amber-500/5 dark:bg-amber-500/5 blur-[100px] rounded-full" />
       </div>
 
       <main className="relative z-10 mx-auto max-w-7xl px-6 pt-32 pb-24">
@@ -33,14 +33,14 @@ export default async function BukuPage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-zinc-200 dark:border-zinc-800 pb-12">
             <div className="max-w-3xl space-y-4">
               <div className="flex items-center gap-3">
-                <span className="h-[1px] w-12 bg-primary" />
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">
+                <span className="h-[1px] w-12 bg-amber-500" />
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-amber-500">
                   The Library
                 </span>
               </div>
               <h1 className="text-7xl md:text-9xl font-black text-zinc-900 dark:text-zinc-100 tracking-tighter leading-[0.85]">
                 <TypingText text="Rak" /><br />
-                <span className="text-primary/20 dark:text-primary/10">Buku</span>
+                <span className="text-amber-500/20 dark:text-amber-500/10">Buku</span>
               </h1>
             </div>
             <div className="flex flex-col items-end">
@@ -63,7 +63,7 @@ export default async function BukuPage() {
         </header>
 
         {/* 1. FEATURED HERO */}
-        {featuredPost && <BookHero post={featuredPost} />}
+        {featuredPost && <FeaturedPost post={featuredPost} label="Featured Review" />}
 
         {/* 2. SECONDARY GRID */}
         <section className="mb-32">

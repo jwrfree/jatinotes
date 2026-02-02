@@ -36,7 +36,7 @@ export default async function BlogListPage({
     <div className="relative overflow-hidden min-h-screen">
       {/* Background Ornaments */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full" />
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-amber-500/10 blur-[120px] rounded-full" />
         <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-amber-500/10 blur-[100px] rounded-full" />
       </div>
 
@@ -49,8 +49,8 @@ export default async function BlogListPage({
         <div className="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md rounded-[3rem] shadow-2xl shadow-black/5 dark:shadow-white/5 p-8 sm:p-16">
           <header className="mb-16">
             <div className="flex items-center gap-4 mb-6">
-              <div className="h-px w-12 bg-primary" />
-              <span className="text-sm font-bold text-primary">
+              <div className="h-px w-12 bg-amber-500" />
+              <span className="text-sm font-bold text-amber-500">
                 Koleksi Catatan
               </span>
             </div>
@@ -63,7 +63,7 @@ export default async function BlogListPage({
                 sequential={true}
                 useOriginalCharsOnly={false}
                 className="text-zinc-900 dark:text-zinc-50"
-                encryptedClassName="text-primary opacity-50"
+                encryptedClassName="text-amber-500 opacity-50"
               />
             </h1>
             

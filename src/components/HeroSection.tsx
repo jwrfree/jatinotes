@@ -10,7 +10,7 @@ interface HeroSectionProps {
 export default function HeroSection({ 
   title = (
     <>
-      Mengapa Saya <span className="text-primary italic">Menulis?</span>
+      Mengapa Saya <span className="text-amber-500 italic">Menulis?</span>
     </>
   ),
   description = "Saya percaya bahwa menulis adalah cara terbaik untuk menjernihkan pikiran. Di sini, saya mendokumentasikan perjalanan saya memahami teknologi, desain, dan kompleksitas dunia web modern."

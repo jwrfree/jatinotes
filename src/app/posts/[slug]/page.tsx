@@ -100,7 +100,7 @@ export default async function PostPage({
       
       {/* Background Ornaments */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-amber-500/5 blur-[120px] rounded-full" />
         <div className="absolute bottom-[10%] right-[-10%] w-[30%] h-[30%] bg-amber-500/5 blur-[100px] rounded-full" />
       </div>
 
@@ -153,7 +153,7 @@ export default async function PostPage({
                 )}
 
                 <div
-                  className="mt-12 prose prose-zinc dark:prose-invert max-w-none prose-lg prose-headings:scroll-mt-28 prose-p:leading-relaxed prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-a:text-primary prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50"
+                  className="mt-12 prose prose-zinc dark:prose-invert max-w-none prose-lg prose-headings:scroll-mt-28 prose-p:leading-relaxed prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-a:text-amber-500 prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50"
                   dangerouslySetInnerHTML={{ __html: sanitize(processedContent) }}
                 />
 
@@ -168,7 +168,7 @@ export default async function PostPage({
                 <div className="mt-20 flex justify-center border-t border-zinc-100 dark:border-zinc-800 pt-10">
                   <Link
                     href={isBookReview ? "/buku" : "/"}
-                    className="group flex items-center gap-3 text-sm font-bold text-primary transition-all hover:gap-5"
+                    className="group flex items-center gap-3 text-sm font-bold text-amber-500 transition-all hover:gap-5"
                   >
                     <svg
                       viewBox="0 0 16 16"

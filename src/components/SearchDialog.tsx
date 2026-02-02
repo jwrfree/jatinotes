@@ -142,7 +142,7 @@ export default function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
             >
               {isSearching ? (
                 <div className="flex flex-col items-center justify-center py-12 text-zinc-500">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+                  <Loader2 className="h-8 w-8 animate-spin text-amber-500 mb-4" />
                   <p>Mencari artikel terbaik untuk Anda...</p>
                 </div>
               ) : searchQuery.trim().length > 0 && searchQuery.trim().length <= 2 ? (
@@ -177,7 +177,7 @@ export default function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
                         )}
                       </div>
                       <div className="flex flex-1 flex-col justify-center min-w-0">
-                        <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1 group-hover:text-primary transition-colors">
+                        <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1 group-hover:text-amber-500 transition-colors">
                           {post.title}
                         </h3>
                         <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
@@ -195,7 +195,7 @@ export default function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
                         </p>
                       </div>
                       <div className="flex items-center pr-2">
-                        <ArrowRight className="h-5 w-5 text-zinc-300 dark:text-zinc-700 transform translate-x-0 group-hover:translate-x-1 group-hover:text-primary transition-all" />
+                        <ArrowRight className="h-5 w-5 text-zinc-300 dark:text-zinc-700 transform translate-x-0 group-hover:translate-x-1 group-hover:text-amber-500 transition-all" />
                       </div>
                     </Link>
                   </li>

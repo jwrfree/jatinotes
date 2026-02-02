@@ -63,7 +63,7 @@ export default async function DynamicPage({
       <div className="relative overflow-hidden">
         {/* Background Ornaments */}
         <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full" />
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-amber-500/10 blur-[120px] rounded-full" />
           <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-amber-500/10 blur-[100px] rounded-full" />
         </div>
 
@@ -83,10 +83,10 @@ export default async function DynamicPage({
                   sequential={true}
                   useOriginalCharsOnly={false}
                   className="text-zinc-900 dark:text-zinc-50"
-                  encryptedClassName="text-primary opacity-50"
+                  encryptedClassName="text-amber-500 opacity-50"
                 />
               </h1>
-              <div className="h-1 w-20 bg-primary rounded-full" />
+              <div className="h-1 w-20 bg-amber-500 rounded-full" />
             </header>
 
             {page.featuredImage?.node?.sourceUrl && (
@@ -102,7 +102,7 @@ export default async function DynamicPage({
             )}
 
             <div
-              className="prose prose-zinc dark:prose-invert max-w-none prose-headings:scroll-mt-28 prose-headings:font-bold prose-a:text-primary prose-pre:bg-zinc-900 dark:prose-pre:bg-zinc-900/50 prose-pre:rounded-2xl"
+              className="prose prose-zinc dark:prose-invert max-w-none prose-headings:scroll-mt-28 prose-headings:font-bold prose-a:text-amber-500 prose-pre:bg-zinc-900 dark:prose-pre:bg-zinc-900/50 prose-pre:rounded-2xl"
               dangerouslySetInnerHTML={{ __html: sanitize(page.content) }}
             />
           </div>
@@ -117,7 +117,7 @@ export default async function DynamicPage({
       <div className="relative overflow-hidden min-h-screen">
         {/* Background Ornaments */}
         <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full" />
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-amber-500/10 blur-[120px] rounded-full" />
           <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-amber-500/10 blur-[100px] rounded-full" />
         </div>
 
@@ -130,8 +130,8 @@ export default async function DynamicPage({
           <div className="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md rounded-[3rem] shadow-2xl shadow-black/5 dark:shadow-white/5 p-8 sm:p-16">
             <header className="mb-16">
               <div className="flex items-center gap-4 mb-6">
-                <div className="h-px w-12 bg-primary" />
-                <span className="text-sm font-bold text-primary">
+                <div className="h-px w-12 bg-amber-500" />
+                <span className="text-sm font-bold text-amber-500">
                   Kategori: {category.name}
                 </span>
               </div>
@@ -144,7 +144,7 @@ export default async function DynamicPage({
                   sequential={true}
                   useOriginalCharsOnly={false}
                   className="text-zinc-900 dark:text-zinc-50"
-                  encryptedClassName="text-primary opacity-50"
+                  encryptedClassName="text-amber-500 opacity-50"
                 />
               </h1>
               
