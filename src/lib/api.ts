@@ -1,5 +1,5 @@
 import { cache } from 'react';
-import { PostSchema, CategorySchema, Post, Category } from './types';
+import { PostSchema, CategorySchema, Post, Category, PageInfo, PageInfoSchema } from './types';
 import { z } from 'zod';
 import {
   ALL_POSTS_QUERY,
@@ -15,7 +15,7 @@ const API_URL = process.env.WORDPRESS_API_URL;
 
 async function fetchAPI(
   query: string, 
-  { variables, revalidate = 60 }: { variables?: any, revalidate?: number | false } = {}
+  { variables, revalidate = 60 }: { variables?: Record<string, unknown>, revalidate?: number | false } = {}
 ) {
   const headers = { 'Content-Type': 'application/json' };
 
@@ -47,7 +47,7 @@ async function fetchAPI(
       throw new Error(message);
     }
     return json.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('--- Fetch API Error Details ---');
     console.error('URL:', API_URL);
     if (error instanceof Error) {
@@ -58,7 +58,7 @@ async function fetchAPI(
       console.error('--------------------------------');
       
       const errorMessage = error.message;
-      const errorCause = error.cause as any;
+      const errorCause = error.cause as Error | undefined;
       
       if (errorMessage.includes('SSL') || (errorCause && errorCause.message && errorCause.message.includes('SSL'))) {
         throw new Error(`SSL Handshake Failed: Gagal terhubung ke ${API_URL} karena masalah SSL. Pastikan server WordPress Anda mengizinkan koneksi TLS yang kompatibel.`);
@@ -72,11 +72,16 @@ async function fetchAPI(
   }
 }
 
-export const getAllPosts = cache(async (): Promise<Post[]> => {
-  const data = await fetchAPI(ALL_POSTS_QUERY);
+export const getAllPosts = cache(async (params: { first?: number, after?: string, last?: number, before?: string } = { first: 10 }): Promise<{ nodes: Post[], pageInfo: PageInfo }> => {
+  const data = await fetchAPI(ALL_POSTS_QUERY, { variables: params });
   
   const nodes = data?.posts?.nodes || [];
-  return z.array(PostSchema).parse(nodes);
+  const pageInfo = data?.posts?.pageInfo || { hasNextPage: false, hasPreviousPage: false };
+  
+  return {
+    nodes: z.array(PostSchema).parse(nodes),
+    pageInfo: PageInfoSchema.parse(pageInfo)
+  };
 });
 
 export const getPostBySlug = cache(async (slug: string): Promise<Post | null> => {
@@ -100,43 +105,38 @@ export async function createComment(input: {
   authorEmail: string;
   postId: number;
 }) {
-  const data = await fetchAPI(
-    CREATE_COMMENT_MUTATION,
-    {
-      variables: {
-        input: {
-          content: input.content,
-          author: input.author,
-          authorEmail: input.authorEmail,
-          commentOn: input.postId,
-        },
-      },
-      revalidate: false, // Don't cache mutations
-    }
-  );
+  const data = await fetchAPI(CREATE_COMMENT_MUTATION, {
+    variables: { 
+      input: {
+        author: input.author,
+        authorEmail: input.authorEmail,
+        content: input.content,
+        commentOn: input.postId
+      }
+    },
+    revalidate: false
+  });
   return data?.createComment;
 }
 
-export const getPageBySlug = cache(async (slug: string): Promise<any> => { // Adjust type as needed or use a Schema
-  const data = await fetchAPI(
-    PAGE_BY_SLUG_QUERY,
-    {
-      variables: {
-        id: slug,
-        idType: 'URI',
-      },
-    }
-  );
+export const getPageBySlug = cache(async (slug: string) => {
+  const data = await fetchAPI(PAGE_BY_SLUG_QUERY, {
+    variables: {
+      id: slug,
+      idType: 'URI',
+    },
+  });
   return data?.page;
 });
 
-export const getPostsByCategory = cache(async (slug: string): Promise<Category | null> => {
+export const getPostsByCategory = cache(async (slug: string, params: { first?: number, after?: string, last?: number, before?: string } = { first: 10 }): Promise<Category | null> => {
   const data = await fetchAPI(
     CATEGORY_POSTS_QUERY,
     {
       variables: {
         id: slug,
         idType: 'SLUG',
+        ...params
       },
     }
   );

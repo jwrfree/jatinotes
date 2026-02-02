@@ -29,11 +29,26 @@ export const PostSchema = z.object({
   comments: z.object({
     nodes: z.array(z.any()),
   }).nullable().optional(),
+  categories: z.object({
+    nodes: z.array(z.object({
+      name: z.string(),
+      slug: z.string(),
+    })),
+  }).nullable().optional(),
 });
 
 export type Author = z.infer<typeof AuthorSchema>;
 export type FeaturedImage = z.infer<typeof FeaturedImageSchema>;
 export type Post = z.infer<typeof PostSchema>;
+
+export const PageInfoSchema = z.object({
+  hasNextPage: z.boolean(),
+  hasPreviousPage: z.boolean(),
+  startCursor: z.string().nullable().optional(),
+  endCursor: z.string().nullable().optional(),
+});
+
+export type PageInfo = z.infer<typeof PageInfoSchema>;
 
 export type Category = {
   id: string;
@@ -42,14 +57,15 @@ export type Category = {
   count?: number;
   description?: string | null;
   posts?: {
-    nodes: any[]; // Temporary use any for nodes to bypass strict Zod mismatch in recursive schema
+    nodes: Post[];
+    pageInfo?: PageInfo;
   };
   children?: {
     nodes: Category[];
   };
 };
 
-export const CategorySchema: z.ZodType<Category> = z.lazy(() => z.object({
+export const CategorySchema: z.ZodType<Category, z.ZodTypeDef, unknown> = z.lazy(() => z.object({
   id: z.string(),
   name: z.string(),
   slug: z.string(),
@@ -57,6 +73,7 @@ export const CategorySchema: z.ZodType<Category> = z.lazy(() => z.object({
   description: z.string().nullable().optional(),
   posts: z.object({
     nodes: z.array(PostSchema),
+    pageInfo: PageInfoSchema.optional(),
   }).optional(),
   children: z.object({
     nodes: z.array(CategorySchema),

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
-import { motion } from 'motion/react';
+import { motion, HTMLMotionProps } from 'motion/react';
 
-interface DecryptedTextProps {
+interface DecryptedTextProps extends HTMLMotionProps<"span"> {
   text: string;
   speed?: number;
   maxIterations?: number;
@@ -15,7 +15,6 @@ interface DecryptedTextProps {
   parentClassName?: string;
   encryptedClassName?: string;
   animateOn?: 'hover' | 'view' | 'both';
-  [key: string]: any;
 }
 
 export default function DecryptedText({

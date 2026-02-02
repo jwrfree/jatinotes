@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 interface TOCItem {
   id: string;
@@ -9,33 +9,37 @@ interface TOCItem {
 }
 
 export default function TableOfContents({ content }: { content: string }) {
-  const [toc, setToc] = useState<TOCItem[]>([]);
   const [activeId, setActiveId] = useState<string>("");
 
-  useEffect(() => {
-    // Parse the content to find headings
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(content, "text/html");
-    const headings = Array.from(doc.querySelectorAll("h2, h3"));
-
-    const tocItems: TOCItem[] = headings.map((heading, index) => {
-      const text = heading.textContent || "";
-      // Generate ID from text if it doesn't exist
-      const id = heading.id || text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "") + `-${index}`;
+  const toc = useMemo(() => {
+    const items: TOCItem[] = [];
+    const regex = /<(h2|h3)([^>]*)>(.*?)<\/\1>/gi;
+    let match;
+    let index = 0;
+    
+    while ((match = regex.exec(content)) !== null) {
+      const tag = match[1];
+      const attrs = match[2];
+      const text = match[3].replace(/<[^>]*>?/gm, '').trim();
       
-      // Update the actual heading in the DOM later via side effect or 
-      // by ensuring the content rendering logic includes these IDs
-      return {
+      const idMatch = /id=["'](.*?)["']/.exec(attrs);
+      const id = idMatch ? idMatch[1] : text.toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]/g, "") + `-${index}`;
+      
+      items.push({
         id,
         text,
-        level: parseInt(heading.tagName.replace("H", ""))
-      };
-    });
-
-    setToc(tocItems);
+        level: parseInt(tag.replace("h", "").replace("H", ""))
+      });
+      index++;
+    }
+    return items;
   }, [content]);
 
   useEffect(() => {
+    if (toc.length === 0) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

@@ -1,17 +1,17 @@
-import { Post, Category } from './types';
+import { Post } from './types';
 import { getAllPosts, getPostsByCategory, getAllCategories } from './api';
 
 export async function getHomeData() {
   try {
     const [postsData, , booksData, techData, blogData] = await Promise.all([
-      getAllPosts(),
+      getAllPosts({ first: 10 }),
       getAllCategories(),
-      getPostsByCategory("buku"),
-      getPostsByCategory("teknologi"),
-      getPostsByCategory("blog")
+      getPostsByCategory("buku", { first: 10 }),
+      getPostsByCategory("teknologi", { first: 10 }),
+      getPostsByCategory("blog", { first: 20 })
     ]);
     
-    const rawPosts = postsData || [];
+    const rawPosts = postsData?.nodes || [];
     const bookCategory = booksData;
     const techCategory = techData;
     const blogCategory = blogData;

@@ -3,7 +3,6 @@ import { calculateReadingTime, formatDateIndonesian, stripHtml } from "@/lib/uti
 import { sanitize, addIdsToHeadings } from "@/lib/sanitize";
 import CommentSection from "@/components/CommentSection";
 import ReadingProgress from "@/components/ReadingProgress";
-import TableOfContents from "@/components/TableOfContents";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -68,6 +67,7 @@ export default async function PostPage({
   }
 
   const processedContent = addIdsToHeadings(post.content || "");
+  const isBookReview = post.categories?.nodes?.some(c => c.slug === 'buku');
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -140,7 +140,7 @@ export default async function PostPage({
                 {post.featuredImage?.node?.sourceUrl && (
                   <MotionDiv 
                     variants={fadeIn}
-                    className="relative mt-12 aspect-[16/9] overflow-hidden rounded-[2rem] bg-zinc-100 dark:bg-zinc-800 shadow-xl"
+                    className="relative mt-12 aspect-[3/4] max-w-[400px] mx-auto overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800 shadow-2xl"
                   >
                     <Image
                       src={post.featuredImage.node.sourceUrl}
@@ -167,7 +167,7 @@ export default async function PostPage({
 
                 <div className="mt-20 flex justify-center border-t border-zinc-100 dark:border-zinc-800 pt-10">
                   <Link
-                    href="/"
+                    href={isBookReview ? "/buku" : "/"}
                     className="group flex items-center gap-3 text-sm font-bold text-primary transition-all hover:gap-5"
                   >
                     <svg
@@ -183,19 +183,12 @@ export default async function PostPage({
                         strokeLinejoin="round"
                       />
                     </svg>
-                    Kembali ke Daftar Tulisan
+                    {isBookReview ? 'Kembali ke Rak Buku' : 'Kembali ke Daftar Tulisan'}
                   </Link>
                 </div>
               </MotionDiv>
             </div>
           </div>
-
-          {/* Sidebar with Table of Contents (Hidden for now) */}
-          {/* 
-          <aside className="hidden lg:block w-80 shrink-0 sticky top-32">
-            <TableOfContents content={processedContent} />
-          </aside>
-          */}
         </div>
       </article>
     </div>

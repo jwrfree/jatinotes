@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { submitCommentAction } from "@/lib/actions";
+import { toast } from "sonner";
 
 export default function CommentForm({ postId }: { postId: number }) {
   const [formData, setFormData] = useState({
@@ -51,16 +52,21 @@ export default function CommentForm({ postId }: { postId: number }) {
       if (res?.success) {
         setStatus("success");
         setMessage(res.message);
+        toast.success(res.message);
         setFormData({ author: "", authorEmail: "", content: "", website: "" });
         setErrors({});
       } else {
         setStatus("error");
-        setMessage(res?.message || "Gagal mengirim komentar. Silakan coba lagi.");
+        const errorMsg = res?.message || "Gagal mengirim komentar. Silakan coba lagi.";
+        setMessage(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (error) {
       console.error(error);
       setStatus("error");
-      setMessage("Terjadi kesalahan sistem saat menghubungi server.");
+      const errorMsg = "Terjadi kesalahan sistem saat menghubungi server.";
+      setMessage(errorMsg);
+      toast.error(errorMsg);
     }
   };
 
@@ -115,7 +121,7 @@ export default function CommentForm({ postId }: { postId: number }) {
                 if (errors.author) setErrors({ ...errors, author: "" });
               }}
             />
-            {errors.author && <p className="text-[11px] font-bold text-red-500 ml-1 uppercase tracking-wider">{errors.author}</p>}
+            {errors.author && <p className="text-[11px] font-medium text-red-500 ml-1 tracking-wider">{errors.author}</p>}
           </div>
           <div className="space-y-2">
             <label
@@ -139,7 +145,7 @@ export default function CommentForm({ postId }: { postId: number }) {
                 if (errors.authorEmail) setErrors({ ...errors, authorEmail: "" });
               }}
             />
-            {errors.authorEmail && <p className="text-[11px] font-bold text-red-500 ml-1 uppercase tracking-wider">{errors.authorEmail}</p>}
+            {errors.authorEmail && <p className="text-[11px] font-medium text-red-500 ml-1 tracking-wider">{errors.authorEmail}</p>}
           </div>
         </div>
         <div className="space-y-2">
@@ -164,7 +170,7 @@ export default function CommentForm({ postId }: { postId: number }) {
               if (errors.content) setErrors({ ...errors, content: "" });
             }}
           />
-          {errors.content && <p className="text-[11px] font-bold text-red-500 ml-1 uppercase tracking-wider">{errors.content}</p>}
+          {errors.content && <p className="text-[11px] font-medium text-red-500 ml-1 tracking-wider">{errors.content}</p>}
         </div>
 
         {message && (

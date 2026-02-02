@@ -1,9 +1,8 @@
 import { getPostsByCategory } from "@/lib/api";
-import { calculateReadingTime } from "@/lib/utils";
-import { sanitize } from "@/lib/sanitize";
-import Link from "next/link";
 import { MotionDiv, MotionSection, fadeIn, staggerContainer } from "@/components/Animations";
 import DecryptedText from "@/components/DecryptedText";
+import PostListItem from "@/components/PostListItem";
+import Pagination from "@/components/Pagination";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { Post } from "@/lib/types";
@@ -13,14 +12,25 @@ export const metadata: Metadata = {
   description: "Kumpulan artikel dan tutorial terbaru seputar teknologi dan desain.",
 };
 
-export default async function BlogListPage() {
-  const category = await getPostsByCategory("blog");
+export default async function BlogListPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ after?: string; before?: string }>;
+}) {
+  const { after, before } = await searchParams;
+  
+  const paginationParams = before 
+    ? { last: 10, before } 
+    : { first: 10, after: after || "" };
+
+  const category = await getPostsByCategory("blog", paginationParams);
 
   if (!category) {
     notFound();
   }
 
   const posts = category.posts?.nodes || [];
+  const pageInfo = category.posts?.pageInfo;
 
   return (
     <div className="relative overflow-hidden min-h-screen">
@@ -73,35 +83,7 @@ export default async function BlogListPage() {
               className="space-y-4"
             >
               {posts.map((post: Post) => (
-                <MotionDiv
-                  key={post.id}
-                  variants={fadeIn}
-                  className="group"
-                >
-                  <Link 
-                    href={`/posts/${post.slug}`}
-                    className="flex flex-col md:flex-row md:items-center justify-between py-6 border-b border-zinc-100 dark:border-zinc-800 hover:border-primary/30 transition-colors"
-                  >
-                    <div className="flex-1 space-y-2">
-                      <div className="flex items-center gap-3 text-[10px] font-medium text-zinc-400">
-                        <span>{calculateReadingTime(post.content || "")} menit baca</span>
-                      </div>
-                      <h3 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-primary transition-colors">
-                        {post.title}
-                      </h3>
-                      <div 
-                        className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        dangerouslySetInnerHTML={{ __html: sanitize(post.excerpt) }}
-                      />
-                    </div>
-                    <div className="mt-4 md:mt-0 md:ml-8 flex items-center gap-2 text-primary opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                      <span className="text-xs font-bold">Baca Catatan</span>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </div>
-                  </Link>
-                </MotionDiv>
+                <PostListItem key={post.id} post={post} />
               ))}
             </MotionDiv>
           ) : (
@@ -109,6 +91,10 @@ export default async function BlogListPage() {
               <h3 className="text-xl font-medium text-zinc-900 dark:text-zinc-50">Belum Ada Catatan</h3>
               <p className="mt-2 text-zinc-500">Sedang menyusun pemikiran. Tulisan baru akan segera hadir.</p>
             </div>
+          )}
+
+          {pageInfo && (
+            <Pagination pageInfo={pageInfo} baseUrl="/blog" />
           )}
         </div>
       </MotionSection>

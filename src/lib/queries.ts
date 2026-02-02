@@ -15,6 +15,12 @@ export const POST_FIELDS_FRAGMENT = `
         sourceUrl
       }
     }
+    categories {
+      nodes {
+        name
+        slug
+      }
+    }
     author {
       node {
         name
@@ -44,13 +50,26 @@ export const COMMENT_FIELDS_FRAGMENT = `
   }
 `;
 
+export const PAGE_INFO_FRAGMENT = `
+  fragment PageInfoFields on WPPageInfo {
+    hasNextPage
+    hasPreviousPage
+    startCursor
+    endCursor
+  }
+`;
+
 /**
  * GraphQL Queries
  */
 export const ALL_POSTS_QUERY = `
   ${POST_FIELDS_FRAGMENT}
-  query AllPosts {
-    posts(first: 20, where: { orderby: { field: DATE, order: DESC } }) {
+  ${PAGE_INFO_FRAGMENT}
+  query AllPosts($first: Int, $after: String, $last: Int, $before: String) {
+    posts(first: $first, after: $after, last: $last, before: $before, where: { orderby: { field: DATE, order: DESC } }) {
+      pageInfo {
+        ...PageInfoFields
+      }
       nodes {
         ...PostFields
       }
@@ -76,7 +95,8 @@ export const POST_BY_SLUG_QUERY = `
 
 export const CATEGORY_POSTS_QUERY = `
   ${POST_FIELDS_FRAGMENT}
-  query PostsByCategory($id: ID!, $idType: CategoryIdType!) {
+  ${PAGE_INFO_FRAGMENT}
+  query PostsByCategory($id: ID!, $idType: CategoryIdType!, $first: Int, $after: String, $last: Int, $before: String) {
     category(id: $id, idType: $idType) {
       id
       name
@@ -90,7 +110,10 @@ export const CATEGORY_POSTS_QUERY = `
           count
         }
       }
-      posts(first: 20, where: { orderby: { field: DATE, order: DESC } }) {
+      posts(first: $first, after: $after, last: $last, before: $before, where: { orderby: { field: DATE, order: DESC } }) {
+        pageInfo {
+          ...PageInfoFields
+        }
         nodes {
           ...PostFields
         }

@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { Search, X, Loader2, ArrowRight } from 'lucide-react';
-import { Post } from '@/lib/types';
+import { Search } from 'lucide-react';
+import SearchDialog from './SearchDialog';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -15,9 +15,6 @@ export default function Navbar() {
 
   // Search States
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<Post[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
 
   const [hoveredPath, setHoveredPath] = useState<string | null>(null);
 
@@ -56,60 +53,8 @@ export default function Navbar() {
     }
   }, [isOpen, isSearchOpen]);
 
-  // Debounced Search Logic
-  useEffect(() => {
-    const timer = setTimeout(async () => {
-      if (searchQuery.trim().length > 2) {
-        setIsSearching(true);
-        try {
-          const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`);
-          const data = await res.json();
-          setSearchResults(Array.isArray(data) ? data : []);
-        } catch (error) {
-          console.error('Search error:', error);
-          setSearchResults([]);
-        } finally {
-          setIsSearching(false);
-        }
-      } else {
-        setSearchResults([]);
-      }
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
   const toggleMenu = () => setIsOpen(!isOpen);
-  const toggleSearch = () => {
-    setIsSearchOpen(!isSearchOpen);
-    if (!isSearchOpen) {
-      setSearchQuery('');
-      setSearchResults([]);
-    }
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants: Variants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 24
-      }
-    }
-  };
+  const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
 
   const menuVariants: Variants = {
     closed: {
@@ -267,96 +212,10 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-      <AnimatePresence>
-        {isSearchOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-start justify-center bg-white/80 backdrop-blur-xl dark:bg-zinc-950/80 pt-24 px-6"
-          >
-            <motion.div 
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 20, opacity: 0 }}
-              className="w-full max-w-2xl"
-            >
-              <div className="relative flex items-center">
-                <Search className="absolute left-4 h-6 w-6 text-zinc-400" />
-                <input
-                  autoFocus
-                  type="text"
-                  placeholder="Cari artikel, buku, atau desain..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-2xl border border-zinc-200/50 bg-white/50 px-12 py-4 text-lg text-zinc-900 backdrop-blur-md focus:outline-none focus:ring-4 focus:ring-primary/10 dark:border-zinc-700/50 dark:bg-zinc-800/50 dark:text-zinc-50 transition-all duration-300"
-                />
-                <button 
-                  onClick={toggleSearch}
-                  className="absolute right-4 rounded-lg p-1 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
-                  aria-label="Tutup pencarian"
-                >
-                  <X className="h-5 w-5 text-zinc-500" />
-                </button>
-              </div>
-
-              <div className="mt-8 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-                {isSearching ? (
-                  <div className="flex flex-col items-center justify-center py-12">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                    <p className="mt-4 text-zinc-500">Mencari inspirasi...</p>
-                  </div>
-                ) : searchResults.length > 0 ? (
-                  <motion.div 
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="space-y-4 pb-8"
-                  >
-                    {searchResults.map((post) => (
-                      <motion.div key={post.id} variants={itemVariants}>
-                        <Link
-                          href={`/posts/${post.slug}`}
-                          onClick={toggleSearch}
-                          className="group flex flex-col rounded-2xl bg-white/80 p-5 shadow-sm border border-zinc-100 backdrop-blur-sm transition-all hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20 dark:bg-zinc-900/80 dark:border-zinc-800 dark:hover:border-primary/20"
-                        >
-                          <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-semibold text-zinc-900 group-hover:text-primary dark:text-zinc-50 transition-colors">
-                              {post.title}
-                            </h3>
-                            <ArrowRight className="h-4 w-4 text-zinc-400 -translate-x-2 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
-                          </div>
-                          {post.excerpt && (
-                            <div 
-                              className="mt-2 text-sm text-zinc-500 line-clamp-2"
-                              dangerouslySetInnerHTML={{ __html: post.excerpt }}
-                            />
-                          )}
-                          <div className="mt-3 flex items-center text-[10px] font-medium uppercase tracking-wider text-zinc-400">
-                            {new Date(post.date).toLocaleDateString('id-ID', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
-                            })}
-                          </div>
-                        </Link>
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                ) : searchQuery.length > 2 ? (
-                  <div className="py-12 text-center">
-                    <p className="text-zinc-500">Tidak ada hasil ditemukan untuk &quot;{searchQuery}&quot;</p>
-                  </div>
-                ) : (
-                  <div className="py-12 text-center">
-                    <p className="text-zinc-400">Ketik minimal 3 karakter untuk mulai mencari</p>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <SearchDialog 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+      />
     </>
   );
 }

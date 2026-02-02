@@ -5,7 +5,9 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { MotionDiv, MotionSection, fadeIn, staggerContainer } from "@/components/Animations";
 import DecryptedText from "@/components/DecryptedText";
+import { Post } from "@/lib/types";
 import PostCard from "@/components/PostCard";
+import Pagination from "@/components/Pagination";
 import { Metadata } from "next";
 
 export async function generateMetadata({
@@ -38,15 +40,22 @@ export async function generateMetadata({
 
 export default async function DynamicPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ after?: string; before?: string }>;
 }) {
   const { slug } = await params;
+  const { after, before } = await searchParams;
+
+  const paginationParams = before 
+    ? { last: 12, before } 
+    : { first: 12, after: after || "" };
 
   // Parallel fetch for better performance
   const [page, category] = await Promise.all([
     getPageBySlug(slug),
-    getPostsByCategory(slug)
+    getPostsByCategory(slug, paginationParams)
   ]);
 
   if (page) {
@@ -154,7 +163,7 @@ export default async function DynamicPage({
                 variants={staggerContainer}
                 className="grid gap-8 sm:grid-cols-2 lg:grid-cols-2"
               >
-                {posts.map((post: any) => (
+                {posts.map((post: Post) => (
                   <MotionDiv key={post.id} variants={fadeIn}>
                     <PostCard post={post} />
                   </MotionDiv>
@@ -164,6 +173,10 @@ export default async function DynamicPage({
               <div className="text-center py-20">
                 <p className="text-zinc-500 dark:text-zinc-400">Tidak ada artikel dalam kategori ini.</p>
               </div>
+            )}
+
+            {category.posts?.pageInfo && (
+              <Pagination pageInfo={category.posts.pageInfo} baseUrl={`/${slug}`} />
             )}
           </div>
         </MotionSection>
