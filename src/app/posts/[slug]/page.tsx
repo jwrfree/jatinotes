@@ -1,5 +1,5 @@
 import { getPostBySlug } from "@/lib/api";
-import { calculateReadingTime, formatDateIndonesian, stripHtml } from "@/lib/utils";
+import { stripHtml } from "@/lib/utils";
 import { sanitize, addIdsToHeadings } from "@/lib/sanitize";
 import CommentSection from "@/components/CommentSection";
 import ReadingProgress from "@/components/ReadingProgress";

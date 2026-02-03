@@ -1,7 +1,6 @@
 import { getPageBySlug } from "@/lib/api";
 import { sanitize } from "@/lib/sanitize";
 import Image from "next/image";
-import { notFound } from "next/navigation";
 import { MotionDiv, fadeIn, staggerContainer } from "@/components/Animations";
 import DecryptedText from "@/components/DecryptedText";
 import { Metadata } from "next";

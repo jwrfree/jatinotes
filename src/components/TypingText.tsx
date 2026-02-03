@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 interface TypingTextProps {
   text: string;
@@ -10,7 +10,7 @@ interface TypingTextProps {
 export default function TypingText({ text, className = "" }: TypingTextProps) {
   const characters = text.split("");
 
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     visible: (i = 1) => ({
       opacity: 1,
@@ -18,7 +18,7 @@ export default function TypingText({ text, className = "" }: TypingTextProps) {
     }),
   };
 
-  const child = {
+  const child: Variants = {
     visible: {
       opacity: 1,
       x: 0,

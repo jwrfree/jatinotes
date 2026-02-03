@@ -62,7 +62,7 @@ export default async function BukuPage() {
         </header>
 
         {/* 1. FEATURED HERO */}
-        {featuredPost && <FeaturedPost post={featuredPost} label="Featured Review" />}
+        {featuredPost && <FeaturedPost post={featuredPost} />}
 
         {/* 2. SECONDARY GRID */}
         <section className="mb-32">

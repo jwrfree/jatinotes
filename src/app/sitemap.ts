@@ -6,7 +6,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://jatinotes.com';
 
   // Fetch all posts
-  const posts = await getAllPosts();
+  const { nodes: posts } = await getAllPosts();
   
   const postUrls = (posts || []).map((post: Post) => ({
     url: `${baseUrl}/posts/${post.slug}`,

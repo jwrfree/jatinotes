@@ -11,7 +11,7 @@ export function addIdsToHeadings(content: string): string {
   if (!content) return "";
   
   // Remove WordPress/Spectra TOC if present (as requested to hide TOC feature)
-  let processedContent = content.replace(/<div class="uagb-toc__wrap">[\s\S]*?<\/div>\s*<\/div>/gi, "");
+  const processedContent = content.replace(/<div class="uagb-toc__wrap">[\s\S]*?<\/div>\s*<\/div>/gi, "");
 
   // This is a simple server-side regex approach to add IDs to headings
   // It finds <h2 ...>Text</h2> and replaces it with <h2 id="text" ...>Text</h2>

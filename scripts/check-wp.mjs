@@ -1,5 +1,3 @@
-import { fileURLToPath } from 'node:url';
-
 async function checkWpApi() {
   const baseUrl = 'https://jatinotes.com/wp-json/wp/v2';
   try {
