@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { MotionDiv, fadeIn } from "@/components/Animations";
 import ContentCard from "@/components/ContentCard";
 import BackgroundOrnaments from "@/components/BackgroundOrnaments";
 import { MoveLeft, Home } from "lucide-react";
@@ -11,7 +10,7 @@ export default function NotFound() {
     <div className="relative flex min-h-[80vh] items-center justify-center overflow-hidden px-6 pt-20">
       <BackgroundOrnaments variant="subtle" />
 
-      <ContentCard maxWidth="max-w-lg" containerClassName="pt-0 sm:pt-0 pb-0 sm:pb-0" className="text-center">
+      <ContentCard maxWidth="max-w-3xl" containerClassName="pt-0 sm:pt-0 pb-0 sm:pb-0" className="text-center">
         <div className="mb-8 inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-amber-500/10 text-4xl font-bold text-amber-500">
           404
         </div>
