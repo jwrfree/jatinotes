@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { constructMetadata } from "@/lib/metadata";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -14,44 +15,19 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  ...constructMetadata({
+    title: "Jati Notes - Headless WordPress Blog",
+    description: "Blog modern menggunakan Next.js dan Headless WordPress",
+  }),
   metadataBase: new URL("https://jatinotes.com"),
   title: {
     default: "Jati Notes - Headless WordPress Blog",
     template: "%s | Jati Notes",
   },
-  description: "Blog modern menggunakan Next.js dan Headless WordPress",
   keywords: ["Next.js", "WordPress", "Headless CMS", "React", "Blog"],
-  authors: [{ name: "Wruhantojati" }],
-  creator: "Wruhantojati",
   icons: {
     icon: "/icon.svg",
     apple: "/icon.svg",
-  },
-  openGraph: {
-    type: "website",
-    locale: "id_ID",
-    url: "https://jatinotes.com",
-    siteName: "Jati Notes",
-    title: "Jati Notes - Headless WordPress Blog",
-    description: "Blog modern menggunakan Next.js dan Headless WordPress",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Jati Notes",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Jati Notes - Headless WordPress Blog",
-    description: "Blog modern menggunakan Next.js dan Headless WordPress",
-    images: ["/og-image.png"],
-  },
-  robots: {
-    index: true,
-    follow: true,
   },
 };
 
@@ -63,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="id" className="scroll-smooth">
       <body
-        className={`${inter.variable} font-sans antialiased bg-white dark:bg-zinc-950`}
+        className={`${inter.variable} font-sans antialiased bg-amber-50/60 dark:bg-zinc-950`}
       >
         <div className="flex min-h-screen flex-col">
           <Navbar />

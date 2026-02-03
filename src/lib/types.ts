@@ -12,6 +12,10 @@ export const AuthorSchema = z.object({
 export const FeaturedImageSchema = z.object({
   node: z.object({
     sourceUrl: z.string(),
+    mediaDetails: z.object({
+      width: z.number(),
+      height: z.number(),
+    }).nullable().optional(),
   }),
 });
 
@@ -30,6 +34,12 @@ export const PostSchema = z.object({
     nodes: z.array(z.any()),
   }).nullable().optional(),
   categories: z.object({
+    nodes: z.array(z.object({
+      name: z.string(),
+      slug: z.string(),
+    })),
+  }).nullable().optional(),
+  tags: z.object({
     nodes: z.array(z.object({
       name: z.string(),
       slug: z.string(),

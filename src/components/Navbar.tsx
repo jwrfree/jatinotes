@@ -112,7 +112,7 @@ export default function Navbar() {
             </div>
             
             {/* Desktop Navigation - Centered */}
-            <div className="hidden md:flex items-center bg-zinc-100/50 dark:bg-zinc-800/80 p-1.5 rounded-full whitespace-nowrap border border-zinc-200/50 dark:border-zinc-700/50">
+            <div className="hidden md:flex items-center bg-zinc-200/60 dark:bg-zinc-900/90 p-1.5 rounded-full whitespace-nowrap">
               {links.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -187,7 +187,7 @@ export default function Navbar() {
               exit="closed"
               variants={menuVariants}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-sm overflow-hidden rounded-[2.5rem] border border-zinc-200/50 bg-white/90 p-8 shadow-2xl backdrop-blur-2xl dark:border-zinc-800/50 dark:bg-zinc-900/90"
+              className="w-full max-w-sm overflow-hidden rounded-[2.5rem] bg-zinc-100/95 p-8 shadow-2xl backdrop-blur-2xl dark:bg-zinc-900/95"
             >
               <div className="flex flex-col space-y-4">
                 {links.map((link) => {

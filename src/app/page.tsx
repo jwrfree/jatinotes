@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { MotionDiv, staggerContainer } from "@/components/Animations";
 import { Metadata } from "next";
+import { constructMetadata } from "@/lib/metadata";
 import { Post } from "@/lib/types";
 import PostCard from "@/components/PostCard";
 import PostListItem from "@/components/PostListItem";
@@ -13,15 +14,11 @@ import BookCategoryStack from "@/components/BookCategoryStack";
 import BackgroundOrnaments from "@/components/BackgroundOrnaments";
 import DecryptedText from "@/components/DecryptedText";
 
-export const metadata: Metadata = {
-  title: "Eksplorasi Teknologi & Desain",
+export const metadata: Metadata = constructMetadata({
+  title: "Jati Notes | Eksplorasi Teknologi & Desain",
   description: "Catatan digital Wruhantojati tentang pengembangan web, desain UI/UX, dan teknologi terbaru menggunakan Headless WordPress.",
-  openGraph: {
-    title: "Jati Notes | Eksplorasi Teknologi & Desain",
-    description: "Catatan digital Wruhantojati tentang pengembangan web, desain UI/UX, dan teknologi terbaru.",
-    type: "website",
-  },
-};
+  url: "/",
+});
 
 export default async function Home() {
   const jsonLd = {

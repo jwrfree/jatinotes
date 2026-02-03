@@ -1,9 +1,11 @@
-import { getPostsByCategory } from "@/lib/api";
-import { MotionDiv, staggerContainer } from "@/components/Animations";
+import { getPostsByCategory, getAllGenres } from "@/lib/api";
+import { MotionDiv, staggerContainer, fadeIn } from "@/components/Animations";
 import TypingText from "../../components/TypingText";
 import { Metadata } from "next";
 import PostCard from "@/components/PostCard";
 import FeaturedPost from "@/components/FeaturedPost";
+import Link from "next/link";
+import { LayoutGrid, ListFilter, ArrowRight, BookOpen } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Rak Buku - Jati Notes",
@@ -11,7 +13,11 @@ export const metadata: Metadata = {
 };
 
 export default async function BukuPage() {
-  const categoryData = await getPostsByCategory("buku", { first: 50 });
+  const [categoryData, genres] = await Promise.all([
+    getPostsByCategory("buku", { first: 50 }),
+    getAllGenres()
+  ]);
+  
   const posts = categoryData?.posts?.nodes || [];
   
   const featuredPost = posts[0];
@@ -64,6 +70,84 @@ export default async function BukuPage() {
         {/* 1. FEATURED HERO */}
         {featuredPost && <FeaturedPost post={featuredPost} />}
 
+        {/* Inline Genres & Quick Reviews Access */}
+        <section className="mb-32">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            {/* Genre List - Left (7 cols) */}
+            <div className="lg:col-span-8">
+              <div className="flex items-center gap-4 mb-10">
+                <div className="p-2.5 rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
+                  <LayoutGrid size={20} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Pilih Genre</h2>
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">Eksplorasi buku berdasarkan kategori.</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {genres.map((genre) => (
+                  <MotionDiv
+                    key={genre.id}
+                    variants={fadeIn}
+                    className="group"
+                  >
+                    <Link href={`/buku/genre/${genre.slug}`}>
+                      <div className="h-full p-5 rounded-2xl bg-white/40 dark:bg-zinc-900/40 backdrop-blur-sm border border-zinc-200/60 dark:border-zinc-800/60 transition-all duration-300 hover:bg-amber-50/50 dark:hover:bg-amber-900/10 hover:border-amber-200 dark:hover:border-amber-800/50 hover:shadow-lg hover:shadow-amber-500/5">
+                        <div className="flex items-start justify-between mb-3">
+                          <BookOpen size={18} className="text-amber-500/50 group-hover:text-amber-500 transition-colors" />
+                          <span className="text-xs font-black text-zinc-300 dark:text-zinc-700 group-hover:text-amber-500/30 transition-colors">
+                            {genre.count?.toString().padStart(2, '0')}
+                          </span>
+                        </div>
+                        <h4 className="font-bold text-zinc-800 dark:text-zinc-200 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-1">
+                          {genre.name}
+                        </h4>
+                      </div>
+                    </Link>
+                  </MotionDiv>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Access All Reviews - Right (5 cols) */}
+            <div className="lg:col-span-4">
+              <div className="h-full flex flex-col">
+                <div className="flex items-center gap-4 mb-10">
+                  <div className="p-2.5 rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
+                    <ListFilter size={20} />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Arsip Lengkap</h2>
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">Semua ulasan dalam satu daftar.</p>
+                  </div>
+                </div>
+
+                <MotionDiv 
+                  variants={fadeIn}
+                  className="group flex-grow"
+                >
+                  <Link href="/buku/reviews" className="h-full block">
+                    <div className="h-full p-8 rounded-[2.5rem] bg-gradient-to-br from-amber-500/10 to-orange-500/10 dark:from-amber-500/5 dark:to-orange-500/5 backdrop-blur-md border border-amber-200/50 dark:border-amber-800/30 transition-all duration-500 hover:from-amber-500/20 hover:to-orange-500/20 hover:shadow-2xl hover:shadow-amber-500/10 group-hover:-translate-y-1 flex flex-col justify-center text-center">
+                      <div className="mx-auto w-16 h-16 rounded-2xl bg-white dark:bg-zinc-900 shadow-xl flex items-center justify-center text-amber-500 mb-6 group-hover:scale-110 transition-transform duration-500">
+                        <ListFilter size={32} />
+                      </div>
+                      <h3 className="text-2xl font-black text-zinc-900 dark:text-zinc-100 mb-3 uppercase tracking-tight">Semua Review</h3>
+                      <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-8 max-w-[200px] mx-auto italic">
+                        &quot;Melihat perjalanan literasi dari waktu ke waktu.&quot;
+                      </p>
+                      <div className="flex items-center justify-center gap-2 text-sm font-black text-amber-600 dark:text-amber-400 group-hover:gap-4 transition-all duration-300">
+                        BUKA ARSIP
+                        <ArrowRight size={18} />
+                      </div>
+                    </div>
+                  </Link>
+                </MotionDiv>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* 2. SECONDARY GRID */}
         <section className="mb-32">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -80,19 +164,6 @@ export default async function BukuPage() {
 
         {/* 3. DENSE GRID */}
         <section>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-            <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <h2 className="text-sm font-black uppercase tracking-[0.4em] text-zinc-400">Archive & More</h2>
-                <div className="h-[1px] w-12 bg-zinc-200 dark:bg-zinc-800" />
-              </div>
-              <p className="max-w-md text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed">
-                Eksplorasi pemikiran tentang <span className="text-zinc-900 dark:text-zinc-100 font-medium">pengembangan diri</span>, produktivitas, dan seni menjalani hidup yang lebih bermakna melalui literatur pilihan.
-              </p>
-            </div>
-            <div className="h-[1px] flex-grow bg-zinc-100 dark:bg-zinc-900 hidden md:block" />
-          </div>
-          
           <MotionDiv 
             variants={staggerContainer}
             initial="initial"

@@ -13,9 +13,19 @@ export const POST_FIELDS_FRAGMENT = `
     featuredImage {
       node {
         sourceUrl
+        mediaDetails {
+          width
+          height
+        }
       }
     }
     categories {
+      nodes {
+        name
+        slug
+      }
+    }
+    tags {
       nodes {
         name
         slug
@@ -181,3 +191,49 @@ export const CREATE_COMMENT_MUTATION = `
     }
   }
 `;
+
+/**
+ * Genre (Categories under 'buku') Queries
+ */
+export const GENRE_FIELDS_FRAGMENT = `
+  fragment GenreFields on Category {
+    id
+    name
+    slug
+    count
+    description
+  }
+`;
+
+export const ALL_GENRES_QUERY = `
+  ${GENRE_FIELDS_FRAGMENT}
+  query AllGenres($parentId: ID!) {
+    category(id: $parentId, idType: SLUG) {
+      children(first: 100, where: { hideEmpty: true }) {
+        nodes {
+          ...GenreFields
+        }
+      }
+    }
+  }
+`;
+
+export const GENRE_BY_SLUG_QUERY = `
+  ${GENRE_FIELDS_FRAGMENT}
+  ${POST_FIELDS_FRAGMENT}
+  ${PAGE_INFO_FRAGMENT}
+  query GenreBySlug($id: ID!, $idType: CategoryIdType!, $first: Int, $after: String) {
+    category(id: $id, idType: $idType) {
+      ...GenreFields
+      posts(first: $first, after: $after) {
+        pageInfo {
+          ...PageInfoFields
+        }
+        nodes {
+          ...PostFields
+        }
+      }
+    }
+  }
+`;
+
