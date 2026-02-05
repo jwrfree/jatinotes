@@ -66,15 +66,19 @@ export function organizeComments(nodes: Comment[]): Comment[] {
   const roots: Comment[] = [];
 
   nodes.forEach(node => {
-    commentMap.set(node.databaseId, { ...node, children: [] });
+    if (node.databaseId) {
+      commentMap.set(node.databaseId, { ...node, children: [] });
+    }
   });
 
   nodes.forEach(node => {
-    const comment = commentMap.get(node.databaseId);
-    if (comment && node.parentDatabaseId && commentMap.has(node.parentDatabaseId)) {
-      commentMap.get(node.parentDatabaseId)!.children?.push(comment);
-    } else if (comment) {
-      roots.push(comment);
+    if (node.databaseId) {
+      const comment = commentMap.get(node.databaseId);
+      if (comment && node.parentDatabaseId && commentMap.has(node.parentDatabaseId)) {
+        commentMap.get(node.parentDatabaseId)!.children?.push(comment);
+      } else if (comment) {
+        roots.push(comment);
+      }
     }
   });
 
