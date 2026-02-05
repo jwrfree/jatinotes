@@ -1,23 +1,9 @@
-import { cache } from 'react';
 import { env } from './env';
-import { PostSchema, CategorySchema, Post, Category, PageInfo, PageInfoSchema } from './types';
-import { z } from 'zod';
-import {
-  ALL_POSTS_QUERY,
-  POST_BY_SLUG_QUERY,
-  CREATE_COMMENT_MUTATION,
-  PAGE_BY_SLUG_QUERY,
-  CATEGORY_POSTS_QUERY,
-  ALL_CATEGORIES_QUERY,
-  SEARCH_POSTS_QUERY,
-  ALL_GENRES_QUERY,
-  GENRE_BY_SLUG_QUERY
-} from './queries';
 
 const API_URL = env.WORDPRESS_API_URL;
 
 class APIError extends Error {
-  constructor(message: string, public status?: number, public errors?: any[]) {
+  constructor(message: string, public status?: number, public errors?: unknown[]) {
     super(message);
     this.name = 'APIError';
   }
@@ -27,6 +13,10 @@ export async function fetchAPI(
   query: string, 
   { variables, revalidate = 60 }: { variables?: Record<string, unknown>, revalidate?: number | false } = {}
 ) {
+  if (!API_URL) {
+    throw new Error("WORDPRESS_API_URL tidak ditemukan di environment variables. Pastikan Anda telah mengaturnya di Dashboard Deployment.");
+  }
+
   const headers = { 'Content-Type': 'application/json' };
 
   try {
@@ -41,7 +31,6 @@ export async function fetchAPI(
     });
 
     if (!res.ok) {
-      const errorText = await res.text();
       throw new APIError(`API returned status ${res.status}`, res.status);
     }
 

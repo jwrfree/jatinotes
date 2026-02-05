@@ -11,9 +11,16 @@ export const PostRepository = {
     const nodes = data?.posts?.nodes || [];
     const pageInfo = data?.posts?.pageInfo || { hasNextPage: false, hasPreviousPage: false };
     
+    const parsedNodes = z.array(PostSchema).safeParse(nodes);
+    const parsedPageInfo = PageInfoSchema.safeParse(pageInfo);
+
+    if (!parsedNodes.success) {
+      console.error("❌ Post validation error:", parsedNodes.error);
+    }
+
     return {
-      nodes: z.array(PostSchema).parse(nodes),
-      pageInfo: PageInfoSchema.parse(pageInfo)
+      nodes: parsedNodes.success ? parsedNodes.data : nodes as Post[],
+      pageInfo: parsedPageInfo.success ? parsedPageInfo.data : pageInfo as PageInfo
     };
   }),
 
@@ -29,7 +36,14 @@ export const PostRepository = {
     );
     
     if (!data?.post) return null;
-    return PostSchema.parse(data.post);
+    
+    const parsed = PostSchema.safeParse(data.post);
+    if (!parsed.success) {
+      console.error(`❌ Post validation error for slug ${slug}:`, parsed.error);
+      return data.post as Post;
+    }
+    
+    return parsed.data;
   }),
 
   search: async (searchTerm: string): Promise<Post[]> => {
@@ -42,6 +56,13 @@ export const PostRepository = {
     );
     
     const nodes = data?.posts?.nodes || [];
-    return z.array(PostSchema).parse(nodes);
+    const parsed = z.array(PostSchema).safeParse(nodes);
+    
+    if (!parsed.success) {
+      console.error("❌ Search results validation error:", parsed.error);
+      return nodes as Post[];
+    }
+    
+    return parsed.data;
   },
 };

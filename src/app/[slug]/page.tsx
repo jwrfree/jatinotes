@@ -3,7 +3,7 @@ import { stripHtml } from "@/lib/utils";
 import { constructMetadata } from "@/lib/metadata";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { MotionDiv, MotionSection, fadeIn, staggerContainer } from "@/components/Animations";
+import { MotionDiv, fadeIn, staggerContainer } from "@/components/Animations";
 import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
 import BackgroundOrnaments from "@/components/BackgroundOrnaments";

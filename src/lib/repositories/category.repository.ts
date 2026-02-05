@@ -28,13 +28,23 @@ export const CategoryRepository = {
     );
     
     if (!data?.category) return null;
-    return CategorySchema.parse(data.category);
+    const parsed = CategorySchema.safeParse(data.category);
+    if (!parsed.success) {
+      console.error(`❌ Category validation error for slug ${slug}:`, parsed.error);
+      return data.category as Category;
+    }
+    return parsed.data;
   }),
 
   getAllGenres: cache(async (): Promise<Category[]> => {
     const data = await fetchAPI(ALL_GENRES_QUERY, { variables: { parentId: 'buku' } });
     const nodes = data?.category?.children?.nodes || [];
-    return z.array(CategorySchema).parse(nodes);
+    const parsed = z.array(CategorySchema).safeParse(nodes);
+    if (!parsed.success) {
+      console.error("❌ Genres validation error:", parsed.error);
+      return nodes as Category[];
+    }
+    return parsed.data;
   }),
 
   getGenreBySlug: cache(async (slug: string, params: { first?: number, after?: string } = { first: 20 }): Promise<Category | null> => {
@@ -47,7 +57,12 @@ export const CategoryRepository = {
     });
 
     if (!data?.category) return null;
-    return CategorySchema.parse(data.category);
+    const parsed = CategorySchema.safeParse(data.category);
+    if (!parsed.success) {
+      console.error(`❌ Genre validation error for slug ${slug}:`, parsed.error);
+      return data.category as Category;
+    }
+    return parsed.data;
   }),
 
   getAllBookReviews: cache(async (params: { first?: number, after?: string } = { first: 50 }): Promise<{ nodes: Post[], pageInfo: PageInfo }> => {
@@ -62,9 +77,16 @@ export const CategoryRepository = {
     const nodes = data?.category?.posts?.nodes || [];
     const pageInfo = data?.category?.posts?.pageInfo || { hasNextPage: false, hasPreviousPage: false };
 
+    const parsedNodes = z.array(PostSchema).safeParse(nodes);
+    const parsedPageInfo = PageInfoSchema.safeParse(pageInfo);
+
+    if (!parsedNodes.success) {
+      console.error("❌ Book reviews validation error:", parsedNodes.error);
+    }
+
     return {
-      nodes: z.array(PostSchema).parse(nodes),
-      pageInfo: PageInfoSchema.parse(pageInfo)
+      nodes: parsedNodes.success ? parsedNodes.data : nodes as Post[],
+      pageInfo: parsedPageInfo.success ? parsedPageInfo.data : pageInfo as PageInfo
     };
   }),
 };

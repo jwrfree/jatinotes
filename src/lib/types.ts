@@ -21,7 +21,7 @@ export const FeaturedImageSchema = z.object({
 
 export const CommentSchema = z.object({
   id: z.string(),
-  databaseId: z.number(),
+  databaseId: z.number().nullable().optional(),
   content: z.string(),
   date: z.string(),
   parentDatabaseId: z.number().nullable().optional(),
@@ -32,7 +32,7 @@ export const CommentSchema = z.object({
         url: z.string(),
       }).nullable().optional(),
     }),
-  }),
+  }).nullable().optional(),
 });
 
 export const PostSchema = z.object({
