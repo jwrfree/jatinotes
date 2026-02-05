@@ -2,6 +2,7 @@ import { getPostBySlug } from "@/lib/api";
 import { stripHtml } from "@/lib/utils";
 import { constructMetadata } from "@/lib/metadata";
 import { addIdsToHeadings } from "@/lib/sanitize";
+import { LocalErrorBoundary } from "@/components/LocalErrorBoundary";
 import CommentSection from "@/components/CommentSection";
 import ReadingProgress from "@/components/ReadingProgress";
 import PostMeta from "@/components/PostMeta";
@@ -114,13 +115,13 @@ export default async function PostPage({
               variants={fadeIn}
               className="group relative mt-12 aspect-video w-full mx-auto overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800 shadow-xl"
             >
-              <Image
+                            <Image
                 src={post.featuredImage.node.sourceUrl}
                 alt={post.title || ''}
                 fill
                 priority
                 className="object-cover transition-transform duration-1000 group-hover:scale-110"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 50vw"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1000px"
               />
             </MotionDiv>
           )}
@@ -129,11 +130,13 @@ export default async function PostPage({
 
           <hr className="my-16 border-zinc-100 dark:border-zinc-800" />
 
-          <CommentSection
-            comments={post.comments?.nodes || []}
-            postId={post.databaseId || 0}
-            commentCount={post.commentCount || 0}
-          />
+          <LocalErrorBoundary name="Bagian Komentar">
+            <CommentSection
+              comments={post.comments?.nodes || []}
+              postId={parseInt(post.databaseId?.toString() || "0")}
+              commentCount={post.commentCount || 0}
+            />
+          </LocalErrorBoundary>
 
           <div className="mt-20 flex justify-center border-t border-zinc-100 dark:border-zinc-800 pt-10">
             <Link

@@ -19,6 +19,22 @@ export const FeaturedImageSchema = z.object({
   }),
 });
 
+export const CommentSchema = z.object({
+  id: z.string(),
+  databaseId: z.number(),
+  content: z.string(),
+  date: z.string(),
+  parentDatabaseId: z.number().nullable().optional(),
+  author: z.object({
+    node: z.object({
+      name: z.string(),
+      avatar: z.object({
+        url: z.string(),
+      }).nullable().optional(),
+    }),
+  }),
+});
+
 export const PostSchema = z.object({
   id: z.string(),
   databaseId: z.number().nullable().optional(),
@@ -31,7 +47,7 @@ export const PostSchema = z.object({
   author: AuthorSchema.nullable().optional(),
   commentCount: z.number().nullable().optional().transform(val => val ?? 0),
   comments: z.object({
-    nodes: z.array(z.any()),
+    nodes: z.array(CommentSchema),
   }).nullable().optional(),
   categories: z.object({
     nodes: z.array(z.object({
@@ -90,18 +106,6 @@ export const CategorySchema: z.ZodType<Category, z.ZodTypeDef, unknown> = z.lazy
   }).optional(),
 }));
 
-export interface Comment {
-  id: string;
-  databaseId: number;
-  content: string;
-  date: string;
-  parentDatabaseId: number | null;
-  author: {
-    node: {
-      name: string;
-      avatar: {
-        url: string;
-      } | null;
-    };
-  };
-}
+export type Comment = z.infer<typeof CommentSchema> & {
+  children?: Comment[];
+};

@@ -20,8 +20,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   
-  // Try page first
-  const page = await getPageBySlug(slug);
+  // Parallel fetch to determine type
+  const [page, category] = await Promise.all([
+    getPageBySlug(slug),
+    getPostsByCategory(slug)
+  ]);
+
   if (page) {
     return constructMetadata({
       title: page.title,
@@ -31,12 +35,10 @@ export async function generateMetadata({
     });
   }
 
-  // Try category
-  const category = await getPostsByCategory(slug);
   if (category) {
     return constructMetadata({
-      title: category.name,
-      description: `Kumpulan artikel dalam kategori ${category.name}`,
+      title: `${category.name} - Koleksi Artikel`,
+      description: category.description || `Kumpulan artikel dalam kategori ${category.name}. Pelajari lebih lanjut tentang ${category.name} di Jati Notes.`,
       url: `/${slug}`,
     });
   }
@@ -83,12 +85,13 @@ export default async function DynamicPage({
 
           {page.featuredImage?.node?.sourceUrl && (
             <div className="relative mb-16 aspect-[21/9] overflow-hidden rounded-[2.5rem] bg-zinc-100 dark:bg-zinc-800 shadow-2xl">
-              <Image
+                            <Image
                 src={page.featuredImage.node.sourceUrl}
                 alt={page.title}
                 fill
                 priority
                 className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 1000px"
               />
             </div>
           )}

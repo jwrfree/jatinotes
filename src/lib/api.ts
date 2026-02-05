@@ -1,4 +1,5 @@
 import { cache } from 'react';
+import { env } from './env';
 import { PostSchema, CategorySchema, Post, Category, PageInfo, PageInfoSchema } from './types';
 import { z } from 'zod';
 import {
@@ -13,17 +14,20 @@ import {
   GENRE_BY_SLUG_QUERY
 } from './queries';
 
-const API_URL = process.env.WORDPRESS_API_URL;
+const API_URL = env.WORDPRESS_API_URL;
 
-async function fetchAPI(
+class APIError extends Error {
+  constructor(message: string, public status?: number, public errors?: any[]) {
+    super(message);
+    this.name = 'APIError';
+  }
+}
+
+export async function fetchAPI(
   query: string, 
   { variables, revalidate = 60 }: { variables?: Record<string, unknown>, revalidate?: number | false } = {}
 ) {
   const headers = { 'Content-Type': 'application/json' };
-
-  if (!API_URL) {
-    throw new Error('WORDPRESS_API_URL is not defined in .env.local');
-  }
 
   try {
     const res = await fetch(API_URL, {
@@ -38,171 +42,51 @@ async function fetchAPI(
 
     if (!res.ok) {
       const errorText = await res.text();
-      console.error(`API Response Error (${res.status}):`, errorText);
-      throw new Error(`API returned status ${res.status}`);
+      throw new APIError(`API returned status ${res.status}`, res.status);
     }
 
     const json = await res.json();
     if (json.errors) {
-      console.error('GraphQL Errors:', JSON.stringify(json.errors, null, 2));
       const message = json.errors[0]?.message || 'Failed to fetch API: GraphQL Errors';
-      throw new Error(message);
+      throw new APIError(message, 200, json.errors);
     }
     return json.data;
   } catch (error: unknown) {
-    console.error('--- Fetch API Error Details ---');
-    console.error('URL:', API_URL);
-    if (error instanceof Error) {
-      console.error('Error Message:', error.message);
-      if (error.cause) {
-        console.error('Error Cause:', error.cause);
-      }
-      console.error('--------------------------------');
-      
-      const errorMessage = error.message;
-      const errorCause = error.cause as Error | undefined;
-      
-      if (errorMessage.includes('SSL') || (errorCause && errorCause.message && errorCause.message.includes('SSL'))) {
-        throw new Error(`SSL Handshake Failed: Gagal terhubung ke ${API_URL} karena masalah SSL. Pastikan server WordPress Anda mengizinkan koneksi TLS yang kompatibel.`);
-      }
-
-      throw new Error(`Failed to fetch API from ${API_URL}. ${errorMessage}`);
+    if (error instanceof APIError) throw error;
+    
+    const message = error instanceof Error ? error.message : 'Unknown error occurred';
+    
+    if (message.includes('SSL')) {
+      throw new Error(`SSL Handshake Failed: Gagal terhubung ke ${API_URL} karena masalah SSL.`);
     }
 
-    console.error('--------------------------------');
-    throw new Error(`Failed to fetch API from ${API_URL}. Unknown error occurred.`);
+    throw new Error(`Failed to fetch API from ${API_URL}. ${message}`);
   }
 }
 
-export const getAllPosts = cache(async (params: { first?: number, after?: string, last?: number, before?: string } = { first: 10 }): Promise<{ nodes: Post[], pageInfo: PageInfo }> => {
-  const data = await fetchAPI(ALL_POSTS_QUERY, { variables: params });
-  
-  const nodes = data?.posts?.nodes || [];
-  const pageInfo = data?.posts?.pageInfo || { hasNextPage: false, hasPreviousPage: false };
-  
-  return {
-    nodes: z.array(PostSchema).parse(nodes),
-    pageInfo: PageInfoSchema.parse(pageInfo)
-  };
-});
+// Re-export repositories for centralized access
+export * from './repositories/post.repository';
+export * from './repositories/page.repository';
+export * from './repositories/category.repository';
+export * from './repositories/comment.repository';
 
-export const getPostBySlug = cache(async (slug: string): Promise<Post | null> => {
-  const data = await fetchAPI(
-    POST_BY_SLUG_QUERY,
-    {
-      variables: {
-        id: slug,
-        idType: 'SLUG',
-      },
-    }
-  );
-  
-  if (!data?.post) return null;
-  return PostSchema.parse(data.post);
-});
+// Backward compatibility exports (pointing to repositories)
+import { PostRepository } from './repositories/post.repository';
+import { PageRepository } from './repositories/page.repository';
+import { CategoryRepository } from './repositories/category.repository';
+import { CommentRepository } from './repositories/comment.repository';
 
-export async function createComment(input: {
-  content: string;
-  author: string;
-  authorEmail: string;
-  postId: number;
-}) {
-  const data = await fetchAPI(CREATE_COMMENT_MUTATION, {
-    variables: { 
-      input: {
-        author: input.author,
-        authorEmail: input.authorEmail,
-        content: input.content,
-        commentOn: input.postId
-      }
-    },
-    revalidate: false
-  });
-  return data?.createComment;
-}
+export const getAllPosts = PostRepository.getAll;
+export const getPostBySlug = PostRepository.getBySlug;
+export const searchPosts = PostRepository.search;
 
-export const getPageBySlug = cache(async (slug: string) => {
-  const data = await fetchAPI(PAGE_BY_SLUG_QUERY, {
-    variables: {
-      id: slug,
-      idType: 'URI',
-    },
-  });
-  return data?.page;
-});
+export const getPageBySlug = PageRepository.getBySlug;
 
-export const getPostsByCategory = cache(async (slug: string, params: { first?: number, after?: string, last?: number, before?: string } = { first: 10 }): Promise<Category | null> => {
-  const data = await fetchAPI(
-    CATEGORY_POSTS_QUERY,
-    {
-      variables: {
-        id: slug,
-        idType: 'SLUG',
-        ...params
-      },
-    }
-  );
-  
-  if (!data?.category) return null;
-  return CategorySchema.parse(data.category);
-});
+export const getAllCategories = CategoryRepository.getAll;
+export const getPostsByCategory = CategoryRepository.getPostsByCategory;
+export const getAllGenres = CategoryRepository.getAllGenres;
+export const getGenreBySlug = CategoryRepository.getGenreBySlug;
+export const getAllBookReviews = CategoryRepository.getAllBookReviews;
 
-export async function getAllCategories() {
-  const data = await fetchAPI(ALL_CATEGORIES_QUERY);
-  return data?.categories?.nodes;
-}
-
-export async function searchPosts(searchTerm: string): Promise<Post[]> {
-  const data = await fetchAPI(
-    SEARCH_POSTS_QUERY,
-    {
-      variables: { search: searchTerm },
-      revalidate: 3600, // Search results can be cached longer
-    }
-  );
-  
-  const nodes = data?.posts?.nodes || [];
-  return z.array(PostSchema).parse(nodes);
-}
-
-/**
- * Genre & Review Related Functions
- */
-
-export const getAllGenres = cache(async (): Promise<Category[]> => {
-  const data = await fetchAPI(ALL_GENRES_QUERY, { variables: { parentId: 'buku' } });
-  const nodes = data?.category?.children?.nodes || [];
-  return z.array(CategorySchema).parse(nodes);
-});
-
-export const getGenreBySlug = cache(async (slug: string, params: { first?: number, after?: string } = { first: 20 }): Promise<Category | null> => {
-  const data = await fetchAPI(GENRE_BY_SLUG_QUERY, {
-    variables: {
-      id: slug,
-      idType: 'SLUG',
-      ...params
-    }
-  });
-
-  if (!data?.category) return null;
-  return CategorySchema.parse(data.category);
-});
-
-export const getAllBookReviews = cache(async (params: { first?: number, after?: string } = { first: 50 }): Promise<{ nodes: Post[], pageInfo: PageInfo }> => {
-  const data = await fetchAPI(CATEGORY_POSTS_QUERY, {
-    variables: {
-      id: 'buku',
-      idType: 'SLUG',
-      ...params
-    }
-  });
-
-  const nodes = data?.category?.posts?.nodes || [];
-  const pageInfo = data?.category?.posts?.pageInfo || { hasNextPage: false, hasPreviousPage: false };
-
-  return {
-    nodes: z.array(PostSchema).parse(nodes),
-    pageInfo: PageInfoSchema.parse(pageInfo)
-  };
-});
+export const createComment = CommentRepository.create;
 

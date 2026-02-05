@@ -6,11 +6,13 @@ import PostCard from "@/components/PostCard";
 import FeaturedPost from "@/components/FeaturedPost";
 import Link from "next/link";
 import { LayoutGrid, ListFilter, ArrowRight, BookOpen } from "lucide-react";
+import { constructMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = constructMetadata({
   title: "Rak Buku - Jati Notes",
-  description: "Kumpulan ulasan dan catatan dari buku-buku yang telah saya baca.",
-};
+  description: "Kumpulan ulasan dan catatan dari buku-buku yang telah saya baca. Temukan rekomendasi buku terbaik dan ringkasan pemikiran dari berbagai genre.",
+  url: "/buku",
+});
 
 export default async function BukuPage() {
   const [categoryData, genres] = await Promise.all([

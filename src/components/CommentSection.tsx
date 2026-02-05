@@ -1,35 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useOptimistic } from "react";
 import Image from "next/image";
 import { sanitize } from "@/lib/sanitize";
-import { formatRelativeTime } from "@/lib/utils";
+import { formatRelativeTime, organizeComments } from "@/lib/utils";
+import { Comment } from "@/lib/types";
 import CommentForm from "./CommentForm";
 
-interface CommentNode {
-  id: string;
-  databaseId: number;
-  content: string;
-  date: string;
-  parentDatabaseId: number | null;
-  author: {
-    node: {
-      name: string;
-      avatar?: {
-        url: string;
-      };
-    };
-  };
-  children?: CommentNode[];
-}
-
 // Pattern: Recursive Component with State
-const CommentItem = ({ comment, depth = 0 }: { comment: CommentNode; depth?: number }) => {
+const CommentItem = ({ comment, depth = 0 }: { comment: Comment; depth?: number }) => {
+  const isOptimistic = comment.id.startsWith("temp-");
   const [showReplies, setShowReplies] = useState(depth < 1); // Auto-show first level of replies, hide deeper ones
   const hasChildren = comment.children && comment.children.length > 0;
 
   return (
-    <div className={`flex flex-col gap-4 ${depth > 0 ? 'ml-8 sm:ml-12 mt-4' : ''}`}>
+    <div className={`flex flex-col gap-4 ${depth > 0 ? 'ml-8 sm:ml-12 mt-4' : ''} ${isOptimistic ? 'opacity-60 grayscale' : ''}`}>
       <div 
         className={`group relative flex gap-5 p-6 rounded-[2rem] transition-all duration-300 border hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-white/5 hover:-translate-y-0.5 ${
           depth > 0 
@@ -44,6 +29,7 @@ const CommentItem = ({ comment, depth = 0 }: { comment: CommentNode; depth?: num
               alt={comment.author.node.name}
               fill
               className="object-cover"
+              sizes="(max-width: 640px) 40px, 56px"
             />
           ) : (
             <div className={`flex h-full w-full items-center justify-center font-bold text-amber-500/60 ${depth > 0 ? 'text-sm' : 'text-lg'}`}>
@@ -56,6 +42,7 @@ const CommentItem = ({ comment, depth = 0 }: { comment: CommentNode; depth?: num
             <div className="flex flex-col">
               <span className={`font-bold text-zinc-900 dark:text-zinc-100 tracking-tight group-hover:text-amber-500 transition-colors ${depth > 0 ? 'text-sm' : 'text-base'}`}>
                 {comment.author?.node?.name}
+                {isOptimistic && <span className="ml-2 text-[8px] font-normal italic text-zinc-400">(Sedang mengirim...)</span>}
               </span>
               <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500">
                 {formatRelativeTime(comment.date)}
@@ -101,36 +88,19 @@ const CommentItem = ({ comment, depth = 0 }: { comment: CommentNode; depth?: num
 };
 
 interface CommentSectionProps {
-  comments: CommentNode[];
+  comments: Comment[];
   postId: number;
   commentCount: number;
 }
 
 export default function CommentSection({ comments, postId, commentCount }: CommentSectionProps) {
-  const [displayCount, setDisplayCount] = useState(5); // Show first 5 main comments
+  const [displayCount, setDisplayCount] = useState(5);
+  const [optimisticComments, addOptimisticComment] = useOptimistic(
+    comments,
+    (state, newComment: Comment) => [newComment, ...state]
+  );
 
-  // Pattern: Data Transformation (Flat to Tree)
-  const organizeComments = (nodes: CommentNode[]): CommentNode[] => {
-    const commentMap = new Map();
-    const roots: CommentNode[] = [];
-
-    nodes.forEach(node => {
-      commentMap.set(node.databaseId, { ...node, children: [] });
-    });
-
-    nodes.forEach(node => {
-      const comment = commentMap.get(node.databaseId);
-      if (node.parentDatabaseId && commentMap.has(node.parentDatabaseId)) {
-        commentMap.get(node.parentDatabaseId).children.push(comment);
-      } else {
-        roots.push(comment);
-      }
-    });
-
-    return roots;
-  };
-
-  const commentTree = organizeComments(comments);
+  const commentTree = organizeComments(optimisticComments);
   const visibleComments = commentTree.slice(0, displayCount);
   const hasMore = commentTree.length > displayCount;
 
@@ -167,7 +137,7 @@ export default function CommentSection({ comments, postId, commentCount }: Comme
       )}
       
       <div className="mt-12 bg-zinc-50 dark:bg-zinc-800/50 rounded-[2.5rem] p-8 sm:p-12 border border-zinc-100 dark:border-zinc-800">
-        <CommentForm postId={postId} />
+        <CommentForm postId={postId} onOptimisticAdd={addOptimisticComment} />
       </div>
     </section>
   );

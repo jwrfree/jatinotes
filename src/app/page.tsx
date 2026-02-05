@@ -151,11 +151,12 @@ export default async function Home() {
                 <span className="relative z-10 transition-colors duration-300 group-hover/link:text-zinc-900">membaca buku</span>
                 <span className="absolute bottom-1 left-0 w-full h-[30%] bg-amber-400/10 -z-0 transition-all duration-700 group-hover/link:h-full group-hover/link:bg-amber-300 rounded-sm" />
                 <div className="relative ml-3 inline-flex h-[0.8em] w-[1.2em] items-center justify-center overflow-hidden rounded-md bg-zinc-800 transition-transform duration-300 group-hover/link:scale-110">
-                  <Image 
+                                    <Image 
                     src="https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=100&auto=format&fit=crop" 
                     alt="Books"
                     fill
                     className="h-full w-full object-cover opacity-80 group-hover/link:opacity-100"
+                    sizes="48px"
                   />
                 </div>
               </Link>

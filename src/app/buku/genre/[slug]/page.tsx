@@ -18,9 +18,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const genre = await getGenreBySlug(slug);
   
+  if (!genre) {
+    return constructMetadata({
+      title: "Genre Tidak Ditemukan",
+      noIndex: true,
+    });
+  }
+
   return constructMetadata({
-    title: `Buku Genre ${genre?.name || 'Tidak Ditemukan'} - Jati Notes`,
-    description: `Koleksi review buku dalam genre ${genre?.name || ''}.`,
+    title: `${genre.name} - Review Buku`,
+    description: genre.description || `Koleksi review buku dalam genre ${genre.name}. Temukan ulasan mendalam dan rekomendasi buku terbaik.`,
     url: `/buku/genre/${slug}`,
   });
 }

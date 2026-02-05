@@ -7,6 +7,7 @@ import { Post } from "@/lib/types";
 import Link from "next/link";
 import Image from "next/image";
 import { formatDateIndonesian } from "@/lib/utils";
+import { LocalErrorBoundary } from "./LocalErrorBoundary";
 
 interface SearchDialogProps {
   isOpen: boolean;
@@ -140,7 +141,8 @@ export default function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
               ref={scrollContainerRef}
               className="max-h-[60vh] overflow-y-auto p-2 custom-scrollbar"
             >
-              {isSearching ? (
+              <LocalErrorBoundary name="Hasil Pencarian">
+                {isSearching ? (
                 <div className="flex flex-col items-center justify-center py-12 text-zinc-500">
                   <Loader2 className="h-8 w-8 animate-spin text-amber-500 mb-4" />
                   <p>Mencari artikel terbaik untuk Anda...</p>
@@ -164,11 +166,12 @@ export default function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
                       >
                       <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">
                         {post.featuredImage?.node?.sourceUrl ? (
-                          <Image
+                                                    <Image
                             src={post.featuredImage.node.sourceUrl}
                             alt={post.title}
                             fill
                             className="object-cover transition-transform duration-500 group-hover:scale-110"
+                            sizes="80px"
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center text-zinc-400">
@@ -217,6 +220,7 @@ export default function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
                   <p>Mulai mencari artikel menarik...</p>
                 </div>
               )}
+              </LocalErrorBoundary>
             </div>
 
             {/* Footer */}

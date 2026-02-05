@@ -53,14 +53,16 @@ export default function PostCard({
                 style={{ y, height: "120%", top: "-10%" }}
                 className="relative w-full"
               >
-                <Image
-                  src={post.featuredImage.node.sourceUrl}
-                  alt={post.title}
-                  fill
-                  priority={priority}
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
+                                  <Image
+                    src={post.featuredImage.node.sourceUrl}
+                    alt={post.title}
+                    fill
+                    priority={priority}
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes={isWide 
+                      ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 800px" 
+                      : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"}
+                  />
               </motion.div>
             </div>
           )}
@@ -108,13 +110,15 @@ export default function PostCard({
                 style={{ y, height: "120%", top: "-10%" }}
                 className="relative w-full h-full"
               >
-                <Image
+                                <Image
                   src={post.featuredImage.node.sourceUrl}
                   alt={post.title}
                   fill
                   priority={priority}
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  sizes={isWide 
+                    ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 800px" 
+                    : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"}
                 />
               </motion.div>
             </div>
@@ -155,13 +159,15 @@ export default function PostCard({
             style={{ y, height: "120%", top: "-10%" }}
             className="relative w-full h-full"
           >
-            <Image
+                        <Image
               src={post.featuredImage.node.sourceUrl}
               alt={post.title}
               fill
               priority={priority}
               className="object-cover transition-transform duration-500 group-hover:scale-105"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes={isWide 
+                ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 800px" 
+                : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"}
             />
           </motion.div>
         </div>

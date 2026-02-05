@@ -58,3 +58,25 @@ export function formatDateIndonesian(dateString: string): string {
     day: 'numeric'
   }).format(date);
 }
+
+import { Comment } from './types';
+
+export function organizeComments(nodes: Comment[]): Comment[] {
+  const commentMap = new Map<number, Comment>();
+  const roots: Comment[] = [];
+
+  nodes.forEach(node => {
+    commentMap.set(node.databaseId, { ...node, children: [] });
+  });
+
+  nodes.forEach(node => {
+    const comment = commentMap.get(node.databaseId);
+    if (comment && node.parentDatabaseId && commentMap.has(node.parentDatabaseId)) {
+      commentMap.get(node.parentDatabaseId)!.children?.push(comment);
+    } else if (comment) {
+      roots.push(comment);
+    }
+  });
+
+  return roots;
+}

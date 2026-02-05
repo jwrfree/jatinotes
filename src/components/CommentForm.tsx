@@ -3,8 +3,14 @@
 import { useState } from "react";
 import { submitCommentAction } from "@/lib/actions";
 import { toast } from "sonner";
+import { Comment } from "@/lib/types";
 
-export default function CommentForm({ postId }: { postId: number }) {
+interface CommentFormProps {
+  postId: number;
+  onOptimisticAdd?: (comment: Comment) => void;
+}
+
+export default function CommentForm({ postId, onOptimisticAdd }: CommentFormProps) {
   const [formData, setFormData] = useState({
     author: "",
     authorEmail: "",
@@ -42,6 +48,25 @@ export default function CommentForm({ postId }: { postId: number }) {
     setStatus("submitting");
     setMessage("");
     setErrors({});
+
+    // Create optimistic comment
+    if (onOptimisticAdd) {
+      const optimisticComment: Comment = {
+        id: `temp-${Date.now()}`,
+        date: new Date().toISOString(),
+        content: formData.content,
+        author: {
+          node: {
+            name: formData.author,
+            avatar: {
+              url: `https://secure.gravatar.com/avatar/00000000000000000000000000000000?s=96&d=mm&r=g`,
+            },
+          },
+        },
+        children: [],
+      };
+      onOptimisticAdd(optimisticComment);
+    }
 
     try {
       const res = await submitCommentAction({

@@ -37,13 +37,13 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
               style={{ y, height: "120%", top: "-10%" }}
               className="relative w-full h-full"
             >
-              <Image
+                              <Image
                   src={post.featuredImage.node.sourceUrl}
                   alt={post.title || ''}
                   fill
                   className="object-cover transition-transform duration-1000 group-hover:scale-110"
                   priority
-                  sizes="100vw"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1200px"
                 />
             </motion.div>
           )}

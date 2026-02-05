@@ -67,12 +67,13 @@ export default async function MeetJatiPage() {
                 variants={fadeIn}
                 className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] bg-zinc-100 dark:bg-zinc-800 shadow-2xl group"
               >
-                <Image
+                                <Image
                   src={page.featuredImage.node.sourceUrl}
                   alt={page.title}
                   fill
                   priority
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="(max-width: 1024px) 100vw, 500px"
                 />
               </MotionDiv>
             </div>
