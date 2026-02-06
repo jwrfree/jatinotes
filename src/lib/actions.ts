@@ -2,10 +2,9 @@
 
 import { createComment } from "./api";
 import { revalidatePath } from "next/cache";
-import DOMPurify from 'isomorphic-dompurify';
 
 const SPAM_KEYWORDS = [
-  'slot', 'gacor', 'judol', 'casino', 'bet', 'poker', 'togel', 'jp', 
+  'slot', 'gacor', 'judol', 'casino', 'bet', 'poker', 'togel', 'jp',
   'maxwin', 'zeus', 'pragmatic', 'sbobet', 'bandar', 'jackpot',
   'viagra', 'cialis', 'porn', 'sex', 'dating', 'crypto', 'bitcoin',
   'forex', 'trading', 'loan', 'insurance', 'marketing'
@@ -32,7 +31,7 @@ export async function submitCommentAction(formData: {
 
     const lowercaseContent = formData.content.toLowerCase();
     const hasSpamKeyword = SPAM_KEYWORDS.some(keyword => lowercaseContent.includes(keyword));
-    
+
     // 2. Link Detection (excessive links are often spam)
     const urlCount = (formData.content.match(/https?:\/\/[^\s]+/g) || []).length;
 
@@ -41,11 +40,10 @@ export async function submitCommentAction(formData: {
       return { success: false, message: "Komentar Anda terdeteksi sebagai spam." };
     }
 
-    // 3. Strict Sanitization (No HTML allowed in comments)
-    const sanitizedContent = DOMPurify.sanitize(formData.content, {
-      ALLOWED_TAGS: [], // No tags allowed
-      ALLOWED_ATTR: []
-    });
+    // 3. Simple text sanitization (strip all HTML tags)
+    const sanitizedContent = formData.content
+      .replace(/<[^>]*>/g, '') // Remove all HTML tags
+      .trim();
 
     if (!sanitizedContent.trim()) {
       return { success: false, message: "Isi komentar tidak valid." };
@@ -55,7 +53,7 @@ export async function submitCommentAction(formData: {
       ...formData,
       content: sanitizedContent
     });
-    
+
     if (res?.success) {
       revalidatePath(`/posts/${formData.postId}`); // This is actually post ID, but slug is usually used in path. 
       // Revalidating path by slug would be better if we had the slug here.

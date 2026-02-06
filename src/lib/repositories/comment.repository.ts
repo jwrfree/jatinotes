@@ -1,5 +1,5 @@
 import { CREATE_COMMENT_MUTATION } from '../queries';
-import { fetchAPI } from '../api';
+import { fetchAPI } from '../fetcher';
 
 export const CommentRepository = {
   create: async (input: {
@@ -9,7 +9,7 @@ export const CommentRepository = {
     postId: number;
   }) => {
     const data = await fetchAPI(CREATE_COMMENT_MUTATION, {
-      variables: { 
+      variables: {
         input: {
           author: input.author,
           authorEmail: input.authorEmail,

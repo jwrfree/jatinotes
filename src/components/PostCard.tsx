@@ -16,10 +16,10 @@ interface PostCardProps {
   accentColor?: "amber";
 }
 
-export default function PostCard({ 
-  post, 
-  isWide = false, 
-  priority = false, 
+export default function PostCard({
+  post,
+  isWide = false,
+  priority = false,
   variant = "default",
   accentColor = "amber"
 }: PostCardProps) {
@@ -42,43 +42,42 @@ export default function PostCard({
       <MotionDiv
         ref={containerRef}
         variants={fadeIn}
-        className={`group relative overflow-hidden rounded-3xl bg-zinc-100 dark:bg-zinc-800 shadow-md transition-all duration-500 hover:shadow-xl ${
-          isWide ? "lg:col-span-2" : "lg:col-span-1"
-        } aspect-[3/4] md:aspect-auto md:h-[450px]`}
+        className={`group relative overflow-hidden rounded-3xl bg-zinc-100 dark:bg-zinc-800 shadow-md transition-all duration-500 hover:shadow-xl ${isWide ? "lg:col-span-2" : "lg:col-span-1"
+          } aspect-[3/4] md:aspect-auto md:h-[450px]`}
       >
         <Link href={`/posts/${post.slug}`} className="block h-full w-full relative">
           {post.featuredImage?.node?.sourceUrl && (
             <div className="absolute inset-0 overflow-hidden">
-              <motion.div 
+              <motion.div
                 style={{ y, height: "120%", top: "-10%" }}
                 className="relative w-full"
               >
-                                  <Image
-                    src={post.featuredImage.node.sourceUrl}
-                    alt={post.title}
-                    fill
-                    priority={priority}
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes={isWide 
-                      ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 800px" 
-                      : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"}
-                  />
+                <Image
+                  src={post.featuredImage.node.sourceUrl}
+                  alt={post.title}
+                  fill
+                  priority={priority}
+                  loading={priority ? undefined : "lazy"}
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes={isWide
+                    ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 800px"
+                    : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"}
+                />
               </motion.div>
             </div>
           )}
-          
+
           {/* Overlay Gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90" />
-          
+
           {/* Glass Effect Content Overlay */}
           <div className="absolute inset-0 flex flex-col justify-end">
             <div className="backdrop-blur-xl bg-white/10 dark:bg-black/20 p-5 md:p-6 h-[42%] flex flex-col justify-center border-t border-white/10 transition-colors group-hover:bg-white/15">
-              <h3 className={`font-medium leading-tight text-white mb-2 transition-colors ${
-                accentClasses[accentColor]
-              } ${isWide ? "text-lg md:text-xl" : "text-base"}`}>
+              <h3 className={`font-medium leading-tight text-white mb-2 transition-colors ${accentClasses[accentColor]
+                } ${isWide ? "text-lg md:text-xl" : "text-base"}`}>
                 {displayTitle}
               </h3>
-              
+
               <div
                 className={`text-[10px] md:text-xs leading-relaxed text-zinc-300 line-clamp-2 opacity-90`}
                 dangerouslySetInnerHTML={{ __html: sanitize(post.excerpt) }}
@@ -95,29 +94,27 @@ export default function PostCard({
       <MotionDiv
         ref={containerRef}
         variants={fadeIn}
-        className={`group relative flex flex-col h-full ${
-          isWide ? "lg:col-span-2" : "lg:col-span-1"
-        }`}
+        className={`group relative flex flex-col h-full ${isWide ? "lg:col-span-2" : "lg:col-span-1"
+          }`}
       >
         <Link href={`/posts/${post.slug}`} className="flex flex-col h-full">
           {post.featuredImage?.node?.sourceUrl && (
             <div
-              className={`relative w-full overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800 transition-all duration-500 group-hover:shadow-xl ${
-                isWide ? "aspect-[16/9]" : "aspect-[3/4]"
-              }`}
+              className={`relative w-full overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800 transition-all duration-500 group-hover:shadow-xl ${isWide ? "aspect-[16/9]" : "aspect-[3/4]"
+                }`}
             >
-              <motion.div 
+              <motion.div
                 style={{ y, height: "120%", top: "-10%" }}
                 className="relative w-full h-full"
               >
-                                <Image
+                <Image
                   src={post.featuredImage.node.sourceUrl}
                   alt={post.title}
                   fill
                   priority={priority}
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes={isWide 
-                    ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 800px" 
+                  sizes={isWide
+                    ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 800px"
                     : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"}
                 />
               </motion.div>
@@ -125,9 +122,8 @@ export default function PostCard({
           )}
           <div className="mt-6 flex flex-col flex-grow">
             <h3
-              className={`font-bold leading-tight text-zinc-900 dark:text-zinc-100 transition-colors ${
-                accentClasses[accentColor]
-              } ${isWide ? "text-2xl" : "text-xl"}`}
+              className={`font-bold leading-tight text-zinc-900 dark:text-zinc-100 transition-colors ${accentClasses[accentColor]
+                } ${isWide ? "text-2xl" : "text-xl"}`}
             >
               {displayTitle}
             </h3>
@@ -145,28 +141,26 @@ export default function PostCard({
     <MotionDiv
       ref={containerRef}
       variants={fadeIn}
-      className={`group relative flex flex-col h-full bg-white dark:bg-zinc-950 rounded-3xl overflow-hidden border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 ${
-        isWide ? "lg:col-span-2" : "lg:col-span-1"
-      }`}
+      className={`group relative flex flex-col h-full bg-white dark:bg-zinc-950 rounded-3xl overflow-hidden border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 ${isWide ? "lg:col-span-2" : "lg:col-span-1"
+        }`}
     >
       {post.featuredImage?.node?.sourceUrl && (
         <div
-          className={`relative w-full overflow-hidden ${
-            isWide ? "aspect-[3/2]" : "aspect-[3/4]"
-          }`}
+          className={`relative w-full overflow-hidden ${isWide ? "aspect-[3/2]" : "aspect-[3/4]"
+            }`}
         >
-          <motion.div 
+          <motion.div
             style={{ y, height: "120%", top: "-10%" }}
             className="relative w-full h-full"
           >
-                        <Image
+            <Image
               src={post.featuredImage.node.sourceUrl}
               alt={post.title}
               fill
               priority={priority}
               className="object-cover transition-transform duration-500 group-hover:scale-105"
-              sizes={isWide 
-                ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 800px" 
+              sizes={isWide
+                ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 800px"
                 : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"}
             />
           </motion.div>
@@ -174,9 +168,8 @@ export default function PostCard({
       )}
       <div className="flex flex-col flex-grow p-6">
         <h3
-          className={`font-medium leading-tight text-zinc-900 dark:text-zinc-50 transition-colors ${
-            accentClasses[accentColor]
-          } ${isWide ? "text-xl" : "text-lg"}`}
+          className={`font-medium leading-tight text-zinc-900 dark:text-zinc-50 transition-colors ${accentClasses[accentColor]
+            } ${isWide ? "text-xl" : "text-lg"}`}
         >
           <Link href={`/posts/${post.slug}`}>
             {displayTitle}

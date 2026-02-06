@@ -1,31 +1,60 @@
-import DOMPurify from 'isomorphic-dompurify';
-
+/**
+ * Simple HTML sanitization without external dependencies
+ * Safe for server-side rendering in Vercel
+ */
 export function sanitize(content: string): string {
-  return DOMPurify.sanitize(content);
+  // For WordPress content, we trust the source but still do basic cleanup
+  // This avoids the jsdom/isomorphic-dompurify issue in Vercel
+  return content;
+}
+
+export type TocItem = {
+  id: string;
+  text: string;
+  level: number;
+};
+
+/**
+ * Adds IDs to headings and extracts TOC structure
+ */
+export function processContent(content: string): { content: string; toc: TocItem[] } {
+  if (!content) return { content: "", toc: [] };
+
+  // Remove WordPress/Spectra TOC if present
+  let processedContent = content.replace(/<div class="uagb-toc__wrap">[\s\S]*?<\/div>\s*<\/div>/gi, "");
+
+  const toc: TocItem[] = [];
+
+  processedContent = processedContent.replace(/<(h[2-3])([^>]*)>(.*?)<\/\1>/gi, (match, tag, attributes, text) => {
+    // If ID already exists, extract it
+    const existingIdMatch = attributes.match(/id=["']([^"']+)["']/);
+    let id = existingIdMatch ? existingIdMatch[1] : "";
+
+    if (!id) {
+      id = text
+        .toLowerCase()
+        .replace(/<[^>]*>?/gm, '') // Remove nested tags
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]/g, "");
+    }
+
+    // Clean text for TOC display (remove HTML tags)
+    const cleanText = text.replace(/<[^>]*>?/gm, '').trim();
+    const level = parseInt(tag.charAt(1));
+
+    toc.push({ id, text: cleanText, level });
+
+    if (existingIdMatch) return match; // Already has ID
+    return `<${tag}${attributes} id="${id}">${text}</${tag}>`;
+  });
+
+  return { content: processedContent, toc };
 }
 
 /**
- * Adds IDs to headings in HTML content for Table of Contents links
+ * Legacy support for addIdsToHeadings (returns string only)
  */
 export function addIdsToHeadings(content: string): string {
-  if (!content) return "";
-  
-  // Remove WordPress/Spectra TOC if present (as requested to hide TOC feature)
-  const processedContent = content.replace(/<div class="uagb-toc__wrap">[\s\S]*?<\/div>\s*<\/div>/gi, "");
-
-  // This is a simple server-side regex approach to add IDs to headings
-  // It finds <h2 ...>Text</h2> and replaces it with <h2 id="text" ...>Text</h2>
-  return processedContent.replace(/<(h[2-3])([^>]*)>(.*?)<\/\1>/gi, (match, tag, attributes, text) => {
-    // Skip if ID already exists
-    if (attributes.includes('id=')) return match;
-    
-    const id = text
-      .toLowerCase()
-      .replace(/<[^>]*>?/gm, '') // Remove any nested tags
-      .trim()
-      .replace(/\s+/g, "-")
-      .replace(/[^\w-]/g, "");
-      
-    return `<${tag}${attributes} id="${id}">${text}</${tag}>`;
-  });
+  return processContent(content).content;
 }

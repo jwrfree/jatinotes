@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { PAGE_BY_SLUG_QUERY } from '../queries';
-import { fetchAPI } from '../api';
+import { fetchAPI } from '../fetcher';
 
 export const PageRepository = {
   getBySlug: cache(async (slug: string) => {

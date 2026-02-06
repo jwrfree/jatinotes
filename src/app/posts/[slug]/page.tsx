@@ -1,9 +1,12 @@
 import { getPostBySlug } from "@/lib/api";
+import { PostRepository } from "@/lib/repositories/post.repository";
+import { Post } from "@/lib/types";
 import { stripHtml } from "@/lib/utils";
 import { constructMetadata } from "@/lib/metadata";
-import { addIdsToHeadings } from "@/lib/sanitize";
+import { processContent } from "@/lib/sanitize";
 import { LocalErrorBoundary } from "@/components/LocalErrorBoundary";
 import CommentSection from "@/components/CommentSection";
+import TableOfContents from "@/components/TableOfContents";
 import ReadingProgress from "@/components/ReadingProgress";
 import PostMeta from "@/components/PostMeta";
 import PageHeader from "@/components/PageHeader";
@@ -12,9 +15,28 @@ import Prose from "@/components/Prose";
 import BackgroundOrnaments from "@/components/BackgroundOrnaments";
 import Link from "next/link";
 import Image from "next/image";
+import ImageZoom from "@/components/ImageZoom";
 import { notFound } from "next/navigation";
 import { MotionDiv, fadeIn, staggerContainer } from "@/components/Animations";
+import JsonLd from "@/components/JsonLd";
 import { Metadata } from "next";
+
+// Use ISR: regenerate page every 60 seconds if requested
+export const revalidate = 60;
+
+// Generate static pages for all posts at build time
+export async function generateStaticParams() {
+  try {
+    const { nodes: posts } = await PostRepository.getAll({ first: 100 });
+
+    return posts.map((post: Post) => ({
+      slug: post.slug,
+    }));
+  } catch (error) {
+    console.error("Error generating static params:", error);
+    return [];
+  }
+}
 
 export async function generateMetadata({
   params,
@@ -22,7 +44,17 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  let post;
+
+  try {
+    post = await getPostBySlug(slug);
+  } catch (error) {
+    console.error(`Metadata fetch error for ${slug}:`, error);
+    return constructMetadata({
+      title: "Catatan Jati",
+      description: "Membaca catatan digital...",
+    });
+  }
 
   if (!post) {
     return constructMetadata({
@@ -51,13 +83,21 @@ export default async function PostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  let post;
+
+  try {
+    post = await getPostBySlug(slug);
+  } catch (error) {
+    console.error(`Error fetching post with slug ${slug}:`, error);
+    notFound();
+  }
 
   if (!post) {
     notFound();
   }
 
-  const processedContent = addIdsToHeadings(post.content || "");
+  /* Use processContent to extract IDs and TOC structure */
+  const { content: processedContent, toc } = processContent(post.content || "");
   const isBookReview = post.categories?.nodes?.some(c => c.slug === 'buku');
 
   const jsonLd = {
@@ -83,81 +123,91 @@ export default async function PostPage({
 
   return (
     <div className="relative overflow-hidden min-h-screen">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
       <ReadingProgress />
-      
+
       <BackgroundOrnaments variant="subtle" />
 
-      <ContentCard>
+      <ContentCard maxWidth="max-w-7xl">
         <MotionDiv
           initial="initial"
           animate="animate"
           variants={staggerContainer}
-          className="max-w-3xl mx-auto"
+          className="mx-auto"
         >
-          <PageHeader
-            title={post.title}
-            subtitle={
-              <PostMeta 
-                authorName={post.author?.node?.name} 
-                date={post.date} 
-                content={post.content || ""} 
+          {/* Layout Grid: Content + Sidebar */}
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-12">
+
+            {/* Main Content Column (Centered visually if no sidebar, or left-aligned with sidebar) */}
+            <div className={`xl:col-span-8 ${toc.length === 0 ? "xl:col-start-3" : ""}`}>
+              <PageHeader
+                title={post.title}
+                subtitle={
+                  <PostMeta
+                    authorName={post.author?.node?.name}
+                    date={post.date}
+                    content={post.content || ""}
+                  />
+                }
+                description={post.excerpt}
               />
-            }
-            description={post.excerpt}
-          />
 
-          {post.featuredImage?.node?.sourceUrl && (
-            <MotionDiv 
-              variants={fadeIn}
-              className="group relative mt-12 aspect-video w-full mx-auto overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800 shadow-xl"
-            >
-                            <Image
-                src={post.featuredImage.node.sourceUrl}
-                alt={post.title || ''}
-                fill
-                priority
-                className="object-cover transition-transform duration-1000 group-hover:scale-110"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1000px"
-              />
-            </MotionDiv>
-          )}
+              {post.featuredImage?.node?.sourceUrl && (
+                <MotionDiv
+                  variants={fadeIn}
+                  className="group relative mt-12 aspect-video w-full mx-auto overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800 shadow-xl"
+                >
+                  <ImageZoom
+                    src={post.featuredImage.node.sourceUrl}
+                    alt={post.title || ''}
+                    fill
+                    priority
+                    className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1000px"
+                  />
+                </MotionDiv>
+              )}
 
-          <Prose content={processedContent} className="mt-12" />
+              <Prose content={processedContent} className="mt-12" />
 
-          <hr className="my-16 border-zinc-100 dark:border-zinc-800" />
+              <hr className="my-16 border-zinc-100 dark:border-zinc-800" />
 
-          <LocalErrorBoundary name="Bagian Komentar">
-            <CommentSection
-              comments={post.comments?.nodes || []}
-              postId={parseInt(post.databaseId?.toString() || "0")}
-              commentCount={post.commentCount || 0}
-            />
-          </LocalErrorBoundary>
-
-          <div className="mt-20 flex justify-center border-t border-zinc-100 dark:border-zinc-800 pt-10">
-            <Link
-              href={isBookReview ? "/buku" : "/"}
-              className="group flex items-center gap-3 text-sm font-bold text-amber-500 transition-all hover:gap-5"
-            >
-              <svg
-                viewBox="0 0 16 16"
-                fill="none"
-                aria-hidden="true"
-                className="h-4 w-4 stroke-current transition group-hover:-translate-x-1"
-              >
-                <path
-                  d="M7.25 11.25 3.75 8m0 0 3.5-3.25M3.75 8h8.5"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+              <LocalErrorBoundary name="Bagian Komentar">
+                <CommentSection
+                  comments={post.comments?.nodes || []}
+                  postId={parseInt(post.databaseId?.toString() || "0")}
+                  commentCount={post.commentCount || 0}
                 />
-              </svg>
-              {isBookReview ? 'Kembali ke Rak Buku' : 'Kembali ke Daftar Tulisan'}
-            </Link>
+              </LocalErrorBoundary>
+
+              <div className="mt-20 flex justify-center border-t border-zinc-100 dark:border-zinc-800 pt-10">
+                <Link
+                  href={isBookReview ? "/buku" : "/"}
+                  className="group flex items-center gap-3 text-sm font-bold text-amber-500 transition-all hover:gap-5"
+                >
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    aria-hidden="true"
+                    className="h-4 w-4 stroke-current transition group-hover:-translate-x-1"
+                  >
+                    <path
+                      d="M7.25 11.25 3.75 8m0 0 3.5-3.25M3.75 8h8.5"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  {isBookReview ? 'Kembali ke Rak Buku' : 'Kembali ke Daftar Tulisan'}
+                </Link>
+              </div>
+            </div>
+
+            {/* Sidebar Column (TOC) - Hidden on Mobile, Visible on XL */}
+            <div className="hidden xl:block xl:col-span-4 relative">
+              <TableOfContents toc={toc} />
+            </div>
+
           </div>
         </MotionDiv>
       </ContentCard>

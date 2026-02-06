@@ -1,13 +1,13 @@
 import { cache } from 'react';
 import { z } from 'zod';
 import { CategorySchema, PageInfoSchema, PostSchema, Category, Post, PageInfo } from '../types';
-import { 
-  CATEGORY_POSTS_QUERY, 
-  ALL_CATEGORIES_QUERY, 
-  ALL_GENRES_QUERY, 
-  GENRE_BY_SLUG_QUERY 
+import {
+  CATEGORY_POSTS_QUERY,
+  ALL_CATEGORIES_QUERY,
+  ALL_GENRES_QUERY,
+  GENRE_BY_SLUG_QUERY
 } from '../queries';
-import { fetchAPI } from '../api';
+import { fetchAPI } from '../fetcher';
 
 export const CategoryRepository = {
   getAll: async () => {
@@ -26,7 +26,7 @@ export const CategoryRepository = {
         },
       }
     );
-    
+
     if (!data?.category) return null;
     const parsed = CategorySchema.safeParse(data.category);
     if (!parsed.success) {

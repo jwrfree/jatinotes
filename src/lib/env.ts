@@ -6,22 +6,19 @@ const envSchema = z.object({
 });
 
 const envServer = envSchema.safeParse({
-  WORDPRESS_API_URL: process.env.WORDPRESS_API_URL,
-  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+  WORDPRESS_API_URL: process.env.WORDPRESS_API_URL?.trim(),
+  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL?.trim(),
 });
 
 if (!envServer.success) {
-  // Hanya log error di production tanpa throw agar tidak 500 total, 
-  // tapi kita beri fallback agar fetchAPI bisa memberikan pesan error yang lebih jelas.
   console.error("❌ Invalid environment variables:", envServer.error.flatten().fieldErrors);
-  
-  if (process.env.NODE_ENV === "production") {
-    // Di production kita tetap ingin tahu variabel apa yang kurang
-    // tapi kita bisa memberikan nilai default kosong agar app tidak crash saat boot
+  // Only throw in build/dev, in production try to keep it alive for better debugging
+  if (process.env.NODE_ENV !== "production") {
+    throw new Error("Invalid environment variables");
   }
 }
 
-export const env = {
+export const env = envServer.success ? envServer.data : {
   WORDPRESS_API_URL: process.env.WORDPRESS_API_URL || "",
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || "https://jatinotes.com",
 };
