@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { m, useScroll, useTransform } from "framer-motion";
 import { Post } from "@/lib/types";
 import { sanitize } from "@/lib/sanitize";
 import { MotionDiv, fadeIn } from "@/components/Animations";
@@ -48,7 +48,7 @@ export default function PostCard({
         <Link href={`/posts/${post.slug}`} className="block h-full w-full relative">
           {post.featuredImage?.node?.sourceUrl && (
             <div className="absolute inset-0 overflow-hidden">
-              <motion.div
+              <m.div
                 style={{ y, height: "120%", top: "-10%" }}
                 className="relative w-full"
               >
@@ -63,7 +63,7 @@ export default function PostCard({
                     ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 800px"
                     : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"}
                 />
-              </motion.div>
+              </m.div>
             </div>
           )}
 
@@ -103,7 +103,7 @@ export default function PostCard({
               className={`relative w-full overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800 transition-all duration-500 group-hover:shadow-xl ${isWide ? "aspect-[16/9]" : "aspect-[3/4]"
                 }`}
             >
-              <motion.div
+              <m.div
                 style={{ y, height: "120%", top: "-10%" }}
                 className="relative w-full h-full"
               >
@@ -117,7 +117,7 @@ export default function PostCard({
                     ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 800px"
                     : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"}
                 />
-              </motion.div>
+              </m.div>
             </div>
           )}
           <div className="mt-6 flex flex-col flex-grow">
@@ -149,7 +149,7 @@ export default function PostCard({
           className={`relative w-full overflow-hidden ${isWide ? "aspect-[3/2]" : "aspect-[3/4]"
             }`}
         >
-          <motion.div
+          <m.div
             style={{ y, height: "120%", top: "-10%" }}
             className="relative w-full h-full"
           >
@@ -163,7 +163,7 @@ export default function PostCard({
                 ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 800px"
                 : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"}
             />
-          </motion.div>
+          </m.div>
         </div>
       )}
       <div className="flex flex-col flex-grow p-6">

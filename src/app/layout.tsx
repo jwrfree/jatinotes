@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "sonner";
+import { LazyMotionWrapper } from "@/components/LazyMotion";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -41,14 +42,16 @@ export default function RootLayout({
       <body
         className={`${inter.variable} font-sans antialiased bg-amber-50/60 dark:bg-zinc-950`}
       >
-        <div className="flex min-h-screen flex-col">
-          <Navbar />
-          <main className="flex-grow">
-            {children}
-          </main>
-          <Footer />
-        </div>
-        <ScrollToTop />
+        <LazyMotionWrapper>
+          <div className="flex min-h-screen flex-col">
+            <Navbar />
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </div>
+          <ScrollToTop />
+        </LazyMotionWrapper>
         <Analytics />
         <Toaster position="top-center" richColors />
       </body>

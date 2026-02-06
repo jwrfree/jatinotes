@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 
 export default function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
@@ -32,7 +32,7 @@ export default function ScrollToTop() {
   return (
     <AnimatePresence>
       {isVisible && (
-        <motion.button
+        <m.button
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.5 }}
@@ -52,7 +52,7 @@ export default function ScrollToTop() {
           >
             <path d="m18 15-6-6-6 6" />
           </svg>
-        </motion.button>
+        </m.button>
       )}
     </AnimatePresence>
   );

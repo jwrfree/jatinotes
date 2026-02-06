@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, Variants } from "framer-motion";
+import { m, Variants } from "framer-motion";
 
 interface TypingTextProps {
   text: string;
@@ -42,7 +42,7 @@ export default function TypingText({ text, className = "" }: TypingTextProps) {
   };
 
   return (
-    <motion.span
+    <m.span
       style={{ display: "inline-flex", overflow: "hidden" }}
       variants={container}
       initial="hidden"
@@ -50,14 +50,14 @@ export default function TypingText({ text, className = "" }: TypingTextProps) {
       className={className}
     >
       {characters.map((char, index) => (
-        <motion.span
+        <m.span
           variants={child}
           key={index}
           style={{ display: "inline-block" }}
         >
           {char === " " ? "\u00A0" : char}
-        </motion.span>
+        </m.span>
       ))}
-    </motion.span>
+    </m.span>
   );
 }

@@ -108,7 +108,7 @@ export default function CommentForm({ postId, onOptimisticAdd }: CommentFormProp
         </h3>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6" id="comment-form">
         {/* Honeypot field - Hidden from users */}
         <div className="absolute opacity-0 -z-10 h-0 w-0 overflow-hidden" aria-hidden="true">
           <label htmlFor="website">Website</label>

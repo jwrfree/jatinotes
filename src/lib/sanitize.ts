@@ -26,6 +26,11 @@ export function processContent(content: string): { content: string; toc: TocItem
   const toc: TocItem[] = [];
 
   processedContent = processedContent.replace(/<(h[2-3])([^>]*)>(.*?)<\/\1>/gi, (match, tag, attributes, text) => {
+    const level = parseInt(tag.charAt(1));
+
+    // Only process H2 for TOC (User request)
+    if (level !== 2) return match;
+
     // If ID already exists, extract it
     const existingIdMatch = attributes.match(/id=["']([^"']+)["']/);
     let id = existingIdMatch ? existingIdMatch[1] : "";
@@ -41,7 +46,6 @@ export function processContent(content: string): { content: string; toc: TocItem
 
     // Clean text for TOC display (remove HTML tags)
     const cleanText = text.replace(/<[^>]*>?/gm, '').trim();
-    const level = parseInt(tag.charAt(1));
 
     toc.push({ id, text: cleanText, level });
 

@@ -91,8 +91,7 @@ export default async function Home() {
 
       {/* Technology Section with Thematic Accent */}
       {techCategory && techCategory.posts?.nodes && techCategory.posts.nodes.length > 0 && (
-        <LazyMotionWrapper>
-          <section className="relative z-20 py-32 overflow-hidden bg-white dark:bg-zinc-950">
+        <section className="relative z-20 py-32 overflow-hidden bg-white dark:bg-zinc-950">
             <div className="absolute inset-0 bg-amber-500/[0.02] dark:bg-amber-500/[0.01]" />
             <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent" />
 
@@ -134,13 +133,11 @@ export default async function Home() {
               </LazyMotionDiv>
             </div>
           </section>
-        </LazyMotionWrapper>
       )}
 
       {/* Books Section with Stack Category */}
       {bookCategory && bookCategory.posts?.nodes && bookCategory.posts.nodes.length > 0 && (
-        <LazyMotionWrapper>
-          <section className="relative z-10 -mt-32 pt-64 pb-32 overflow-hidden bg-zinc-900">
+        <section className="relative z-10 -mt-32 pt-64 pb-32 overflow-hidden bg-zinc-900">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent opacity-50" />
 
             <div className="relative z-10 mx-auto max-w-7xl px-6">
@@ -208,7 +205,6 @@ export default async function Home() {
               </div>
             </div>
           </section>
-        </LazyMotionWrapper>
       )}
     </div>
   );

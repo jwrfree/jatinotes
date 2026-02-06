@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Search, X, Loader2, ArrowRight, FileText, Calendar, User } from "lucide-react";
 import { Post } from "@/lib/types";
 import Link from "next/link";
@@ -97,7 +97,7 @@ export default function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
       {isOpen && (
         <>
           {/* Backdrop */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -106,7 +106,7 @@ export default function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
           />
 
           {/* Dialog Container */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.95, y: -20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
@@ -240,7 +240,7 @@ export default function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         </>
       )}
     </AnimatePresence>

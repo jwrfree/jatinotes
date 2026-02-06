@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useSpring } from "framer-motion";
+import { m, useScroll, useSpring } from "framer-motion";
 
 export default function ReadingProgress() {
   const { scrollYProgress } = useScroll();
@@ -11,7 +11,7 @@ export default function ReadingProgress() {
   });
 
   return (
-    <motion.div
+    <m.div
       className="fixed top-0 left-0 right-0 h-1 bg-amber-500 z-[100] origin-left"
       style={{ scaleX }}
     />

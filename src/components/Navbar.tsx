@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { m, AnimatePresence, Variants } from 'framer-motion';
 import { Search } from 'lucide-react';
 import SearchDialog from './SearchDialog';
 
@@ -90,29 +90,33 @@ export default function Navbar() {
 
   return (
     <>
-      <motion.div 
+      <m.div 
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed top-6 left-0 right-0 z-50 px-6"
+        className="fixed top-6 left-0 right-0 z-50 px-4 md:px-6"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <nav className={`mx-auto max-w-5xl transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        <nav className={`mx-auto transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           scrolled || isHovered
-            ? "bg-white/80 backdrop-blur-2xl dark:bg-zinc-900/80 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-zinc-200/50 dark:border-zinc-800/50 py-2 rounded-[2rem]" 
-            : "bg-transparent border-transparent py-3 rounded-[2.5rem]"
+            ? "max-w-[95%] md:max-w-4xl bg-white/80 backdrop-blur-2xl dark:bg-zinc-900/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.1)] border border-zinc-200/50 dark:border-zinc-800/50 py-2 rounded-full" 
+            : "max-w-5xl bg-transparent border-transparent py-4 rounded-[2rem]"
         }`}>
 
-          <div className="flex items-center justify-between px-8">
+          <div className="flex items-center justify-between px-4 md:px-6">
             <div className="flex-[1.5] flex items-center">
-              <Link href="/" className="text-xl font-bold tracking-tighter text-zinc-900 dark:text-zinc-50 z-50">
+              <Link href="/" className={`font-bold tracking-tighter text-zinc-900 dark:text-zinc-50 z-50 transition-all duration-500 ${scrolled ? "text-lg" : "text-xl"}`}>
                 Jati<span className="text-amber-500">Notes</span>
               </Link>
             </div>
             
             {/* Desktop Navigation - Centered */}
-            <div className="hidden md:flex items-center bg-zinc-200/60 dark:bg-zinc-900/90 p-1.5 rounded-full whitespace-nowrap">
+            <div className={`hidden md:flex items-center transition-all duration-500 rounded-full whitespace-nowrap bg-zinc-200/60 dark:bg-zinc-900/90 ${
+              scrolled 
+                ? "p-1" 
+                : "p-1.5"
+            }`}>
               {links.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -121,21 +125,23 @@ export default function Navbar() {
                     href={link.href} 
                     onMouseEnter={() => setHoveredPath(link.href)}
                     onMouseLeave={() => setHoveredPath(null)}
-                    className={`relative px-5 py-2 text-sm font-medium transition-colors duration-300 whitespace-nowrap ${
+                    className={`relative px-5 py-2 font-medium transition-all duration-300 whitespace-nowrap ${
+                      scrolled ? "text-xs" : "text-sm"
+                    } ${
                       isActive 
                         ? "text-zinc-900 dark:text-zinc-50" 
                         : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
                     }`}
                   >
                     {isActive && (
-                      <motion.div
+                      <m.div
                         layoutId="active-pill"
                         className="absolute inset-0 bg-white dark:bg-zinc-700 shadow-sm rounded-full"
                         transition={{ type: "spring", stiffness: 380, damping: 30 }}
                       />
                     )}
                     {hoveredPath === link.href && !isActive && (
-                      <motion.div
+                      <m.div
                         layoutId="hover-pill"
                         className="absolute inset-0 bg-zinc-200/50 dark:bg-zinc-700/40 rounded-full"
                         transition={{ type: "spring", stiffness: 350, damping: 30 }}
@@ -154,7 +160,7 @@ export default function Navbar() {
                 className="group relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors duration-300 focus:outline-none"
                 aria-label="Search"
               >
-                <Search className="h-5 w-5 text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-50 transition-colors" />
+                <Search className={`text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-50 transition-all duration-500 ${scrolled ? "h-4 w-4" : "h-5 w-5"}`} />
               </button>
 
               {/* Mobile Toggle */}
@@ -163,25 +169,25 @@ export default function Navbar() {
                 className="group relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:outline-none md:hidden"
                 aria-label="Toggle Menu"
               >
-                <span className={`h-0.5 w-6 bg-zinc-900 transition-transform duration-300 dark:bg-zinc-50 ${isOpen ? "translate-y-2 rotate-45" : ""}`} />
-                <span className={`h-0.5 w-6 bg-zinc-900 transition-opacity duration-300 dark:bg-zinc-50 ${isOpen ? "opacity-0" : ""}`} />
-                <span className={`h-0.5 w-6 bg-zinc-900 transition-transform duration-300 dark:bg-zinc-50 ${isOpen ? "-translate-y-2 -rotate-45" : ""}`} />
+                <span className={`bg-zinc-900 transition-all duration-300 dark:bg-zinc-50 ${scrolled ? "h-0.5 w-5" : "h-0.5 w-6"} ${isOpen ? "translate-y-2 rotate-45" : ""}`} />
+                <span className={`bg-zinc-900 transition-all duration-300 dark:bg-zinc-50 ${scrolled ? "h-0.5 w-5" : "h-0.5 w-6"} ${isOpen ? "opacity-0" : ""}`} />
+                <span className={`bg-zinc-900 transition-all duration-300 dark:bg-zinc-50 ${scrolled ? "h-0.5 w-5" : "h-0.5 w-6"} ${isOpen ? "-translate-y-2 -rotate-45" : ""}`} />
               </button>
             </div>
           </div>
         </nav>
-      </motion.div>
+      </m.div>
 
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-40 flex items-start justify-center bg-zinc-950/20 backdrop-blur-sm pt-28 px-6 md:hidden"
             onClick={toggleMenu}
           >
-            <motion.div
+            <m.div
               initial="closed"
               animate="open"
               exit="closed"
@@ -208,8 +214,8 @@ export default function Navbar() {
                   );
                 })}
               </div>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         )}
       </AnimatePresence>
       <SearchDialog 

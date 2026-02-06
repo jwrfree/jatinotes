@@ -9,7 +9,7 @@ import { ReactNode } from "react";
  */
 export function LazyMotionWrapper({ children }: { children: ReactNode }) {
     return (
-        <LazyMotion features={domAnimation} strict>
+        <LazyMotion features={domAnimation}>
             {children}
         </LazyMotion>
     );

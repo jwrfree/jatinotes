@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, HTMLMotionProps } from "framer-motion";
+import { m, HTMLMotionProps } from "framer-motion";
 
 export const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -18,9 +18,9 @@ export const staggerContainer = {
 };
 
 export function MotionDiv({ children, ...props }: HTMLMotionProps<"div">) {
-  return <motion.div {...props}>{children}</motion.div>;
+  return <m.div {...props}>{children}</m.div>;
 }
 
 export function MotionSection({ children, ...props }: HTMLMotionProps<"section">) {
-  return <motion.section {...props}>{children}</motion.section>;
+  return <m.section {...props}>{children}</m.section>;
 }

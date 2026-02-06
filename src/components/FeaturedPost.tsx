@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { m, useScroll, useTransform } from 'framer-motion';
 import { Post } from '@/lib/types';
 import { sanitize } from '@/lib/sanitize';
 import { MotionDiv, fadeIn } from '@/components/Animations';
@@ -33,7 +33,7 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
       >
         <Link href={`/posts/${post.slug}`} className="relative block aspect-[16/10] md:aspect-[2/1] w-full overflow-hidden">
           {post.featuredImage?.node?.sourceUrl && (
-            <motion.div 
+            <m.div 
               style={{ y, height: "120%", top: "-10%" }}
               className="relative w-full h-full"
             >
@@ -45,7 +45,7 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
                   priority
                   sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1200px"
                 />
-            </motion.div>
+            </m.div>
           )}
           
           {/* Overlay Gradient */}

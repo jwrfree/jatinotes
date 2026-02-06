@@ -59,19 +59,31 @@ const CommentItem = ({ comment, depth = 0 }: { comment: Comment; depth?: number 
             dangerouslySetInnerHTML={{ __html: sanitize(comment.content) }}
           />
           
-          {hasChildren && (
+          <div className="mt-4 flex items-center gap-6">
             <button 
-              onClick={() => setShowReplies(!showReplies)}
-              className="mt-4 flex items-center gap-2 text-[10px] font-bold text-amber-500 hover:text-amber-600 transition-colors"
+              className="flex items-center gap-1.5 text-[10px] font-bold text-zinc-400 hover:text-amber-500 transition-colors group/reply"
+              onClick={() => document.getElementById('comment-form')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              <span className={`transition-transform duration-300 ${showReplies ? 'rotate-180' : ''}`}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3 h-3">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                </svg>
-              </span>
-              {showReplies ? 'Sembunyikan Balasan' : `Lihat ${comment.children?.length} Balasan`}
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5 transition-transform group-hover/reply:-translate-x-0.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+              </svg>
+              Balas
             </button>
-          )}
+
+            {hasChildren && (
+              <button 
+                onClick={() => setShowReplies(!showReplies)}
+                className="flex items-center gap-2 text-[10px] font-bold text-amber-500 hover:text-amber-600 transition-colors"
+              >
+                <span className={`transition-transform duration-300 ${showReplies ? 'rotate-180' : ''}`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3 h-3">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </span>
+                {showReplies ? 'Sembunyikan Balasan' : `Lihat ${comment.children?.length} Balasan`}
+              </button>
+            )}
+          </div>
         </div>
       </div>
       

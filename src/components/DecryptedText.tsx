@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
-import { motion, HTMLMotionProps } from 'motion/react';
+import { m, HTMLMotionProps } from 'framer-motion';
 
 interface DecryptedTextProps extends HTMLMotionProps<"span"> {
   text: string;
@@ -184,7 +184,7 @@ export default function DecryptedText({
       : {};
 
   return (
-    <motion.span
+    <m.span
       ref={containerRef}
       className={`inline-block whitespace-pre-wrap ${parentClassName}`}
       {...hoverProps}
@@ -203,6 +203,6 @@ export default function DecryptedText({
           );
         })}
       </span>
-    </motion.span>
+    </m.span>
   );
 }
