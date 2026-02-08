@@ -15,7 +15,7 @@ import Prose from "@/components/Prose";
 import BackgroundOrnaments from "@/components/BackgroundOrnaments";
 import Link from "next/link";
 import Image from "next/image";
-import ImageZoom from "@/components/ImageZoom";
+
 import { notFound } from "next/navigation";
 import { MotionDiv, fadeIn, staggerContainer } from "@/components/Animations";
 import JsonLd from "@/components/JsonLd";
@@ -156,7 +156,7 @@ export default async function PostPage({
                     variants={fadeIn}
                     className="group relative mt-12 aspect-video w-full mx-auto overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800 shadow-xl"
                   >
-                    <ImageZoom
+                    <Image
                       src={post.featuredImage.node.sourceUrl}
                       alt={post.title || ''}
                       fill
