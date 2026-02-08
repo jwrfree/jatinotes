@@ -1,5 +1,13 @@
 import { env } from './env';
 
+// Constants
+const MAX_RETRIES = 3;
+const DEFAULT_REVALIDATE = 60;
+const RETRY_DELAY_BASE = 1000;
+const HTTP_STATUS_SERVICE_UNAVAILABLE = 503;
+const HTTP_STATUS_GATEWAY_TIMEOUT = 504;
+const HTTP_STATUS_BAD_GATEWAY = 502;
+
 // API_URL retrieved inside fetchAPI from env
 
 export class APIError extends Error {
@@ -9,9 +17,19 @@ export class APIError extends Error {
     }
 }
 
+/**
+ * Fetches data from the WordPress GraphQL API with retry logic and error handling.
+ * 
+ * @param query - The GraphQL query string
+ * @param options - Configuration options for the request
+ * @param options.variables - Variables to pass to the GraphQL query
+ * @param options.revalidate - Cache revalidation time in seconds (default: 60)
+ * @returns The data property from the GraphQL response
+ * @throws {APIError} If the API returns errors or a non-success status code
+ */
 export async function fetchAPI(
     query: string,
-    { variables, revalidate = 60 }: { variables?: Record<string, unknown>, revalidate?: number | false } = {}
+    { variables, revalidate = DEFAULT_REVALIDATE }: { variables?: Record<string, unknown>, revalidate?: number | false } = {}
 ) {
     const API_URL = env.WORDPRESS_API_URL;
     if (!API_URL) {
@@ -25,8 +43,8 @@ export async function fetchAPI(
 
     let lastError: unknown;
 
-    // Simple retry logic for 503s or network errors
-    for (let i = 0; i < 3; i++) {
+    // Retry logic for 503s or network errors
+    for (let i = 0; i < MAX_RETRIES; i++) {
         try {
             // Log attempts locally for debugging
             if (process.env.NODE_ENV === 'development' && i === 0) {
@@ -46,7 +64,7 @@ export async function fetchAPI(
             if (!res.ok) {
                 const text = await res.text();
                 // Handle Server Busy / Gateway Timeout specific status codes
-                if (res.status === 503 || res.status === 504 || res.status === 502) {
+                if (res.status === HTTP_STATUS_SERVICE_UNAVAILABLE || res.status === HTTP_STATUS_GATEWAY_TIMEOUT || res.status === HTTP_STATUS_BAD_GATEWAY) {
                     throw new APIError(`Server busy (${res.status})`, res.status);
                 }
                 throw new APIError(`API returned status ${res.status}: ${text.substring(0, 100)}`, res.status);
@@ -67,7 +85,7 @@ export async function fetchAPI(
 
         } catch (error) {
             lastError = error;
-            const isRetryable = error instanceof APIError && (error.status === 503 || error.status === 504 || error.status === 502);
+            const isRetryable = error instanceof APIError && (error.status === HTTP_STATUS_SERVICE_UNAVAILABLE || error.status === HTTP_STATUS_GATEWAY_TIMEOUT || error.status === HTTP_STATUS_BAD_GATEWAY);
 
             // Enhanced network error detection
             const isNetworkError = error instanceof Error && (
@@ -84,10 +102,11 @@ export async function fetchAPI(
                 console.warn(`[API] Attempt ${i + 1} failed for ${API_URL}: ${errorMessage}`);
             }
 
-            if ((isRetryable || isNetworkError) && i < 2) {
-                const delay = 1000 * Math.pow(2, i); // 1s, 2s
+            // Retry for retryable errors if we haven't reached the max retries limit
+            if ((isRetryable || isNetworkError) && i < MAX_RETRIES - 1) {
+                const delay = RETRY_DELAY_BASE * Math.pow(2, i); // Exponential backoff: 1s, 2s
                 if (process.env.NODE_ENV === 'development') {
-                    console.log(`⏳ Retrying in ${delay}ms...`);
+                    console.warn(`⏳ Retrying in ${delay}ms...`);
                 }
                 await new Promise(resolve => setTimeout(resolve, delay));
                 continue;
@@ -107,3 +126,5 @@ export async function fetchAPI(
     }
     throw new Error('Failed to fetch API after retries.');
 }
+
+

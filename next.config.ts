@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: '**.jatinotes.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'jatinotes.com',
       },
       {
@@ -14,8 +18,24 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: '*.gravatar.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: '*.wp.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.googleapis.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.gstatic.com',
+      }
     ],
   },
   async headers() {
@@ -23,7 +43,7 @@ const nextConfig: NextConfig = {
       default-src 'self';
       script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com;
       style-src 'self' 'unsafe-inline';
-      img-src 'self' blob: data: https://jatinotes.com https://secure.gravatar.com https://images.unsplash.com https://*.wp.com https://www.google-analytics.com;
+      img-src 'self' blob: data: https://*.jatinotes.com https://jatinotes.com https://secure.gravatar.com https://*.gravatar.com https://images.unsplash.com https://*.wp.com https://*.googleapis.com https://*.gstatic.com https://www.google-analytics.com;
       connect-src 'self' https://jatinotes.com https://www.google-analytics.com https://analytics.google.com;
       font-src 'self';
       object-src 'none';

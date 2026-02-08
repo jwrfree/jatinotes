@@ -5,6 +5,12 @@ import { ALL_POSTS_QUERY, POST_BY_SLUG_QUERY, SEARCH_POSTS_QUERY } from '../quer
 import { fetchAPI } from '../fetcher';
 
 export const PostRepository = {
+  /**
+   * Retrieves a paginated list of posts.
+   * 
+   * @param params - Pagination parameters (first, after, last, before)
+   * @returns A promise resolving to an object containing nodes (posts) and pageInfo
+   */
   getAll: cache(async (params: { first?: number, after?: string, last?: number, before?: string } = { first: 10 }): Promise<{ nodes: Post[], pageInfo: PageInfo }> => {
     const data = await fetchAPI(ALL_POSTS_QUERY, { variables: params });
 
@@ -24,6 +30,12 @@ export const PostRepository = {
     };
   }),
 
+  /**
+   * Retrieves a single post by its slug.
+   * 
+   * @param slug - The URL slug of the post
+   * @returns A promise resolving to the Post object or null if not found
+   */
   getBySlug: cache(async (slug: string): Promise<Post | null> => {
     const data = await fetchAPI(
       POST_BY_SLUG_QUERY,
@@ -46,6 +58,12 @@ export const PostRepository = {
     return parsed.data;
   }),
 
+  /**
+   * Searches for posts matching the search term.
+   * 
+   * @param searchTerm - The keyword to search for
+   * @returns A promise resolving to an array of matching Posts
+   */
   search: async (searchTerm: string): Promise<Post[]> => {
     const data = await fetchAPI(
       SEARCH_POSTS_QUERY,
