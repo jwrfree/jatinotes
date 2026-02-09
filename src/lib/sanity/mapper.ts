@@ -30,8 +30,24 @@ export function mapSanityPostToPost(sanityPost: any): Post {
                 slug: c.slug?.current || c.slug
             }))
         } : { nodes: [] },
-        commentCount: 0, // Comments not migrated yet
-        comments: { nodes: [] },
+        commentCount: sanityPost.comments?.length || 0,
+        comments: sanityPost.comments ? {
+            nodes: sanityPost.comments.map((c: any) => ({
+                id: c._id,
+                date: c._createdAt,
+                content: c.comment,
+                author: {
+                    node: {
+                        name: c.name,
+                        avatar: {
+                            url: `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=random`
+                        }
+                    }
+                },
+                parentId: c.parentCommentId ? String(c.parentCommentId) : null,
+                children: [] // Children will be organized by organizeComments util in frontend
+            }))
+        } : { nodes: [] },
         tags: { nodes: [] }
     };
 }
