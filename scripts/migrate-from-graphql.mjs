@@ -12,15 +12,22 @@ import { fileURLToPath } from 'url'
 // Load env
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const envPath = path.resolve(__dirname, '../.env.local')
-dotenv.config({ path: envPath })
+
+// Load .env default first
+dotenv.config({ path: path.resolve(__dirname, '../.env') })
+// Load .env.local override
+dotenv.config({ path: path.resolve(__dirname, '../.env.local'), override: true })
 
 const WORDPRESS_API_URL = process.env.WORDPRESS_API_URL
 const SANITY_API_WRITE_TOKEN = process.env.SANITY_API_WRITE_TOKEN
 
 if (!WORDPRESS_API_URL || !SANITY_API_WRITE_TOKEN) {
     console.error('Error: Missing environment variables.')
-    console.error('Pastikan WORDPRESS_API_URL dan SANITY_API_WRITE_TOKEN ada di .env.local')
+
+    if (!WORDPRESS_API_URL) console.error('- WORDPRESS_API_URL tidak ditemukan. (Contoh: https://jatinotes.com/graphql)')
+    if (!SANITY_API_WRITE_TOKEN) console.error('- SANITY_API_WRITE_TOKEN tidak ditemukan. (Pastikan token tipe Editor/Write)')
+
+    console.error('Cek file .env.local Anda.')
     process.exit(1)
 }
 
