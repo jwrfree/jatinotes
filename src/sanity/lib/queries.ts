@@ -40,7 +40,8 @@ export const POST_BY_SLUG_QUERY = defineQuery(`*[_type == "post" && slug.current
     name,
     email,
     comment,
-    parentCommentId
+    parentCommentId,
+    wordpressId
   },
   "related": *[_type == "post" && slug.current != $slug && count(categories[@._ref in ^.^.categories[]._ref]) > 0] | order(publishedAt desc, _createdAt desc) [0...3] {
     ${postFields}

@@ -1,7 +1,6 @@
 /**
- * Script untuk migrasi komentar langsung dari WordPress GraphQL ke Sanity
- * 
- * Menggunakan WORDPRESS_API_URL dari .env.local
+ * Script untuk migrasi komentar dari WordPress GraphQL ke Sanity
+ * Strategi: Fetch posts dari Sanity -> Query comments per post dari WP
  */
 
 import { createClient } from 'next-sanity'
@@ -22,144 +21,120 @@ const WORDPRESS_API_URL = process.env.WORDPRESS_API_URL
 const SANITY_API_WRITE_TOKEN = process.env.SANITY_API_WRITE_TOKEN
 
 if (!WORDPRESS_API_URL || !SANITY_API_WRITE_TOKEN) {
-    console.error('Error: Missing environment variables.')
-
-    if (!WORDPRESS_API_URL) console.error('- WORDPRESS_API_URL tidak ditemukan. (Contoh: https://jatinotes.com/graphql)')
-    if (!SANITY_API_WRITE_TOKEN) console.error('- SANITY_API_WRITE_TOKEN tidak ditemukan. (Pastikan token tipe Editor/Write)')
-
-    console.error('Cek file .env.local Anda.')
-    process.exit(1)
+  console.error('Error: Missing environment variables.')
+  if (!WORDPRESS_API_URL) console.error('- WORDPRESS_API_URL tidak ditemukan.')
+  if (!SANITY_API_WRITE_TOKEN) console.error('- SANITY_API_WRITE_TOKEN tidak ditemukan.')
+  process.exit(1)
 }
 
 const client = createClient({
-    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
-    apiVersion: '2024-01-01',
-    token: SANITY_API_WRITE_TOKEN,
-    useCdn: false,
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
+  apiVersion: '2024-01-01',
+  token: SANITY_API_WRITE_TOKEN,
+  useCdn: false,
 })
 
 async function fetchGraphQL(query, variables = {}) {
-    // Gunakan native fetch (Node 18+)
-    const res = await fetch(WORDPRESS_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, variables }),
-    })
+  // Gunakan native fetch (Node 18+)
+  const res = await fetch(WORDPRESS_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, variables }),
+  })
 
-    if (!res.ok) {
-        const txt = await res.text()
-        throw new Error(`WordPress API Error (${res.status}): ${txt.substring(0, 100)}`)
-    }
+  if (!res.ok) {
+    const txt = await res.text()
+    throw new Error(`WordPress API Error (${res.status}): ${txt.substring(0, 100)}`)
+  }
 
-    const json = await res.json()
-    if (json.errors) {
-        throw new Error(JSON.stringify(json.errors))
-    }
-    return json.data
+  const json = await res.json()
+  if (json.errors) {
+    throw new Error(JSON.stringify(json.errors))
+  }
+  return json.data
 }
 
 async function migrateComments() {
-    console.log(`Connecting to WordPress: ${WORDPRESS_API_URL}`)
-    console.log('Fetching comments...')
+  console.log(`Connecting to WordPress: ${WORDPRESS_API_URL}`)
+  console.log('Fetching posts from Sanity to match slugs...')
 
-    let hasNextPage = true
-    let after = null
-    let totalImported = 0
+  const posts = await client.fetch(`*[_type == "post" && defined(slug.current)]{ "slug": slug.current, _id }`)
+  console.log(`Found ${posts.length} posts in Sanity. Checking comments for each...`)
 
-    while (hasNextPage) {
-        let data;
-        try {
-            data = await fetchGraphQL(`
-        query GetAllComments($after: String) {
-          comments(first: 100, after: $after) {
-            pageInfo {
-              hasNextPage
-              endCursor
-            }
-            nodes {
-              databaseId
-              content(format: RENDERED)
-              date
-              author {
-                node {
-                  name
-                  email
-                  url
-                }
-              }
-              commentOn {
-                ... on Post {
-                  slug
-                }
-              }
-              parentDatabaseId
-            }
+  let totalImported = 0
+
+  for (const post of posts) {
+    const { slug, _id } = post
+    // console.log(`Checking: ${slug}`)
+
+    try {
+      const data = await fetchGraphQL(`
+        query GetPostComments($slug: ID!) {
+          post(id: $slug, idType: SLUG) {
+             databaseId
+             comments(first: 100) {
+               nodes {
+                 databaseId
+                 content(format: RENDERED)
+                 date
+                 author {
+                   node {
+                     name
+                     email
+                     url
+                   }
+                 }
+                 parentDatabaseId
+               }
+             }
           }
         }
-      `, { after })
-        } catch (err) {
-            console.error('GraphQL Query Failed:', err.message)
-            process.exit(1)
+      `, { slug })
+
+      if (!data.post) {
+        // console.warn(`Post ${slug} not found in WordPress.`)
+        continue
+      }
+
+      const comments = data.post.comments?.nodes || []
+      if (comments.length === 0) continue
+
+      console.log(`Found ${comments.length} comments for "${slug}". Importing...`)
+
+      for (const wpComment of comments) {
+        // Check existing
+        const existing = await client.fetch(`*[_type=="comment" && wordpressId == $id][0]`, { id: wpComment.databaseId })
+        if (existing) {
+          // console.log(`- Comment ${wpComment.databaseId} exists.`)
+          continue
         }
 
-        const comments = data.comments.nodes
-        hasNextPage = data.comments.pageInfo.hasNextPage
-        after = data.comments.pageInfo.endCursor
-
-        console.log(`Processing batch of ${comments.length} comments...`)
-
-        for (const wpComment of comments) {
-            if (!wpComment.commentOn || !wpComment.commentOn.slug) {
-                continue // Skip if no post attached
-            }
-
-            const postSlug = wpComment.commentOn.slug
-            const wpId = wpComment.databaseId
-
-            // 2. Cari Post Sanity by Slug
-            const post = await client.fetch(`*[_type == "post" && slug.current == $slug][0]`, { slug: postSlug })
-
-            if (!post) {
-                console.warn(`Post "${postSlug}" not found in Sanity. Skipping comment ${wpId}.`)
-                continue
-            }
-
-            // 3. Cek apakah komentar sudah ada (idempotency key: wordpressId)
-            const existing = await client.fetch(`*[_type == "comment" && wordpressId == $id][0]`, { id: wpId })
-
-            if (existing) {
-                // console.log(`Comment ${wpId} already exists. Skipping.`)
-                continue
-            }
-
-            // 4. Create Comment
-            const doc = {
-                _type: 'comment',
-                name: wpComment.author?.node?.name || 'Anonymous',
-                email: wpComment.author?.node?.email || 'no-email@example.com',
-                comment: wpComment.content, // HTML content from WP
-                post: {
-                    _type: 'reference',
-                    _ref: post._id
-                },
-                approved: true,
-                wordpressId: wpId,
-                parentCommentId: wpComment.parentDatabaseId || 0,
-                _createdAt: wpComment.date ? new Date(wpComment.date).toISOString() : new Date().toISOString()
-            }
-
-            try {
-                await client.create(doc)
-                console.log(`✅ Imported comment ${wpId} on ${postSlug}`)
-                totalImported++
-            } catch (err) {
-                console.error(`❌ Failed import ${wpId}: ${err.message}`)
-            }
+        // Create
+        const doc = {
+          _type: 'comment',
+          name: wpComment.author?.node?.name || 'Anonymous',
+          email: wpComment.author?.node?.email || '',
+          comment: wpComment.content,
+          post: { _type: 'reference', _ref: _id },
+          approved: true,
+          wordpressId: wpComment.databaseId,
+          parentCommentId: wpComment.parentDatabaseId || 0,
+          _createdAt: wpComment.date ? new Date(wpComment.date).toISOString() : new Date().toISOString()
         }
+
+        await client.create(doc)
+        process.stdout.write('.') // Progress dot
+        totalImported++
+      }
+      console.log('') // Newline
+
+    } catch (err) {
+      console.error(`Error processing ${slug}:`, err.message)
     }
+  }
 
-    console.log(`\n--- Selesai ---\nTotal Komentar Diimpor: ${totalImported}`)
+  console.log(`\n--- Selesai ---\nTotal Komentar Diimpor: ${totalImported}`)
 }
 
 migrateComments()
