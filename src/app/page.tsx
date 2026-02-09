@@ -56,7 +56,7 @@ export default async function Home() {
       {/* Main Content Section */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 pb-24">
         {posts && posts.length > 0 ? (
-          <div className="space-y-32">
+          <div className="space-y-16">
             {/* Featured Post */}
             <FeaturedPost post={posts[0]} />
 

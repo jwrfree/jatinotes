@@ -15,6 +15,7 @@ export async function submitCommentAction(formData: {
   authorEmail: string;
   content: string;
   postId: string; // Updated to string for Sanity ID
+  parentId?: string | null;
   website?: string; // Honeypot field
 }) {
   try {

@@ -43,15 +43,14 @@ export function mapSanityPostToPost(sanityPost: any): Post {
 
                 // 2. Map Comments and Resolve Parent IDs
                 return sanityPost.comments.map((c: any) => {
-                    // Start with raw parent ID (WP ID for migrated comments)
-                    let resolvedParentId = c.parentCommentId ? String(c.parentCommentId) : null;
+                    // Default parent ID: Native Sanity Ref or Legacy WP ID
+                    let resolvedParentId = c.parentRef || (c.parentCommentId ? String(c.parentCommentId) : null);
 
-                    // If it's a numeric WP ID, try to find the matching Sanity ID
-                    if (resolvedParentId && c.parentCommentId && wpIdMap[c.parentCommentId]) {
+                    // If we rely on legacy WP ID and it exists in our map, resolve it to Sanity UUID
+                    if (!c.parentRef && c.parentCommentId && wpIdMap[c.parentCommentId]) {
                         resolvedParentId = wpIdMap[c.parentCommentId];
-                    } else if (resolvedParentId && c.parentCommentId && !wpIdMap[c.parentCommentId]) {
-                        // Parent not found in this query (maybe not approved yet?), make it top-level to avoid orphan
-                        // Or keep it if your organizeComments handles missing parents
+                    } else if (!c.parentRef && c.parentCommentId && !wpIdMap[c.parentCommentId]) {
+                        // Orphan legacy comment -> top level
                         resolvedParentId = null;
                     }
 

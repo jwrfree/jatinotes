@@ -1,5 +1,6 @@
 "use client";
 
+import { forwardRef } from "react";
 import { m, HTMLMotionProps } from "framer-motion";
 
 export const fadeIn = {
@@ -17,10 +18,12 @@ export const staggerContainer = {
   },
 };
 
-export function MotionDiv({ children, ...props }: HTMLMotionProps<"div">) {
-  return <m.div {...props}>{children}</m.div>;
-}
+export const MotionDiv = forwardRef<HTMLDivElement, HTMLMotionProps<"div">>(({ children, ...props }, ref) => {
+  return <m.div ref={ref} {...props}>{children}</m.div>;
+});
+MotionDiv.displayName = "MotionDiv";
 
-export function MotionSection({ children, ...props }: HTMLMotionProps<"section">) {
-  return <m.section {...props}>{children}</m.section>;
-}
+export const MotionSection = forwardRef<HTMLElement, HTMLMotionProps<"section">>(({ children, ...props }, ref) => {
+  return <m.section ref={ref} {...props}>{children}</m.section>;
+});
+MotionSection.displayName = "MotionSection";

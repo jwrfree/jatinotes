@@ -40,10 +40,17 @@ export default defineType({
             hidden: true // Hanya untuk keperluan migrasi
         }),
         defineField({
+            name: 'parent',
+            title: 'Parent Comment',
+            type: 'reference',
+            to: [{ type: 'comment' }],
+            description: 'Reference to parent comment for threading (Sanity Native)',
+        }),
+        defineField({
             name: 'parentCommentId',
-            title: 'Parent Comment WordPress ID',
+            title: 'Parent Comment ID (Legacy WP)',
             type: 'number',
-            hidden: true
+            hidden: true,
         })
     ],
     preview: {

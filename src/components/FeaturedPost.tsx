@@ -22,7 +22,7 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
   const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
 
   return (
-    <section className="mb-24">
+    <section>
       <MotionDiv
         ref={containerRef}
         initial="initial"
@@ -33,24 +33,24 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
       >
         <Link href={`/posts/${post.slug}`} className="relative block aspect-[16/10] md:aspect-[2/1] w-full overflow-hidden">
           {post.featuredImage?.node?.sourceUrl && (
-            <m.div 
+            <m.div
               style={{ y, height: "120%", top: "-10%" }}
               className="relative w-full h-full"
             >
-                              <Image
-                  src={post.featuredImage.node.sourceUrl}
-                  alt={post.title || ''}
-                  fill
-                  className="object-cover transition-transform duration-1000 group-hover:scale-110"
-                  priority
-                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1200px"
-                />
+              <Image
+                src={post.featuredImage.node.sourceUrl}
+                alt={post.title || ''}
+                fill
+                className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1200px"
+              />
             </m.div>
           )}
-          
+
           {/* Overlay Gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90" />
-          
+
           {/* Overlay Content */}
           <div className="absolute inset-0 flex flex-col justify-end">
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
