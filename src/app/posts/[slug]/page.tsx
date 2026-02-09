@@ -169,9 +169,7 @@ export default async function PostPage({
                     <PostMeta
                       authorName={post.author?.node?.name}
                       date={post.date}
-                      content={typeof post.content === 'string' ? post.content : ""}
-                    // PostMeta reading time calc might need update for array content
-                    // Currently passing empty string if array, might hide reading time
+                      post={post}
                     />
                   }
                   description={post.excerpt}

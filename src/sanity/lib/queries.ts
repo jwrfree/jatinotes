@@ -9,7 +9,8 @@ const postFields = `
   publishedAt,
   "mainImage": mainImage.asset->url,
   "author": author->{name, "slug": slug.current, "image": image.asset->url},
-  "categories": categories[]->{title, "slug": slug.current}
+  "categories": categories[]->{title, "slug": slug.current},
+  "wordCount": length(pt::text(body))
 `;
 
 // --- Queries ---

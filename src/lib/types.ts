@@ -43,6 +43,7 @@ export const PostSchema = z.object({
   date: z.string(),
   excerpt: z.string().nullable().optional().transform(val => val ?? ""),
   content: z.union([z.string(), z.array(z.any())]).nullable().optional(),
+  wordCount: z.number().nullable().optional(), // Character count from Sanity
   featuredImage: FeaturedImageSchema.nullable().optional(),
   author: AuthorSchema.nullable().optional(),
   commentCount: z.number().nullable().optional().transform(val => val ?? 0),

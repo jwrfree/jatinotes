@@ -2,13 +2,61 @@ export function stripHtml(html: string): string {
   return html.replace(/<[^>]*>?/gm, '').trim();
 }
 
-export function calculateReadingTime(content: string): number {
+/**
+ * Calculate reading time from content or Post object
+ * Supports HTML strings, PortableText arrays, and Post objects with wordCount
+ */
+export function calculateReadingTime(input: string | any[] | { wordCount?: number | null; content?: string | any[] | null }): number {
   const wordsPerMinute = 200;
-  // Strip HTML tags
-  const text = content.replace(/<[^>]*>?/gm, '');
-  const numberOfWords = text.split(/\s/g).length;
+  let characterCount = 0;
+
+  // If input is a Post object with wordCount, use it directly
+  if (typeof input === 'object' && input !== null && !Array.isArray(input) && 'wordCount' in input) {
+    characterCount = input.wordCount || 0;
+    if (characterCount > 0) {
+      // Estimate words from characters (average 5 characters per word)
+      const estimatedWords = characterCount / 5;
+      const minutes = estimatedWords / wordsPerMinute;
+      return Math.max(1, Math.ceil(minutes));
+    }
+    // Fallback to content if wordCount is 0
+    if (input.content) {
+      return calculateReadingTime(input.content);
+    }
+  }
+
+  // Original logic for string or array
+  let text = '';
+  if (typeof input === 'string') {
+    // HTML string - strip tags
+    text = input.replace(/<[^>]*>?/gm, '');
+  } else if (Array.isArray(input)) {
+    // PortableText array - extract text from blocks
+    text = extractTextFromPortableText(input);
+  }
+
+  const numberOfWords = text.split(/\s+/g).filter(word => word.length > 0).length;
   const minutes = numberOfWords / wordsPerMinute;
-  return Math.ceil(minutes);
+  return Math.max(1, Math.ceil(minutes)); // Minimum 1 minute
+}
+
+/**
+ * Extract plain text from PortableText blocks
+ */
+function extractTextFromPortableText(blocks: any[]): string {
+  if (!blocks || !Array.isArray(blocks)) return '';
+
+  return blocks
+    .map(block => {
+      if (block._type === 'block' && block.children) {
+        return block.children
+          .map((child: any) => child.text || '')
+          .join(' ');
+      }
+      return '';
+    })
+    .filter(text => text.length > 0)
+    .join(' ');
 }
 
 export function formatRelativeTime(dateString: string): string {

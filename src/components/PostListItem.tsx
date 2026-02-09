@@ -20,7 +20,7 @@ export default function PostListItem({ post }: PostListItemProps) {
       >
         <div className="flex-1 space-y-2">
           <div className="flex items-center gap-3 text-[10px] font-medium text-zinc-400">
-            <span>{calculateReadingTime(typeof post.content === 'string' ? post.content : "")} menit baca</span>
+            <span>{calculateReadingTime(post)} menit baca</span>
           </div>
           <h3 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-amber-500 transition-colors">
             {post.title}

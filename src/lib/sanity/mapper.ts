@@ -11,6 +11,7 @@ export function mapSanityPostToPost(sanityPost: any): Post {
         date: sanityPost.publishedAt,
         excerpt: sanityPost.excerpt || "",
         content: sanityPost.body, // This will now be PortableTextBlock[], type definition needs update or loose typing
+        wordCount: sanityPost.wordCount || 0, // Character count from Sanity
         featuredImage: sanityPost.mainImage ? {
             node: {
                 sourceUrl: sanityPost.mainImage,
