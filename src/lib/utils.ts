@@ -110,25 +110,38 @@ export function formatDateIndonesian(dateString: string): string {
 import { Comment } from './types';
 
 export function organizeComments(nodes: Comment[]): Comment[] {
-  const commentMap = new Map<number, Comment>();
+  const commentMap = new Map<string, Comment>();
   const roots: Comment[] = [];
 
+  // Initialize map with all comments
   nodes.forEach(node => {
-    if (node.databaseId) {
-      commentMap.set(node.databaseId, { ...node, children: [] });
+    // Ensure we handle comments with valid string IDs (Sanity uses string UUIDs)
+    if (node.id) {
+      // Create a shallow copy with initialized children array
+      commentMap.set(node.id, { ...node, children: [] });
     }
   });
 
+  // Build the tree
   nodes.forEach(node => {
-    if (node.databaseId) {
-      const comment = commentMap.get(node.databaseId);
-      if (comment && node.parentDatabaseId && commentMap.has(node.parentDatabaseId)) {
-        commentMap.get(node.parentDatabaseId)!.children?.push(comment);
-      } else if (comment) {
+    if (node.id) {
+      const comment = commentMap.get(node.id);
+
+      // If valid comment and valid parentId exists in our map
+      if (comment && node.parentId && commentMap.has(node.parentId)) {
+        // Add to parent's children
+        commentMap.get(node.parentId)!.children?.push(comment);
+      }
+      // Otherwise it's a root comment
+      else if (comment) {
         roots.push(comment);
       }
     }
   });
+
+  // Sort roots by date (oldest first usually for comments)
+  // Input nodes are usually sorted by date from query, but let's be safe if needed
+  // roots.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   return roots;
 }

@@ -24,6 +24,7 @@ export const CommentSchema = z.object({
   databaseId: z.number().nullable().optional(),
   content: z.string(),
   date: z.string(),
+  parentId: z.string().nullable().optional(),
   parentDatabaseId: z.number().nullable().optional(),
   author: z.object({
     node: z.object({
