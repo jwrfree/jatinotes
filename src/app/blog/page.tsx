@@ -42,7 +42,7 @@ export default async function BlogListPage({
     <div className="relative overflow-hidden min-h-screen">
       <BackgroundOrnaments variant="subtle" />
 
-      <ContentCard>
+      <ContentCard maxWidth="max-w-6xl">
         <PageHeader
           title="Blog"
           useDecryptedText={true}

@@ -1,4 +1,3 @@
-
 import { getPostBySlug } from "@/lib/api";
 import { PostRepository } from "@/lib/repositories/post.repository";
 import { Post } from "@/lib/types";
@@ -152,9 +151,15 @@ export default async function PostPage({
 
       <BackgroundOrnaments variant="subtle" />
 
+      {/* 
+        Original Desktop Layout:
+        - Outer Grid Wrapper (max-w-7xl, grid-cols-12)
+        - Content centered in col-span-8
+      */}
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-12">
-          {/* Main Content Column */}
+
+          {/* Main Content Column (Restore Desktop layout) */}
           <div className="xl:col-span-8 xl:col-start-3">
             <ContentCard>
               <MotionDiv
@@ -234,7 +239,7 @@ export default async function PostPage({
             </ContentCard>
           </div>
 
-          {/* Sidebar Column (TOC) - Hidden on Mobile, Visible on XL */}
+          {/* Sidebar TOC - Visible on XL, outside ContentCard (Original Layout) */}
           {toc.length > 0 && (
             <div className="hidden xl:block xl:col-span-2 relative">
               <div className="sticky top-32">
@@ -242,6 +247,7 @@ export default async function PostPage({
               </div>
             </div>
           )}
+
         </div>
       </div>
     </div>

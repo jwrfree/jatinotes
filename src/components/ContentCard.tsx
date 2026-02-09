@@ -17,8 +17,8 @@ export default function ContentCard({
   animate = true,
 }: ContentCardProps) {
   const content = (
-    <div className={`mx-auto ${maxWidth} px-4 pt-28 sm:pt-40 pb-12 sm:pb-24 ${containerClassName}`}>
-      <div className={`bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md rounded-[3rem] shadow-2xl shadow-black/5 dark:shadow-white/5 p-8 sm:p-16 ${className}`}>
+    <div className={`mx-auto ${maxWidth} px-3 sm:px-4 pt-24 sm:pt-40 pb-8 sm:pb-24 ${containerClassName}`}>
+      <div className={`bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md rounded-[2rem] sm:rounded-[3rem] shadow-2xl shadow-black/5 dark:shadow-white/5 p-6 sm:p-16 ${className}`}>
         {children}
       </div>
     </div>
