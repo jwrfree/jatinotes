@@ -54,6 +54,28 @@ Berikut adalah langkah-langkah untuk mengimpor komentar lama dari WordPress ke s
 3.  Script akan memproses setiap komentar, mencocokkan post berdasarkan slug, dan menguploadnya ke Sanity.
 4.  Cek output di terminal untuk melihat status sukses/gagal.
 
+## Opsi 2: Migrasi Otomatis via WordPress GraphQL (Recommended)
+
+Jika website WordPress lama Anda masih aktif dan memiliki endpoint GraphQL (misal WPGraphQL plugin):
+
+1.  **Pastikan Konfigurasi .env.local**
+    Pastikan file `.env.local` memiliki:
+    ```env
+    WORDPRESS_API_URL="https://domainanda.com/graphql"
+    SANITY_API_WRITE_TOKEN="token_anda"
+    ```
+
+2.  **Jalankan Script Migrasi**
+    Buka terminal dan jalankan:
+    ```bash
+    node scripts/migrate-from-graphql.mjs
+    ```
+    Script ini akan:
+    - Terhubung ke WordPress Anda.
+    - Mengambil semua komentar secara bertahap.
+    - Mencocokkan komentar dengan Post yang ada di Sanity (berdasarkan slug).
+    - Mengupload komentar ke Sanity.
+
 ## Verifikasi
 
 Setelah selesai, buka halaman post di website atau di Sanity Studio untuk melihat komentar yang sudah diimpor.
