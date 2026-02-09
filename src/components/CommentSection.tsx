@@ -15,12 +15,11 @@ const CommentItem = ({ comment, depth = 0 }: { comment: Comment; depth?: number 
 
   return (
     <div className={`flex flex-col gap-4 ${depth > 0 ? 'ml-8 sm:ml-12 mt-4' : ''} ${isOptimistic ? 'opacity-60 grayscale' : ''}`}>
-      <div 
-        className={`group relative flex gap-5 p-6 rounded-[2rem] transition-all duration-300 border hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-white/5 hover:-translate-y-0.5 ${
-          depth > 0 
-            ? 'bg-zinc-100/30 dark:bg-zinc-800/20 border-zinc-200/50 dark:border-zinc-700/50' 
+      <div
+        className={`group relative flex gap-5 p-6 rounded-[2rem] transition-all duration-300 border hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-white/5 hover:-translate-y-0.5 ${depth > 0
+            ? 'bg-zinc-100/30 dark:bg-zinc-800/20 border-zinc-200/50 dark:border-zinc-700/50'
             : 'bg-zinc-50/50 dark:bg-zinc-800/30 border-zinc-100 dark:border-zinc-800'
-        }`}
+          }`}
       >
         <div className={`relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500/10 to-amber-500/5 dark:from-amber-500/20 dark:to-amber-500/10 border border-amber-500/10 dark:border-amber-500/20 shadow-sm group-hover:scale-105 transition-transform duration-300 ${depth > 0 ? 'h-10 w-10 sm:h-12 sm:w-12' : ''}`}>
           {comment.author?.node?.avatar?.url ? (
@@ -54,13 +53,13 @@ const CommentItem = ({ comment, depth = 0 }: { comment: Comment; depth?: number 
               </span>
             </div>
           </div>
-          <div 
+          <div
             className={`text-zinc-600 dark:text-zinc-400 prose dark:prose-invert max-w-none prose-p:leading-relaxed prose-p:text-zinc-600 dark:prose-p:text-zinc-400 ${depth > 0 ? 'prose-xs' : 'prose-sm'}`}
             dangerouslySetInnerHTML={{ __html: sanitize(comment.content) }}
           />
-          
+
           <div className="mt-4 flex items-center gap-6">
-            <button 
+            <button
               className="flex items-center gap-1.5 text-[10px] font-bold text-zinc-400 hover:text-amber-500 transition-colors group/reply"
               onClick={() => document.getElementById('comment-form')?.scrollIntoView({ behavior: 'smooth' })}
             >
@@ -71,7 +70,7 @@ const CommentItem = ({ comment, depth = 0 }: { comment: Comment; depth?: number 
             </button>
 
             {hasChildren && (
-              <button 
+              <button
                 onClick={() => setShowReplies(!showReplies)}
                 className="flex items-center gap-2 text-[10px] font-bold text-amber-500 hover:text-amber-600 transition-colors"
               >
@@ -86,7 +85,7 @@ const CommentItem = ({ comment, depth = 0 }: { comment: Comment; depth?: number 
           </div>
         </div>
       </div>
-      
+
       {hasChildren && showReplies && (
         <div className="relative animate-in fade-in slide-in-from-top-2 duration-300">
           <div className="absolute left-6 sm:left-10 top-0 bottom-0 w-px bg-zinc-200 dark:bg-zinc-800 -z-10" />
@@ -101,7 +100,7 @@ const CommentItem = ({ comment, depth = 0 }: { comment: Comment; depth?: number 
 
 interface CommentSectionProps {
   comments: Comment[];
-  postId: number;
+  postId: string; // Changed from number to string for Sanity ID
   commentCount: number;
 }
 
@@ -121,16 +120,16 @@ export default function CommentSection({ comments, postId, commentCount }: Comme
       <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 mb-8">
         Diskusi ({commentCount})
       </h2>
-      
+
       {commentTree.length > 0 ? (
         <div className="space-y-6">
           {visibleComments.map((comment) => (
             <CommentItem key={comment.id} comment={comment} />
           ))}
-          
+
           {hasMore && (
             <div className="pt-4 flex justify-center">
-              <button 
+              <button
                 onClick={() => setDisplayCount(prev => prev + 5)}
                 className="group flex items-center gap-3 px-8 py-3 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 text-sm font-bold hover:bg-amber-500 hover:text-white transition-all duration-300"
               >
@@ -147,7 +146,7 @@ export default function CommentSection({ comments, postId, commentCount }: Comme
           <p className="text-zinc-500 dark:text-zinc-400">Belum ada diskusi. Jadilah yang pertama memberikan tanggapan.</p>
         </div>
       )}
-      
+
       <div className="mt-12 bg-zinc-50 dark:bg-zinc-800/50 rounded-[2.5rem] p-8 sm:p-12 border border-zinc-100 dark:border-zinc-800">
         <CommentForm postId={postId} onOptimisticAdd={addOptimisticComment} />
       </div>

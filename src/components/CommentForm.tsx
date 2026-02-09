@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Comment } from "@/lib/types";
 
 interface CommentFormProps {
-  postId: number;
+  postId: string; // Updated to string for Sanity ID
   onOptimisticAdd?: (comment: Comment) => void;
 }
 
@@ -25,7 +25,7 @@ export default function CommentForm({ postId, onOptimisticAdd }: CommentFormProp
     // Check honeypot
     if (formData.website) {
       console.warn("Bot detected via honeypot");
-      return false; 
+      return false;
     }
 
     const newErrors: { [key: string]: string } = {};
@@ -36,7 +36,7 @@ export default function CommentForm({ postId, onOptimisticAdd }: CommentFormProp
       newErrors.authorEmail = "Format email tidak valid";
     }
     if (!formData.content.trim()) newErrors.content = "Komentar tidak boleh kosong";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -44,7 +44,7 @@ export default function CommentForm({ postId, onOptimisticAdd }: CommentFormProp
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
+
     setStatus("submitting");
     setMessage("");
     setErrors({});
@@ -135,11 +135,10 @@ export default function CommentForm({ postId, onOptimisticAdd }: CommentFormProp
               type="text"
               id="author"
               placeholder="Masukkan nama Anda..."
-              className={`block w-full rounded-2xl border bg-white px-4 py-3 text-zinc-900 transition-all focus:ring-4 outline-none ${
-                errors.author 
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10 dark:border-red-900/50' 
+              className={`block w-full rounded-2xl border bg-white px-4 py-3 text-zinc-900 transition-all focus:ring-4 outline-none ${errors.author
+                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10 dark:border-red-900/50'
                   : 'border-zinc-200 focus:border-amber-500 focus:ring-amber-500/10 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20'
-              }`}
+                }`}
               value={formData.author}
               onChange={(e) => {
                 setFormData({ ...formData, author: e.target.value });
@@ -159,11 +158,10 @@ export default function CommentForm({ postId, onOptimisticAdd }: CommentFormProp
               type="email"
               id="email"
               placeholder="nama@email.com"
-              className={`block w-full rounded-2xl border bg-white px-4 py-3 text-zinc-900 transition-all focus:ring-4 outline-none ${
-                errors.authorEmail 
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10 dark:border-red-900/50' 
+              className={`block w-full rounded-2xl border bg-white px-4 py-3 text-zinc-900 transition-all focus:ring-4 outline-none ${errors.authorEmail
+                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10 dark:border-red-900/50'
                   : 'border-zinc-200 focus:border-amber-500 focus:ring-amber-500/10 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20'
-              }`}
+                }`}
               value={formData.authorEmail}
               onChange={(e) => {
                 setFormData({ ...formData, authorEmail: e.target.value });
@@ -184,11 +182,10 @@ export default function CommentForm({ postId, onOptimisticAdd }: CommentFormProp
             id="content"
             rows={5}
             placeholder="Tuliskan pemikiran Anda di sini..."
-            className={`block w-full rounded-3xl border bg-white px-4 py-4 text-zinc-900 transition-all focus:ring-4 outline-none resize-none ${
-              errors.content 
-                ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10 dark:border-red-900/50' 
+            className={`block w-full rounded-3xl border bg-white px-4 py-4 text-zinc-900 transition-all focus:ring-4 outline-none resize-none ${errors.content
+                ? 'border-red-300 focus:border-red-500 focus:ring-red-500/10 dark:border-red-900/50'
                 : 'border-zinc-200 focus:border-amber-500 focus:ring-amber-500/10 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-amber-500 dark:focus:ring-amber-500/20'
-            }`}
+              }`}
             value={formData.content}
             onChange={(e) => {
               setFormData({ ...formData, content: e.target.value });
@@ -199,11 +196,10 @@ export default function CommentForm({ postId, onOptimisticAdd }: CommentFormProp
         </div>
 
         {message && (
-          <div className={`flex items-center gap-3 p-4 rounded-2xl text-sm font-medium animate-in fade-in slide-in-from-top-2 ${
-            status === "success" 
-              ? "bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20" 
+          <div className={`flex items-center gap-3 p-4 rounded-2xl text-sm font-medium animate-in fade-in slide-in-from-top-2 ${status === "success"
+              ? "bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20"
               : "bg-red-50 text-red-700 border border-red-100 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"
-          }`}>
+            }`}>
             {status === "success" ? (
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 shrink-0">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

@@ -14,7 +14,7 @@ export async function submitCommentAction(formData: {
   author: string;
   authorEmail: string;
   content: string;
-  postId: number;
+  postId: string; // Updated to string for Sanity ID
   website?: string; // Honeypot field
 }) {
   try {
@@ -49,14 +49,14 @@ export async function submitCommentAction(formData: {
       return { success: false, message: "Isi komentar tidak valid." };
     }
 
+    // Call Repository directly (which uses Sanity Client)
     const res = await createComment({
       ...formData,
       content: sanitizedContent
     });
 
     if (res?.success) {
-      revalidatePath(`/posts/${formData.postId}`); // This is actually post ID, but slug is usually used in path. 
-      // Revalidating path by slug would be better if we had the slug here.
+      // revalidatePath cannot be used here accurately without slug, relying on ISR
       return { success: true, message: "Komentar berhasil dikirim dan menunggu moderasi." };
     } else {
       return { success: false, message: res?.message || "Gagal mengirim komentar." };
