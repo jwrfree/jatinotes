@@ -29,19 +29,19 @@ const components: PortableTextComponents = {
     block: {
         h1: ({ children, value }) => {
             const text = value.children?.map((c: any) => c.text).join('') || '';
-            return <h1 id={slugify(text)} className="text-3xl font-bold mt-8 mb-4 scroll-mt-24">{children}</h1>
+            return <h1 id={slugify(text)} className="text-3xl font-semibold sm:font-bold mt-8 mb-4 scroll-mt-24">{children}</h1>
         },
         h2: ({ children, value }) => {
             const text = value.children?.map((c: any) => c.text).join('') || '';
-            return <h2 id={slugify(text)} className="text-2xl font-bold mt-8 mb-4 scroll-mt-24">{children}</h2>
+            return <h2 id={slugify(text)} className="text-2xl font-semibold sm:font-bold mt-8 mb-4 scroll-mt-24">{children}</h2>
         },
         h3: ({ children, value }) => {
             const text = value.children?.map((c: any) => c.text).join('') || '';
-            return <h3 id={slugify(text)} className="text-xl font-bold mt-6 mb-3 scroll-mt-24">{children}</h3>
+            return <h3 id={slugify(text)} className="text-xl font-semibold sm:font-bold mt-6 mb-3 scroll-mt-24">{children}</h3>
         },
         h4: ({ children, value }) => {
             const text = value.children?.map((c: any) => c.text).join('') || '';
-            return <h4 id={slugify(text)} className="text-lg font-bold mt-4 mb-2 scroll-mt-24">{children}</h4>
+            return <h4 id={slugify(text)} className="text-lg font-semibold mt-4 mb-2 scroll-mt-24">{children}</h4>
         },
         blockquote: ({ children }) => <blockquote className="border-l-4 border-amber-500 pl-4 italic my-4">{children}</blockquote>,
         normal: ({ children }) => <p className="mb-4 leading-relaxed text-zinc-700 dark:text-zinc-300">{children}</p>,

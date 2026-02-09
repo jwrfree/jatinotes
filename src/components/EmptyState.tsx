@@ -58,7 +58,7 @@ export default function EmptyState({
                 </div>
             )}
 
-            <h3 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-3">
+            <h3 className="text-2xl font-semibold sm:font-bold text-zinc-900 dark:text-zinc-100 mb-3">
                 {title}
             </h3>
 

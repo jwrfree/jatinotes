@@ -62,7 +62,7 @@ export default function ErrorMessage({
                     )}
                 </div>
                 <div className="flex-1">
-                    <h3 className={`font-bold ${styles.title}`}>{title}</h3>
+                    <h3 className={`font-semibold sm:font-bold ${styles.title}`}>{title}</h3>
                     <p className={`text-sm mt-2 ${styles.message}`}>{message}</p>
                     {onRetry && (
                         <button

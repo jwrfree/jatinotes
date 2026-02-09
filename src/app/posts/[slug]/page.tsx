@@ -156,13 +156,13 @@ export default async function PostPage({
         - Outer Grid Wrapper (max-w-7xl, grid-cols-12)
         - Content centered in col-span-8
       */}
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-12">
 
           {/* Main Content Column (Restore Desktop layout) */}
           <div className="xl:col-span-8 xl:col-start-3 space-y-4">
             {/* 1. Main Article Content */}
-            <ContentCard noBottomPadding>
+            <ContentCard noBottomPadding noPadding>
               <MotionDiv
                 initial="initial"
                 animate="animate"
@@ -210,7 +210,7 @@ export default async function PostPage({
             </ContentCard>
 
             {/* 2. Comment Section Card */}
-            <ContentCard noTopPadding className="bg-zinc-50/50 dark:bg-zinc-900/50 border-zinc-100 dark:border-zinc-800/50">
+            <ContentCard noTopPadding noPadding className="bg-zinc-50/50 dark:bg-zinc-900/50 border-zinc-100 dark:border-zinc-800/50">
               <LocalErrorBoundary name="Bagian Komentar">
                 <CommentSection
                   comments={post.comments?.nodes || []}
@@ -225,7 +225,7 @@ export default async function PostPage({
             <div className="flex justify-center pt-4">
               <Link
                 href={isBookReview ? "/buku" : "/"}
-                className="group flex items-center gap-3 text-sm font-bold text-amber-500 transition-all hover:gap-5 px-6 py-3 rounded-full bg-white dark:bg-zinc-900 shadow-sm border border-zinc-100 dark:border-zinc-800 hover:shadow-md"
+                className="group flex items-center gap-3 text-sm font-bold text-amber-500 transition-all hover:gap-5 px-6 py-3 rounded-full bg-white dark:bg-zinc-900"
               >
                 <svg
                   viewBox="0 0 16 16"

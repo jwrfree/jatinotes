@@ -18,7 +18,7 @@ export default function PageHeader({
   subtitle,
   description,
   className = "",
-  titleClassName = "text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl leading-tight",
+  titleClassName = "text-4xl font-semibold sm:font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl leading-tight",
   useDecryptedText = false,
   accent,
   topContent,
@@ -33,7 +33,7 @@ export default function PageHeader({
 
       <h1 className={titleClassName}>
         {useDecryptedText ? (
-          <DecryptedText 
+          <DecryptedText
             text={title}
             animateOn="view"
             revealDirection="start"
@@ -52,7 +52,7 @@ export default function PageHeader({
           {accent}
         </div>
       )}
-      
+
       {subtitle && (
         <div className="mt-8">
           {subtitle}
@@ -60,7 +60,7 @@ export default function PageHeader({
       )}
 
       {description && (
-        <div 
+        <div
           className="mt-8 text-sm md:text-base text-zinc-500 dark:text-zinc-400 leading-relaxed"
           dangerouslySetInnerHTML={{ __html: sanitize(description) }}
         />

@@ -38,7 +38,7 @@ const CommentItem = ({
       >
         {depth > 0 && <div className="w-4 h-px bg-zinc-200 dark:bg-zinc-800" />}
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800/50 hover:bg-amber-50 dark:hover:bg-amber-900/10 border border-transparent hover:border-amber-200 transition-all">
-          <span className="text-xs font-bold text-zinc-500 group-hover:text-amber-600 transition-colors">
+          <span className="text-xs font-semibold text-zinc-500 group-hover:text-amber-600 transition-colors">
             [+] {comment.author?.node?.name}
           </span>
           <span className="text-[10px] text-zinc-400">
@@ -87,7 +87,7 @@ const CommentItem = ({
         <div className="flex flex-col flex-1 min-w-0 bg-zinc-50/50 dark:bg-zinc-900/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800 hover:border-amber-500/30 transition-colors">
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className={`font-bold text-sm ${isAuthor ? 'text-amber-600 dark:text-amber-500' : 'text-zinc-900 dark:text-zinc-100'}`}>
+              <span className={`font-semibold sm:font-bold text-sm ${isAuthor ? 'text-amber-600 dark:text-amber-500' : 'text-zinc-900 dark:text-zinc-100'}`}>
                 {comment.author?.node?.name}
               </span>
 
@@ -127,7 +127,7 @@ const CommentItem = ({
           <div className="mt-3 flex items-center gap-4 select-none">
             <button
               onClick={() => setIsReplying(!isReplying)}
-              className="text-xs font-bold text-zinc-400 hover:text-amber-500 transition-colors flex items-center gap-1.5 py-1"
+              className="text-xs font-semibold text-zinc-400 hover:text-amber-500 transition-colors flex items-center gap-1.5 py-1"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
@@ -204,10 +204,13 @@ export default function CommentSection({ comments, postId, commentCount, postAut
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-center justify-between mb-8 group cursor-pointer select-none"
       >
-        <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3">
+        <h2 className="text-2xl font-semibold sm:font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3">
           Diskusi
-          <span className="text-lg font-medium text-zinc-400 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-full group-hover:bg-amber-100 dark:group-hover:bg-amber-900/30 group-hover:text-amber-600 dark:group-hover:text-amber-500 transition-colors">
-            {commentCount}
+          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-full group-hover:bg-amber-100 dark:group-hover:bg-amber-900/30 group-hover:text-amber-600 dark:group-hover:text-amber-500 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+              <path fillRule="evenodd" d="M10 2c-2.236 0-4.43.18-6.57.524C1.993 2.755 1 4.014 1 5.426v5.148c0 1.413.993 2.67 2.43 2.902.848.137 1.705.248 2.57.331v3.443a.75.75 0 001.28.53l3.58-3.579a.78.78 0 01.527-.224 41.202 41.202 0 005.183-.5c1.437-.232 2.43-1.49 2.43-2.903V5.426c0-1.413-.993-2.67-2.43-2.902A41.289 41.289 0 0010 2zm0 7a1 1 0 100-2 1 1 0 000 2zM8 8a1 1 0 11-2 0 1 1 0 012 0zm5 1a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+            </svg>
+            {commentCount} {commentCount === 1 ? 'komentar' : 'komentar'}
           </span>
         </h2>
 
@@ -219,7 +222,7 @@ export default function CommentSection({ comments, postId, commentCount, postAut
       </button>
 
       <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'}`}>
-        <div className="mb-12 bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-zinc-100 dark:border-zinc-800 shadow-sm">
+        <div className="mb-12 bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-zinc-100 dark:border-zinc-800 shadow-lg shadow-zinc-200/50 dark:shadow-zinc-950/50">
           <CommentForm postId={postId} onOptimisticAdd={addOptimisticComment} />
         </div>
 
@@ -239,7 +242,7 @@ export default function CommentSection({ comments, postId, commentCount, postAut
               <div className="pt-8 flex justify-center pb-12">
                 <button
                   onClick={() => setDisplayCount(prev => prev + 5)}
-                  className="group flex items-center gap-2 px-6 py-2.5 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-bold hover:border-amber-500 hover:text-amber-500 transition-all duration-300 shadow-sm"
+                  className="group flex items-center gap-2 px-6 py-2.5 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-semibold hover:border-amber-500 hover:text-amber-500 transition-all duration-300 shadow-sm"
                 >
                   Lihat Lebih Banyak Komentar
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 group-hover:translate-y-0.5 transition-transform">

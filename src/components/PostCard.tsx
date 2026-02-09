@@ -122,7 +122,7 @@ export default function PostCard({
           )}
           <div className="mt-6 flex flex-col flex-grow">
             <h3
-              className={`font-bold leading-tight text-zinc-900 dark:text-zinc-100 transition-colors ${accentClasses[accentColor]
+              className={`font-semibold sm:font-bold leading-tight text-zinc-900 dark:text-zinc-100 transition-colors ${accentClasses[accentColor]
                 } ${isWide ? "text-2xl" : "text-xl"}`}
             >
               {displayTitle}

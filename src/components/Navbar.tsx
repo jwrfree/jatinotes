@@ -23,7 +23,7 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
+
       // Always visible, only track scrolled state
       setScrolled(currentScrollY > 20);
       setLastScrollY(currentScrollY);
@@ -62,9 +62,8 @@ export default function Navbar() {
       scale: 0.95,
       y: -20,
       transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 30
+        duration: 0.2,
+        ease: [0.4, 0, 0.2, 1]
       }
     },
     open: {
@@ -72,9 +71,29 @@ export default function Navbar() {
       scale: 1,
       y: 0,
       transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 30
+        duration: 0.3,
+        ease: [0, 0, 0.2, 1],
+        staggerChildren: 0.05,
+        delayChildren: 0.1
+      }
+    }
+  };
+
+  const menuItemVariants: Variants = {
+    closed: {
+      opacity: 0,
+      y: -10,
+      transition: {
+        duration: 0.2,
+        ease: [0.4, 0, 0.2, 1]
+      }
+    },
+    open: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.3,
+        ease: [0, 0, 0.2, 1]
       }
     }
   };
@@ -90,7 +109,7 @@ export default function Navbar() {
 
   return (
     <>
-      <m.div 
+      <m.div
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -98,40 +117,36 @@ export default function Navbar() {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <nav className={`mx-auto transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          scrolled || isHovered
-            ? "max-w-[95%] md:max-w-4xl bg-white/80 backdrop-blur-2xl dark:bg-zinc-900/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.1)] border border-zinc-200/50 dark:border-zinc-800/50 py-2 rounded-full" 
-            : "max-w-5xl bg-transparent border-transparent py-4 rounded-[2rem]"
-        }`}>
+        <nav className={`mx-auto transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${scrolled || isHovered
+          ? "max-w-[95%] md:max-w-4xl bg-white/80 backdrop-blur-2xl dark:bg-zinc-900/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.1)] border border-zinc-200/50 dark:border-zinc-800/50 py-2 rounded-full"
+          : "max-w-5xl bg-transparent border-transparent py-4 rounded-[2rem]"
+          }`}>
 
           <div className="flex items-center justify-between px-4 md:px-6">
             <div className="flex-[1.5] flex items-center">
-              <Link href="/" className={`font-bold tracking-tighter text-zinc-900 dark:text-zinc-50 z-50 transition-all duration-500 ${scrolled ? "text-lg" : "text-xl"}`}>
+              <Link href="/" className={`font-semibold sm:font-bold tracking-tighter text-zinc-900 dark:text-zinc-50 z-50 transition-all duration-500 ${scrolled ? "text-lg" : "text-xl"}`}>
                 Jati<span className="text-amber-500">Notes</span>
               </Link>
             </div>
-            
+
             {/* Desktop Navigation - Centered */}
-            <div className={`hidden md:flex items-center transition-all duration-500 rounded-full whitespace-nowrap bg-zinc-200/60 dark:bg-zinc-900/90 ${
-              scrolled 
-                ? "p-1" 
-                : "p-1.5"
-            }`}>
+            <div className={`hidden md:flex items-center transition-all duration-500 rounded-full whitespace-nowrap bg-zinc-200/60 dark:bg-zinc-900/90 ${scrolled
+              ? "p-1"
+              : "p-1.5"
+              }`}>
               {links.map((link) => {
                 const isActive = pathname === link.href;
                 return (
-                  <Link 
+                  <Link
                     key={link.href}
-                    href={link.href} 
+                    href={link.href}
                     onMouseEnter={() => setHoveredPath(link.href)}
                     onMouseLeave={() => setHoveredPath(null)}
-                    className={`relative px-5 py-2 font-medium transition-all duration-300 whitespace-nowrap ${
-                      scrolled ? "text-xs" : "text-sm"
-                    } ${
-                      isActive 
-                        ? "text-zinc-900 dark:text-zinc-50" 
+                    className={`relative px-5 py-2 font-medium transition-all duration-300 whitespace-nowrap ${scrolled ? "text-xs" : "text-sm"
+                      } ${isActive
+                        ? "text-zinc-900 dark:text-zinc-50"
                         : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
-                    }`}
+                      }`}
                   >
                     {isActive && (
                       <m.div
@@ -155,7 +170,7 @@ export default function Navbar() {
 
             <div className="flex-[1.5] flex justify-end items-center gap-2">
               {/* Search Icon */}
-              <button 
+              <button
                 onClick={toggleSearch}
                 className="group relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors duration-300 focus:outline-none"
                 aria-label="Search"
@@ -164,7 +179,7 @@ export default function Navbar() {
               </button>
 
               {/* Mobile Toggle */}
-              <button 
+              <button
                 onClick={toggleMenu}
                 className="group relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:outline-none md:hidden"
                 aria-label="Toggle Menu"
@@ -199,18 +214,21 @@ export default function Navbar() {
                 {links.map((link) => {
                   const isActive = pathname === link.href;
                   return (
-                    <Link 
+                    <m.div
                       key={link.href}
-                      href={link.href} 
-                      className={`relative flex items-center justify-center rounded-2xl py-4 text-lg font-semibold transition-all ${
-                        isActive 
-                          ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25" 
-                          : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-                      }`}
-                      onClick={toggleMenu}
+                      variants={menuItemVariants}
                     >
-                      {link.label}
-                    </Link>
+                      <Link
+                        href={link.href}
+                        className={`relative flex items-center justify-center rounded-full px-6 py-3 text-lg font-semibold transition-all ${isActive
+                          ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 border border-zinc-200 dark:border-zinc-700"
+                          : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                          }`}
+                        onClick={toggleMenu}
+                      >
+                        {link.label}
+                      </Link>
+                    </m.div>
                   );
                 })}
               </div>
@@ -218,9 +236,9 @@ export default function Navbar() {
           </m.div>
         )}
       </AnimatePresence>
-      <SearchDialog 
-        isOpen={isSearchOpen} 
-        onClose={() => setIsSearchOpen(false)} 
+      <SearchDialog
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
       />
     </>
   );
