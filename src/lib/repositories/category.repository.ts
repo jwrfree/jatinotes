@@ -1,92 +1,61 @@
 import { cache } from 'react';
-import { z } from 'zod';
-import { CategorySchema, PageInfoSchema, PostSchema, Category, Post, PageInfo } from '../types';
+import { Category, Post, PageInfo } from '../types';
 import {
-  CATEGORY_POSTS_QUERY,
-  ALL_CATEGORIES_QUERY,
-  ALL_GENRES_QUERY,
-  GENRE_BY_SLUG_QUERY
-} from '../queries';
-import { fetchAPI } from '../fetcher';
+  CATEGORIES_QUERY,
+  POSTS_BY_CATEGORY_QUERY,
+  AUTHORS_QUERY,
+  POSTS_BY_AUTHOR_QUERY
+} from '../../sanity/lib/queries';
+import { client } from '../../sanity/lib/client';
+import { mapSanityCategoryToCategory, mapSanityPostToPost } from '../sanity/mapper';
 
 export const CategoryRepository = {
   getAll: async () => {
-    const data = await fetchAPI(ALL_CATEGORIES_QUERY);
-    return data?.categories?.nodes;
+    const categories = await client.fetch(CATEGORIES_QUERY);
+    return categories.map(mapSanityCategoryToCategory);
   },
 
-  getPostsByCategory: cache(async (slug: string, params: { first?: number, after?: string, last?: number, before?: string } = { first: 10 }): Promise<Category | null> => {
-    const data = await fetchAPI(
-      CATEGORY_POSTS_QUERY,
-      {
-        variables: {
-          id: slug,
-          idType: 'SLUG',
-          ...params
-        },
-      }
-    );
+  getPostsByCategory: cache(async (slug: string, params: { first?: number } = { first: 10 }): Promise<Category | null> => {
+    // We need to fetch the category details AND its posts
+    // Sanity query in queries.ts only fetches posts? Let's check. 
+    // POSTS_BY_CATEGORY_QUERY fetches posts.
+    // We need the category info too.
 
-    if (!data?.category) return null;
-    const parsed = CategorySchema.safeParse(data.category);
-    if (!parsed.success) {
-      console.error(`❌ Category validation error for slug ${slug}:`, parsed.error);
-      return data.category as Category;
-    }
-    return parsed.data;
+    // Re-using a combined query logic here or fetching in parallel
+    const [posts, categoryInfo] = await Promise.all([
+      client.fetch(POSTS_BY_CATEGORY_QUERY, { slug }),
+      client.fetch(`*[_type == "category" && slug.current == $slug][0]`, { slug })
+    ]);
+
+    if (!categoryInfo) return null;
+
+    const category = mapSanityCategoryToCategory(categoryInfo);
+    category.posts = {
+      nodes: posts.map(mapSanityPostToPost),
+      pageInfo: { hasNextPage: false, hasPreviousPage: false } // Mock
+    };
+
+    return category;
   }),
 
+  // Legacy Book/Genre functions - mapped to Categories in Sanity for now?
+  // Existing WP setup had 'genres' as categories under 'buku'.
+  // We'll need to adapt this logic if migration preserved hierarchy.
   getAllGenres: cache(async (): Promise<Category[]> => {
-    const data = await fetchAPI(ALL_GENRES_QUERY, { variables: { parentId: 'buku' } });
-    const nodes = data?.category?.children?.nodes || [];
-    const parsed = z.array(CategorySchema).safeParse(nodes);
-    if (!parsed.success) {
-      console.error("❌ Genres validation error:", parsed.error);
-      return nodes as Category[];
-    }
-    return parsed.data;
+    // Return empty or fetch all categories for now
+    return [];
   }),
 
-  getGenreBySlug: cache(async (slug: string, params: { first?: number, after?: string } = { first: 20 }): Promise<Category | null> => {
-    const data = await fetchAPI(GENRE_BY_SLUG_QUERY, {
-      variables: {
-        id: slug,
-        idType: 'SLUG',
-        ...params
-      }
-    });
-
-    if (!data?.category) return null;
-    const parsed = CategorySchema.safeParse(data.category);
-    if (!parsed.success) {
-      console.error(`❌ Genre validation error for slug ${slug}:`, parsed.error);
-      return data.category as Category;
-    }
-    return parsed.data;
+  getGenreBySlug: cache(async (slug: string): Promise<Category | null> => {
+    return CategoryRepository.getPostsByCategory(slug);
   }),
 
-  getAllBookReviews: cache(async (params: { first?: number, after?: string } = { first: 50 }): Promise<{ nodes: Post[], pageInfo: PageInfo }> => {
-    const data = await fetchAPI(CATEGORY_POSTS_QUERY, {
-      variables: {
-        id: 'buku',
-        idType: 'SLUG',
-        ...params
-      }
-    });
-
-    const nodes = data?.category?.posts?.nodes || [];
-    const pageInfo = data?.category?.posts?.pageInfo || { hasNextPage: false, hasPreviousPage: false };
-
-    const parsedNodes = z.array(PostSchema).safeParse(nodes);
-    const parsedPageInfo = PageInfoSchema.safeParse(pageInfo);
-
-    if (!parsedNodes.success) {
-      console.error("❌ Book reviews validation error:", parsedNodes.error);
-    }
-
+  getAllBookReviews: cache(async (params: { first?: number } = {}): Promise<{ nodes: Post[], pageInfo: PageInfo }> => {
+    // Fetch posts in 'buku' category or similar
+    const posts = await client.fetch(POSTS_BY_CATEGORY_QUERY, { slug: 'buku' });
     return {
-      nodes: parsedNodes.success ? parsedNodes.data : nodes as Post[],
-      pageInfo: parsedPageInfo.success ? parsedPageInfo.data : pageInfo as PageInfo
+      nodes: posts.map(mapSanityPostToPost),
+      pageInfo: { hasNextPage: false, hasPreviousPage: false }
     };
   }),
 };

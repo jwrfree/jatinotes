@@ -6,9 +6,12 @@ interface MetadataProps {
   image?: string;
   type?: "website" | "article";
   publishedTime?: string;
+  modifiedTime?: string;
   authors?: string[];
   noIndex?: boolean;
   url?: string;
+  canonical?: string;
+  keywords?: string[];
 }
 
 const DEFAULT_METADATA = {
@@ -25,17 +28,25 @@ export function constructMetadata({
   image,
   type = "website",
   publishedTime,
+  modifiedTime,
   authors,
   noIndex = false,
   url,
+  canonical,
+  keywords,
 }: MetadataProps): Metadata {
   const metaDescription = description || DEFAULT_METADATA.defaultDescription;
   const metaImage = image || DEFAULT_METADATA.defaultImage;
   const metaUrl = url ? `${DEFAULT_METADATA.baseUrl}${url}` : DEFAULT_METADATA.baseUrl;
+  const canonicalUrl = canonical || metaUrl;
 
   return {
     title,
     description: metaDescription,
+    ...(keywords && keywords.length > 0 && { keywords }),
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title,
       description: metaDescription,
@@ -51,6 +62,7 @@ export function constructMetadata({
       ],
       type,
       ...(publishedTime && { publishedTime }),
+      ...(modifiedTime && { modifiedTime }),
       ...(authors && { authors }),
     },
     twitter: {

@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# JatiNotes
 
-## Getting Started
+Sebuah blog pribadi dan platform catatan digital yang dibangun menggunakan **Next.js** dan **Sanity Headless CMS**.
 
-First, run the development server:
+## Stack Teknologi
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Frontend**: Next.js 14+ (App Router), React, TypeScript
+- **CMS**: Sanity.io (Embedded Studio) - Sebelumnya WordPress
+- **Styling**: Tailwind CSS, Framer Motion
+- **Deployment**: Vercel (Recommended)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Persiapan Lokal
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1.  **Clone Repository**
+    ```bash
+    git clone https://github.com/yourusername/jatinotes.git
+    cd jatinotes
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Inter](https://fonts.google.com/specimen/Inter), a popular sans-serif font.
+2.  **Install Dependencies**
+    ```bash
+    npm install
+    # atau
+    yarn install
+    ```
 
-## Learn More
+3.  **Setup Environment Variables**
+    Buat file `.env.local` dan isi dengan konfigurasi berikut:
 
-To learn more about Next.js, take a look at the following resources:
+    ```env
+    NEXT_PUBLIC_SANITY_PROJECT_ID="0fd6j2sl"
+    NEXT_PUBLIC_SANITY_DATASET="production"
+    # SANITY_API_READ_TOKEN="optional_if_content_is_private"
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4.  **Jalankan Server Development**
+    ```bash
+    npm run dev
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    Buka [http://localhost:3000](http://localhost:3000) untuk melihat website.
+    Buka [http://localhost:3000/studio](http://localhost:3000/studio) untuk mengakses CMS (Sanity Studio).
 
-## Deploy on Vercel
+## Fitur Utama
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Sanity Integration**: Konten dikelola sepenuhnya via Sanity Studio yang tertanam di website.
+- **Portable Text**: Rendering rich text yang fleksibel dengan dukungan gambar (Image Zoom) dan code blocks.
+- **Dynamic Routing**: Halaman blog, kategori, dan single post digenerate secara dinamis.
+- **SEO Optimized**: Metadata otomatis untuk setiap halaman.
+- **Dark Mode**: Dukungan tema gelap/terang.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Catatan Migrasi (WordPress ke Sanity)
+
+Proyek ini telah dimigrasikan dari WordPress Headless ke Sanity.
+- **Schema**: Post, Author, Category, BlockContent.
+- **Images**: Menggunakan Sanity Image Pipeline (`cdn.sanity.io`).
+- **Legacy Support**: URL slug dipertahankan agar link lama tidak rusak.
+
+## Lisensi
+
+[MIT](LICENSE)

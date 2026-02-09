@@ -42,7 +42,7 @@ export const PostSchema = z.object({
   slug: z.string(),
   date: z.string(),
   excerpt: z.string().nullable().optional().transform(val => val ?? ""),
-  content: z.string().nullable().optional().transform(val => val ?? ""),
+  content: z.union([z.string(), z.array(z.any())]).nullable().optional(),
   featuredImage: FeaturedImageSchema.nullable().optional(),
   author: AuthorSchema.nullable().optional(),
   commentCount: z.number().nullable().optional().transform(val => val ?? 0),

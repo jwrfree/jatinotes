@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+test-output.txt
+migration.ndjson
+PRE_COMMIT_CHECKLIST.md
+FINAL_SUMMARY.md

@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { constructMetadata } from "@/lib/metadata";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import ConditionalLayout from "@/components/ConditionalLayout";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "sonner";
@@ -43,13 +42,9 @@ export default function RootLayout({
         className={`${inter.variable} font-sans antialiased bg-amber-50/60 dark:bg-zinc-950`}
       >
         <LazyMotionWrapper>
-          <div className="flex min-h-screen flex-col">
-            <Navbar />
-            <main className="flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </div>
+          <ConditionalLayout>
+            {children}
+          </ConditionalLayout>
           <ScrollToTop />
         </LazyMotionWrapper>
         <Analytics />

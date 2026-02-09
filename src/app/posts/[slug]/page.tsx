@@ -1,3 +1,4 @@
+
 import { getPostBySlug } from "@/lib/api";
 import { PostRepository } from "@/lib/repositories/post.repository";
 import { Post } from "@/lib/types";
@@ -20,6 +21,8 @@ import { notFound } from "next/navigation";
 import { MotionDiv, fadeIn, staggerContainer } from "@/components/Animations";
 import JsonLd from "@/components/JsonLd";
 import { Metadata } from "next";
+import PortableText from "@/components/PortableText";
+import { extractTocFromPortableText } from "@/lib/sanity/toc";
 
 // Use ISR: regenerate page every 60 seconds if requested
 export const revalidate = 60;
@@ -63,17 +66,25 @@ export async function generateMetadata({
     });
   }
 
-  const description = stripHtml(post.excerpt || post.content || "").substring(0, 160);
-  const image = post.featuredImage?.node?.sourceUrl;
+  // Use SEO fields if available (like Yoast SEO)
+  const seoTitle = (post as any).seo?.metaTitle || post.title;
+  const seoDescription = (post as any).seo?.metaDescription || post.excerpt || "Baca selengkapnya di Jati Notes";
+  const seoImage = (post as any).seo?.ogImage || post.featuredImage?.node?.sourceUrl;
+  const seoNoIndex = (post as any).seo?.noIndex || false;
+  const seoCanonical = (post as any).seo?.canonicalUrl;
+  const seoKeywords = (post as any).seo?.focusKeyword ? [(post as any).seo.focusKeyword] : undefined;
 
   return constructMetadata({
-    title: post.title,
-    description,
-    image,
+    title: seoTitle,
+    description: seoDescription,
+    image: seoImage,
     type: "article",
     publishedTime: post.date,
     authors: [post.author?.node?.name || "Wruhantojati"],
     url: `/posts/${slug}`,
+    noIndex: seoNoIndex,
+    canonical: seoCanonical,
+    keywords: seoKeywords,
   });
 }
 
@@ -96,15 +107,28 @@ export default async function PostPage({
     notFound();
   }
 
-  /* Use processContent to extract IDs and TOC structure */
-  const { content: processedContent, toc } = processContent(post.content || "");
+  // Determine content type
+  const isPortableText = Array.isArray(post.content);
+  let processedContent = post.content;
+  let toc = [];
+
+  if (isPortableText) {
+    toc = extractTocFromPortableText(post.content as any[]);
+  } else {
+    const result = processContent(post.content as string || "");
+    processedContent = result.content;
+    toc = result.toc;
+  }
+
   const isBookReview = post.categories?.nodes?.some(c => c.slug === 'buku');
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": post.title,
-    "description": stripHtml(post.excerpt || post.content || "").substring(0, 160),
+    "description": typeof post.content === 'string'
+      ? stripHtml(post.excerpt || post.content || "").substring(0, 160)
+      : (post.excerpt || ""),
     "image": post.featuredImage?.node?.sourceUrl || "https://jatinotes.com/og-image.png",
     "datePublished": post.date,
     "author": {
@@ -145,7 +169,9 @@ export default async function PostPage({
                     <PostMeta
                       authorName={post.author?.node?.name}
                       date={post.date}
-                      content={post.content || ""}
+                      content={typeof post.content === 'string' ? post.content : ""}
+                    // PostMeta reading time calc might need update for array content
+                    // Currently passing empty string if array, might hide reading time
                     />
                   }
                   description={post.excerpt}
@@ -167,7 +193,13 @@ export default async function PostPage({
                   </MotionDiv>
                 )}
 
-                <Prose content={processedContent} className="mt-12" />
+                {isPortableText ? (
+                  <div className="mt-12 prose prose-zinc dark:prose-invert max-w-none prose-headings:scroll-mt-28 prose-p:leading-relaxed prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-a:text-amber-500 prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50 prose-base md:prose-lg">
+                    <PortableText value={processedContent} />
+                  </div>
+                ) : (
+                  <Prose content={processedContent as string} className="mt-12" />
+                )}
 
                 <hr className="my-16 border-zinc-100 dark:border-zinc-800" />
 

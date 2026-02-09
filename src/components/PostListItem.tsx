@@ -14,18 +14,18 @@ export default function PostListItem({ post }: PostListItemProps) {
       variants={fadeIn}
       className="group"
     >
-      <Link 
+      <Link
         href={`/posts/${post.slug}`}
         className="flex flex-col md:flex-row md:items-center justify-between py-6 border-b border-zinc-100 dark:border-zinc-800 hover:border-amber-500/30 transition-colors"
       >
         <div className="flex-1 space-y-2">
           <div className="flex items-center gap-3 text-[10px] font-medium text-zinc-400">
-            <span>{calculateReadingTime(post.content || "")} menit baca</span>
+            <span>{calculateReadingTime(typeof post.content === 'string' ? post.content : "")} menit baca</span>
           </div>
           <h3 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-amber-500 transition-colors">
             {post.title}
           </h3>
-          <div 
+          <div
             className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             dangerouslySetInnerHTML={{ __html: sanitize(post.excerpt || "") }}
           />

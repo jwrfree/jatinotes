@@ -30,6 +30,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'cdn.sanity.io',
+      },
+      {
+        protocol: 'https',
         hostname: '*.googleapis.com',
       },
       {
@@ -43,8 +47,8 @@ const nextConfig: NextConfig = {
       default-src 'self';
       script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com;
       style-src 'self' 'unsafe-inline';
-      img-src 'self' blob: data: https://*.jatinotes.com https://jatinotes.com https://secure.gravatar.com https://*.gravatar.com https://images.unsplash.com https://*.wp.com https://*.googleapis.com https://*.gstatic.com https://www.google-analytics.com;
-      connect-src 'self' https://jatinotes.com https://www.google-analytics.com https://analytics.google.com;
+      img-src 'self' blob: data: https://*.jatinotes.com https://jatinotes.com https://cdn.sanity.io https://secure.gravatar.com https://*.gravatar.com https://images.unsplash.com https://*.wp.com https://*.googleapis.com https://*.gstatic.com https://www.google-analytics.com;
+      connect-src 'self' https://jatinotes.com https://cdn.sanity.io https://*.api.sanity.io https://www.google-analytics.com https://analytics.google.com;
       font-src 'self';
       object-src 'none';
       base-uri 'self';
