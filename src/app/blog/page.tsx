@@ -9,6 +9,8 @@ import Pagination from "@/components/Pagination";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { Post } from "@/lib/types";
+import EmptyState from "@/components/EmptyState";
+import { BookOpen } from "lucide-react";
 
 export const metadata: Metadata = constructMetadata({
   title: "Blog",
@@ -22,9 +24,9 @@ export default async function BlogListPage({
   searchParams: Promise<{ after?: string; before?: string }>;
 }) {
   const { after, before } = await searchParams;
-  
-  const paginationParams = before 
-    ? { last: 10, before } 
+
+  const paginationParams = before
+    ? { last: 10, before }
     : { first: 10, after: after || "" };
 
   const category = await getPostsByCategory("blog", paginationParams);
@@ -64,7 +66,7 @@ export default async function BlogListPage({
         />
 
         {posts.length > 0 ? (
-          <MotionDiv 
+          <MotionDiv
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
@@ -76,10 +78,14 @@ export default async function BlogListPage({
             ))}
           </MotionDiv>
         ) : (
-          <div className="p-20 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-[3rem] text-center backdrop-blur-sm bg-white/5">
-            <h3 className="text-xl font-medium text-zinc-900 dark:text-zinc-50">Belum Ada Catatan</h3>
-            <p className="mt-2 text-zinc-500">Sedang menyusun pemikiran. Tulisan baru akan segera hadir.</p>
-          </div>
+          <EmptyState
+            icon={<BookOpen className="w-10 h-10 text-amber-500" />}
+            title="Belum Ada Catatan"
+            description="Penulis sedang menyusun pemikiran baru. Kunjungi lagi nanti untuk tulisan terbaru."
+            actionLabel="Jelajahi Kategori Lain"
+            actionHref="/categories"
+            className="border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-[3rem] backdrop-blur-sm bg-white/5"
+          />
         )}
 
         {pageInfo && (

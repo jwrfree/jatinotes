@@ -16,52 +16,65 @@
   a {
     @apply no-underline;
   }
+
   .prose a {
     @apply text-amber-500 no-underline font-medium;
   }
+
   /* Fix oversized SVGs in prose content */
   .prose svg {
     @apply max-w-full h-auto inline-block align-middle;
     width: 1em;
     height: 1em;
   }
+
   /* If the SVG is meant to be an icon in a list or heading */
-  .prose h1 svg, .prose h2 svg, .prose h3 svg, .prose li svg {
+  .prose h1 svg,
+  .prose h2 svg,
+  .prose h3 svg,
+  .prose li svg {
     width: 1.25em;
     height: 1.25em;
   }
 }
 
-  body {
-    @apply bg-white dark:bg-zinc-950;
-  }
+body {
+  @apply bg-white dark:bg-zinc-950;
+}
 
-  /* Utility to hide scrollbar but keep functionality */
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
+/* Utility to hide scrollbar but keep functionality */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+}
+
+@supports (scrollbar-width: none) {
   .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
-  @supports (scrollbar-width: none) {
-    .scrollbar-hide {
-      scrollbar-width: none;  /* Firefox */
-    }
-  }
+}
 
-  /* Custom Scrollbar for search results */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-zinc-200 dark:bg-zinc-800 rounded-full transition-colors;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply bg-zinc-300 dark:bg-zinc-700;
-  }
+/* Custom Scrollbar for search results */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-zinc-200 dark:bg-zinc-800 rounded-full transition-colors;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-zinc-300 dark:bg-zinc-700;
+}
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -78,4 +91,18 @@ body {
 /* Custom Text Selection Color */
 ::selection {
   @apply bg-amber-500/20 text-amber-600 dark:text-amber-400;
+}
+
+/* Accessibility: Focus visible styles */
+*:focus-visible {
+  @apply outline-2 outline-amber-500 outline-offset-2;
+}
+
+/* Better approach: Utility class for touch targets */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
