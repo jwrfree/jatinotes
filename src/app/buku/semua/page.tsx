@@ -10,101 +10,36 @@ import Link from "next/link";
 export const metadata: Metadata = constructMetadata({
   title: "Daftar Buku - Jati Notes",
   description: "Daftar lengkap buku yang telah dibaca oleh Wruhantojati dalam format tabel yang ringkas dan terstruktur.",
-  url: "/buku/reviews",
+  url: "/buku/semua",
 });
+
+// Revalidate every 60 seconds to ensure fresh data from Sanity
+export const revalidate = 60;
+
 
 export default async function AllReviewsPage() {
   const { nodes: reviews } = await getAllBookReviews({ first: 100 });
 
-  // Mapping penulis buku berdasarkan slug (Hardcoded sementara)
-  const bookAuthors: Record<string, string> = {
-    "kenapa-buku-quiet-bikin-aku-merasa-dimengerti": "Susan Cain",
-    "why-we-sleep": "Matthew Walker",
-    "sapiens-riwayat-singkat-umat-manusia": "Yuval Noah Harari",
-    "review-buku-filosofi-teras-panduan-praktis-hidup-tenang-gen-z-milenial": "Henry Manampiring",
-    "review-buku-the-danish-way-of-parenting": "Jessica Joelle Alexander & Iben Sandahl",
-    "rich-dad-poor-dad-cara-mengelola-uang-yang-diajarkan-orang-kaya-ulasan-lengkap-buku-robert-kiyosaki": "Robert Kiyosaki",
-    "strawberry-generation-generasi-rapuh-atau-adaptif": "Rhenald Kasali",
-    "atomic-habits-james-clear": "James Clear",
-    "mantappu-jiwa": "Jerome Polin",
-    "filosofi-teras": "Henry Manampiring",
-    "atomic-habits": "James Clear",
-    "ikigai": "Héctor García & Francesc Miralles",
-    "sapiens": "Yuval Noah Harari",
-    "the-psychology-of-money": "Morgan Housel",
-    "the-art-of-thinking-clearly": "Rolf Dobelli",
-    "man-search-for-meaning": "Viktor E. Frankl",
-    "show-your-work": "Austin Kleon",
-    "steal-like-an-artist": "Austin Kleon",
-    "keep-going": "Austin Kleon",
-    "deep-work": "Cal Newport",
-    "digital-minimalism": "Cal Newport",
-    "the-alchemist": "Paulo Coelho",
-    "dune": "Frank Herbert",
-    "so-good-they-cant-ignore-you": "Cal Newport",
-    "grit": "Angela Duckworth",
-    "ego-is-the-enemy": "Ryan Holiday",
-    "the-daily-stoic": "Ryan Holiday",
-    "stillness-is-the-key": "Ryan Holiday",
-    "the-subtle-art-of-not-giving-a-fck": "Mark Manson",
-    "everything-is-fcked": "Mark Manson",
-    "start-with-why": "Simon Sinek",
-    "leaders-eat-last": "Simon Sinek",
-    "think-again": "Adam Grant",
-    "zero-to-one": "Peter Thiel",
-    "the-lean-startup": "Eric Ries",
-    "good-to-great": "Jim Collins",
-    "filosofi-teras-henry-manampiring": "Henry Manampiring",
-    // Tambahkan slug buku dan nama penulis di sini
-  };
+  // Fungsi untuk mendapatkan judul buku
+  // Prioritas: bookTitle field > mapping > clean title
+  const getBookTitle = (post: any) => {
+    // 1. Gunakan bookTitle field jika ada
+    if (post.bookTitle) return post.bookTitle;
 
-  // Mapping judul buku berdasarkan slug postingan (Hardcoded sementara)
-  const bookTitles: Record<string, string> = {
-    "kenapa-buku-quiet-bikin-aku-merasa-dimengerti": "Quiet",
-    "why-we-sleep": "Why We Sleep",
-    "sapiens-riwayat-singkat-umat-manusia": "Sapiens",
-    "review-buku-filosofi-teras-panduan-praktis-hidup-tenang-gen-z-milenial": "Filosofi Teras",
-    "review-buku-the-danish-way-of-parenting": "The Danish Way of Parenting",
-    "rich-dad-poor-dad-cara-mengelola-uang-yang-diajarkan-orang-kaya-ulasan-lengkap-buku-robert-kiyosaki": "Rich Dad Poor Dad",
-    "strawberry-generation-generasi-rapuh-atau-adaptif": "Strawberry Generation",
-    "atomic-habits-james-clear": "Atomic Habits",
-    "mantappu-jiwa": "Mantappu Jiwa",
-    "filosofi-teras": "Filosofi Teras",
-    "atomic-habits": "Atomic Habits",
-    "ikigai": "Ikigai",
-    "sapiens": "Sapiens",
-    "the-psychology-of-money": "The Psychology of Money",
-    "the-art-of-thinking-clearly": "The Art of Thinking Clearly",
-    "man-search-for-meaning": "Man's Search for Meaning",
-    "show-your-work": "Show Your Work!",
-    "steal-like-an-artist": "Steal Like an Artist",
-    "keep-going": "Keep Going",
-    "deep-work": "Deep Work",
-    "digital-minimalism": "Digital Minimalism",
-    "the-alchemist": "The Alchemist",
-    "dune": "Dune",
-    "so-good-they-cant-ignore-you": "So Good They Can't Ignore You",
-    "grit": "Grit",
-    "ego-is-the-enemy": "Ego is the Enemy",
-    "the-daily-stoic": "The Daily Stoic",
-    "stillness-is-the-key": "Stillness is the Key",
-    "the-subtle-art-of-not-giving-a-fck": "The Subtle Art of Not Giving a F*ck",
-    "everything-is-fcked": "Everything is F*cked",
-    "start-with-why": "Start with Why",
-    "leaders-eat-last": "Leaders Eat Last",
-    "think-again": "Think Again",
-    "zero-to-one": "Zero to One",
-    "the-lean-startup": "The Lean Startup",
-    "good-to-great": "Good to Great",
-    "filosofi-teras-henry-manampiring": "Filosofi Teras",
-    // Tambahkan mapping judul buku di sini
-  };
+    // 2. Fallback ke mapping lama (untuk backward compatibility)
+    const bookTitles: Record<string, string> = {
+      "kenapa-buku-quiet-bikin-aku-merasa-dimengerti": "Quiet",
+      "why-we-sleep": "Why We Sleep",
+      "sapiens-riwayat-singkat-umat-manusia": "Sapiens",
+      "review-buku-filosofi-teras-panduan-praktis-hidup-tenang-gen-z-milenial": "Filosofi Teras",
+      "rich-dad-poor-dad-cara-mengelola-uang-yang-diajarkan-orang-kaya-ulasan-lengkap-buku-robert-kiyosaki": "Rich Dad Poor Dad",
+      "strawberry-generation-generasi-rapuh-atau-adaptif": "Strawberry Generation",
+    };
 
-  // Fungsi untuk membersihkan judul postingan jika tidak ada di mapping
-  const getBookTitle = (slug: string, title: string) => {
-    if (bookTitles[slug]) return bookTitles[slug];
+    if (bookTitles[post.slug]) return bookTitles[post.slug];
 
-    return title
+    // 3. Clean title dari post title
+    return post.title
       .replace(/Review Buku\s*:/i, '')
       .replace(/Review Buku\s*/i, '')
       .replace(/Review\s*:/i, '')
@@ -112,6 +47,28 @@ export default async function AllReviewsPage() {
       .replace(/^Kenapa Buku\s+/i, '')
       .replace(/\s+Bikin Aku.*$/i, '')
       .trim();
+  };
+
+  // Fungsi untuk mendapatkan pengarang buku
+  // Prioritas: bookAuthor field > mapping > tags > placeholder
+  const getBookAuthor = (post: any) => {
+    // 1. Gunakan bookAuthor field jika ada
+    if (post.bookAuthor) return post.bookAuthor;
+
+    // 2. Fallback ke mapping lama (untuk backward compatibility)
+    const bookAuthors: Record<string, string> = {
+      "kenapa-buku-quiet-bikin-aku-merasa-dimengerti": "Susan Cain",
+      "why-we-sleep": "Matthew Walker",
+      "sapiens-riwayat-singkat-umat-manusia": "Yuval Noah Harari",
+      "review-buku-filosofi-teras-panduan-praktis-hidup-tenang-gen-z-milenial": "Henry Manampiring",
+      "rich-dad-poor-dad-cara-mengelola-uang-yang-diajarkan-orang-kaya-ulasan-lengkap-buku-robert-kiyosaki": "Robert Kiyosaki",
+      "strawberry-generation-generasi-rapuh-atau-adaptif": "Rhenald Kasali",
+    };
+
+    if (bookAuthors[post.slug]) return bookAuthors[post.slug];
+
+    // 3. Fallback ke tags atau placeholder
+    return post.tags?.nodes.length ? post.tags.nodes[0].name : 'Penulis belum diisi';
   };
 
   return (
@@ -162,11 +119,11 @@ export default async function AllReviewsPage() {
                       <Link href={`/posts/${post.slug}`} className="block">
                         <div>
                           <h3 className="text-sm md:text-base font-medium text-zinc-800 dark:text-zinc-200 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors leading-tight">
-                            {getBookTitle(post.slug, post.title)}
+                            {getBookTitle(post)}
                           </h3>
                           <div className="mt-1 flex items-center gap-2 lg:hidden">
                             <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                              {bookAuthors[post.slug] || (post.tags?.nodes.length ? post.tags.nodes[0].name : 'Penulis belum diisi')}
+                              {getBookAuthor(post)}
                             </span>
                             <span className="text-zinc-300 dark:text-zinc-700 md:hidden">•</span>
                             <div className="flex items-center gap-2 md:hidden">
@@ -182,7 +139,7 @@ export default async function AllReviewsPage() {
                     </td>
                     <td className="py-6 align-top hidden lg:table-cell">
                       <div className="text-sm text-zinc-600 dark:text-zinc-400">
-                        {bookAuthors[post.slug] || (post.tags?.nodes.length ? post.tags.nodes[0].name : '-')}
+                        {getBookAuthor(post)}
                       </div>
                     </td>
                     <td className="py-6 align-top hidden md:table-cell pr-4 text-right md:text-left">

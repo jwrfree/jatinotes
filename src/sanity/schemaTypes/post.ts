@@ -124,6 +124,22 @@ export default defineType({
             group: 'meta',
         }),
         defineField({
+            name: 'bookTitle',
+            title: 'Judul Buku',
+            type: 'string',
+            description: 'Judul buku yang direview (opsional, hanya untuk post kategori Buku)',
+            placeholder: 'Contoh: Atomic Habits',
+            group: 'meta',
+        }),
+        defineField({
+            name: 'bookAuthor',
+            title: 'Pengarang Buku',
+            type: 'string',
+            description: 'Nama pengarang buku (opsional, hanya untuk post kategori Buku)',
+            placeholder: 'Contoh: James Clear',
+            group: 'meta',
+        }),
+        defineField({
             name: 'seo',
             title: 'SEO Settings',
             type: 'seo',

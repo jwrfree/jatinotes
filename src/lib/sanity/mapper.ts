@@ -29,6 +29,8 @@ export interface SanityPost {
     }>;
     featured?: boolean;
     comments?: any[];
+    bookTitle?: string;
+    bookAuthor?: string;
 }
 
 export interface SanityCategory {
@@ -111,7 +113,9 @@ export function mapSanityPostToPost(sanityPost: any): Post {
                 });
             })()
         } : { nodes: [] },
-        tags: { nodes: [] }
+        tags: { nodes: [] },
+        bookTitle: sanityPost.bookTitle,
+        bookAuthor: sanityPost.bookAuthor
     };
 }
 

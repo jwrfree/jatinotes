@@ -106,7 +106,7 @@ export default function Navbar() {
       label: "Buku",
       submenu: [
         { href: "/buku", label: "Semua Buku" },
-        { href: "/buku/reviews", label: "Daftar Buku" },
+        { href: "/buku/semua", label: "Daftar Buku" },
       ]
     },
     { href: "/teknologi", label: "Teknologi" },

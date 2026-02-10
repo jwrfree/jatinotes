@@ -63,6 +63,8 @@ export const PostSchema = z.object({
       slug: z.string(),
     })),
   }).nullable().optional(),
+  bookTitle: z.string().nullable().optional(),
+  bookAuthor: z.string().nullable().optional(),
 });
 
 export type Author = z.infer<typeof AuthorSchema>;
