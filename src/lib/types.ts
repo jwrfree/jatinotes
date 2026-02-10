@@ -71,6 +71,17 @@ export type Author = z.infer<typeof AuthorSchema>;
 export type FeaturedImage = z.infer<typeof FeaturedImageSchema>;
 export type Post = z.infer<typeof PostSchema>;
 
+export const PageSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  slug: z.string(),
+  excerpt: z.string().nullable().optional().transform(val => val ?? ""),
+  content: z.union([z.string(), z.array(z.any())]).nullable().optional(),
+  featuredImage: FeaturedImageSchema.nullable().optional(),
+});
+
+export type Page = z.infer<typeof PageSchema>;
+
 export const PageInfoSchema = z.object({
   hasNextPage: z.boolean(),
   hasPreviousPage: z.boolean(),

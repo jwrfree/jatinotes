@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-  WORDPRESS_API_URL: z.string().url(),
+  WORDPRESS_API_URL: z.string().url().optional(),
   NEXT_PUBLIC_SITE_URL: z.string().url().optional().default("https://jatinotes.com"),
 });
 

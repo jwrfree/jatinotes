@@ -134,3 +134,20 @@ export function mapSanityCategoryToCategory(sanityCategory: SanityCategory): Cat
         posts: { nodes: [] } // Handled separately
     }
 }
+
+export function mapSanityPageToPage(sanityPage: any): any {
+    if (!sanityPage) return sanityPage;
+    return {
+        id: sanityPage._id,
+        title: sanityPage.title,
+        slug: sanityPage.slug?.current || sanityPage.slug,
+        excerpt: sanityPage.excerpt || "",
+        content: sanityPage.content,
+        featuredImage: sanityPage.mainImage ? {
+            node: {
+                sourceUrl: sanityPage.mainImage,
+                mediaDetails: { width: 1200, height: 630 }
+            }
+        } : null
+    };
+}

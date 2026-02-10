@@ -82,3 +82,12 @@ export const AUTHORS_QUERY = defineQuery(`*[_type == "author"] {
 export const POSTS_BY_AUTHOR_QUERY = defineQuery(`*[_type == "post" && author->slug.current == $slug] | order(publishedAt desc, _createdAt desc) {
   ${postFields}
 }`);
+
+export const PAGE_BY_SLUG_QUERY = defineQuery(`*[_type == "page" && slug.current == $slug][0] {
+  _id,
+  title,
+  "slug": slug.current,
+  excerpt,
+  content,
+  "mainImage": mainImage.asset->url
+}`);

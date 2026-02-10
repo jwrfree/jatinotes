@@ -5,6 +5,8 @@ import author from './author'
 import seo from './seo'
 import comment from './comment'
 
+import page from './page'
+
 export const schema = {
-    types: [post, author, category, blockContent, seo, comment],
+    types: [post, author, category, blockContent, seo, comment, page],
 }
