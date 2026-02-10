@@ -285,7 +285,7 @@ export default function Navbar() {
                         <div className="space-y-2">
                           <button
                             onClick={() => setOpenSubmenu(isSubmenuOpen ? null : link.href)}
-                            className={`w-full relative flex items-center justify-between rounded-full px-6 py-3 text-lg font-semibold transition-all ${isActive
+                            className={`w-full relative flex items-center justify-center gap-2 rounded-full px-6 py-3 text-lg font-semibold transition-all ${isActive
                               ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 border border-zinc-200 dark:border-zinc-700"
                               : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
                               }`}
@@ -308,7 +308,7 @@ export default function Navbar() {
                                 animate={{ opacity: 1, height: 'auto' }}
                                 exit={{ opacity: 0, height: 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="pl-4 space-y-2 overflow-hidden"
+                                className="space-y-2 overflow-hidden"
                               >
                                 {link.submenu.map((sublink) => {
                                   const isSubActive = pathname === sublink.href;
@@ -316,7 +316,7 @@ export default function Navbar() {
                                     <Link
                                       key={sublink.href}
                                       href={sublink.href}
-                                      className={`block rounded-full px-6 py-2.5 text-base font-medium transition-all ${isSubActive
+                                      className={`block text-center rounded-full px-6 py-2.5 text-base font-medium transition-all ${isSubActive
                                         ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400'
                                         : 'text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
                                         }`}

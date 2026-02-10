@@ -171,6 +171,11 @@ export default async function PostPage({
               >
                 <div id="main-article">
                   <PageHeader
+                    topContent={
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+                        {post.categories?.nodes.find(c => c.slug !== 'buku')?.name || post.categories?.nodes[0]?.name || 'Blog'}
+                      </span>
+                    }
                     title={post.title}
                     subtitle={
                       <PostMeta
@@ -209,8 +214,8 @@ export default async function PostPage({
               </MotionDiv>
             </ContentCard>
 
-            {/* 2. Comment Section Card */}
-            <ContentCard noTopPadding noPadding className="bg-zinc-50/50 dark:bg-zinc-900/50 border-zinc-100 dark:border-zinc-800/50">
+            {/* 2. Comment Section - No Card Wrapper */}
+            <div className="pb-24">
               <LocalErrorBoundary name="Bagian Komentar">
                 <CommentSection
                   comments={post.comments?.nodes || []}
@@ -219,7 +224,7 @@ export default async function PostPage({
                   postAuthorName={post.author?.node?.name}
                 />
               </LocalErrorBoundary>
-            </ContentCard>
+            </div>
 
             {/* 3. Navigation Footer */}
             <div className="flex justify-center pt-4">

@@ -132,14 +132,14 @@ export default function CommentForm({ postId, onOptimisticAdd, parentId, onCance
           <input
             type="text"
             placeholder="Nama Lengkap"
-            className={`block w-full rounded-xl border bg-white px-4 py-3 text-sm text-zinc-900 transition-all focus:ring-2 outline-none ${errors.author ? 'border-red-300 focus:border-red-500' : 'border-zinc-200 focus:border-amber-500'}`}
+            className={`block w-full rounded-xl border bg-white px-4 py-3 text-sm text-zinc-900 transition-all focus:ring-4 focus:ring-amber-500/10 outline-none ${errors.author ? 'border-red-300 focus:border-red-500' : 'border-zinc-200 focus:border-amber-500'}`}
             value={formData.author}
             onChange={(e) => setFormData({ ...formData, author: e.target.value })}
           />
           <input
             type="email"
             placeholder="Email (tidak dipublikasikan)"
-            className={`block w-full rounded-xl border bg-white px-4 py-3 text-sm text-zinc-900 transition-all focus:ring-2 outline-none ${errors.authorEmail ? 'border-red-300 focus:border-red-500' : 'border-zinc-200 focus:border-amber-500'}`}
+            className={`block w-full rounded-xl border bg-white px-4 py-3 text-sm text-zinc-900 transition-all focus:ring-4 focus:ring-amber-500/10 outline-none ${errors.authorEmail ? 'border-red-300 focus:border-red-500' : 'border-zinc-200 focus:border-amber-500'}`}
             value={formData.authorEmail}
             onChange={(e) => setFormData({ ...formData, authorEmail: e.target.value })}
           />
@@ -149,7 +149,7 @@ export default function CommentForm({ postId, onOptimisticAdd, parentId, onCance
           rows={isReply ? 3 : 5}
           placeholder={isReply ? "Tulis balasan Anda..." : "Tulis komentar..."}
           autoFocus={autoFocus}
-          className={`block w-full rounded-xl border bg-white px-4 py-3 text-sm text-zinc-900 transition-all focus:ring-2 outline-none resize-none ${errors.content ? 'border-red-300 focus:border-red-500' : 'border-zinc-200 focus:border-amber-500'}`}
+          className={`block w-full rounded-xl border bg-white px-4 py-3 text-sm text-zinc-900 transition-all focus:ring-4 focus:ring-amber-500/10 outline-none resize-none ${errors.content ? 'border-red-300 focus:border-red-500' : 'border-zinc-200 focus:border-amber-500'}`}
           value={formData.content}
           onChange={(e) => setFormData({ ...formData, content: e.target.value })}
         />
@@ -164,7 +164,7 @@ export default function CommentForm({ postId, onOptimisticAdd, parentId, onCance
           <button
             type="submit"
             disabled={status === "submitting"}
-            className="rounded-xl bg-amber-500 px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-amber-600 disabled:opacity-50"
+            className="rounded-xl bg-zinc-800 dark:bg-zinc-100 px-6 py-2.5 text-sm font-semibold text-white dark:text-zinc-900 transition-all hover:bg-zinc-900 dark:hover:bg-white disabled:opacity-50"
           >
             {status === "submitting" ? "Mengirim..." : (isReply ? "Balas" : "Kirim Komentar")}
           </button>

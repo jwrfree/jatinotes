@@ -2,6 +2,7 @@ import { cache } from 'react';
 import { Category, Post, PageInfo } from '../types';
 import {
   CATEGORIES_QUERY,
+  CATEGORIES_WITH_COUNT_QUERY,
   POSTS_BY_CATEGORY_QUERY,
   AUTHORS_QUERY,
   POSTS_BY_AUTHOR_QUERY
@@ -42,8 +43,21 @@ export const CategoryRepository = {
   // Existing WP setup had 'genres' as categories under 'buku'.
   // We'll need to adapt this logic if migration preserved hierarchy.
   getAllGenres: cache(async (): Promise<Category[]> => {
-    // Return empty or fetch all categories for now
-    return [];
+    // Fetch all categories with post counts
+    const categories = await client.fetch(CATEGORIES_WITH_COUNT_QUERY);
+
+    // 1. Try to filter by parent == 'buku'
+    const bookSubcategories = categories.filter((cat: any) => cat.parent === 'buku');
+
+    if (bookSubcategories.length > 0) {
+      return bookSubcategories.map(mapSanityCategoryToCategory);
+    }
+
+    // 2. Fallback: Filter out 'buku' category itself and non-book categories (Manual Exclusion)
+    const excludedCategories = ['buku', 'uncategorized', 'blog', 'desain', 'teknologi', 'coding', 'meet-jati'];
+    return categories
+      .filter((cat: any) => !excludedCategories.includes(cat.slug.toLowerCase()))
+      .map(mapSanityCategoryToCategory);
   }),
 
   getGenreBySlug: cache(async (slug: string): Promise<Category | null> => {

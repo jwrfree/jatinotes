@@ -59,6 +59,13 @@ export const CATEGORIES_QUERY = defineQuery(`*[_type == "category"] {
   description
 }`);
 
+export const CATEGORIES_WITH_COUNT_QUERY = defineQuery(`*[_type == "category" && count(*[_type == "post" && references(^._id)]) > 0] | order(title asc) {
+  title,
+  "slug": coalesce(slug.current, slug),
+  "parent": parent->slug.current,
+  "count": count(*[_type == "post" && references(^._id)])
+}`);
+
 export const POSTS_BY_CATEGORY_QUERY = defineQuery(`*[_type == "post" && $slug in categories[]->slug.current] | order(publishedAt desc, _createdAt desc) {
   ${postFields}
 }`);

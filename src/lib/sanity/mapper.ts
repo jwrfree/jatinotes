@@ -39,6 +39,8 @@ export interface SanityCategory {
     slug: { current: string } | string;
     description?: string;
     color?: string;
+    count?: number;
+    parent?: string;
 }
 
 export function mapSanityPostToPost(sanityPost: any): Post {
@@ -125,9 +127,10 @@ export function mapSanityCategoryToCategory(sanityCategory: SanityCategory): Cat
         id: sanityCategory._id || '',
         name: sanityCategory.title,
         slug: typeof sanityCategory.slug === 'string' ? sanityCategory.slug : sanityCategory.slug?.current || '',
+        parent: sanityCategory.parent,
         description: sanityCategory.description,
         color: sanityCategory.color,
-        count: 0,
+        count: sanityCategory.count || 0,
         posts: { nodes: [] } // Handled separately
     }
 }

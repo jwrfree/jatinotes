@@ -84,6 +84,7 @@ export type Category = {
   id: string;
   name: string;
   slug: string;
+  parent?: string;
   count?: number;
   description?: string | null;
   color?: string;

@@ -222,7 +222,7 @@ export default function CommentSection({ comments, postId, commentCount, postAut
       </button>
 
       <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'}`}>
-        <div className="mb-12 bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-zinc-100 dark:border-zinc-800 shadow-lg shadow-zinc-200/50 dark:shadow-zinc-950/50">
+        <div className="mb-12 bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-zinc-100 dark:border-zinc-800">
           <CommentForm postId={postId} onOptimisticAdd={addOptimisticComment} />
         </div>
 

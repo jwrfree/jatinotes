@@ -26,7 +26,7 @@ export default function PageHeader({
   return (
     <header className={`flex flex-col ${className}`}>
       {topContent && (
-        <div className="mb-6">
+        <div className="mb-3">
           {topContent}
         </div>
       )}
@@ -54,14 +54,14 @@ export default function PageHeader({
       )}
 
       {subtitle && (
-        <div className="mt-8">
+        <div className="mt-4">
           {subtitle}
         </div>
       )}
 
       {description && (
         <div
-          className="mt-8 text-sm md:text-base text-zinc-500 dark:text-zinc-400 leading-relaxed"
+          className="mt-4 text-sm md:text-base text-zinc-500 dark:text-zinc-400 leading-relaxed"
           dangerouslySetInnerHTML={{ __html: sanitize(description) }}
         />
       )}

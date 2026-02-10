@@ -40,6 +40,13 @@ export default defineType({
                 invert: false,
             }).warning('Format harus hex color (contoh: #3B82F6)'),
         }),
+        defineField({
+            name: 'parent',
+            title: 'Parent Category',
+            type: 'reference',
+            to: [{ type: 'category' }],
+            description: 'Kategori induk (opsional). Contoh: "Fiksi" parent-nya "Buku".',
+        }),
     ],
     preview: {
         select: {
