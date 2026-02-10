@@ -101,11 +101,20 @@ export default function Navbar() {
   const links = [
     { href: "/", label: "Beranda" },
     { href: "/blog", label: "Blog" },
-    { href: "/buku", label: "Buku" },
+    {
+      href: "/buku",
+      label: "Buku",
+      submenu: [
+        { href: "/buku", label: "Semua Buku" },
+        { href: "/buku/reviews", label: "Daftar Buku" },
+      ]
+    },
     { href: "/teknologi", label: "Teknologi" },
     { href: "/desain", label: "Desain" },
     { href: "/meet-jati", label: "Meet Jati" },
   ];
+
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
   return (
     <>
@@ -135,35 +144,86 @@ export default function Navbar() {
               : "p-1.5"
               }`}>
               {links.map((link) => {
-                const isActive = pathname === link.href;
+                const isActive = pathname === link.href || (link.submenu && link.submenu.some(sub => pathname === sub.href));
+                const hasSubmenu = 'submenu' in link && link.submenu;
+
                 return (
-                  <Link
+                  <div
                     key={link.href}
-                    href={link.href}
-                    onMouseEnter={() => setHoveredPath(link.href)}
-                    onMouseLeave={() => setHoveredPath(null)}
-                    className={`relative px-5 py-2 font-medium transition-all duration-300 whitespace-nowrap ${scrolled ? "text-xs" : "text-sm"
-                      } ${isActive
-                        ? "text-zinc-900 dark:text-zinc-50"
-                        : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
-                      }`}
+                    className="relative"
+                    onMouseEnter={() => {
+                      setHoveredPath(link.href);
+                      if (hasSubmenu) setOpenSubmenu(link.href);
+                    }}
+                    onMouseLeave={() => {
+                      setHoveredPath(null);
+                      if (hasSubmenu) setOpenSubmenu(null);
+                    }}
                   >
-                    {isActive && (
-                      <m.div
-                        layoutId="active-pill"
-                        className="absolute inset-0 bg-white dark:bg-zinc-700 shadow-sm rounded-full"
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                      />
-                    )}
-                    {hoveredPath === link.href && !isActive && (
-                      <m.div
-                        layoutId="hover-pill"
-                        className="absolute inset-0 bg-zinc-200/50 dark:bg-zinc-700/40 rounded-full"
-                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                      />
-                    )}
-                    <span className="relative z-10">{link.label}</span>
-                  </Link>
+                    <Link
+                      href={link.href}
+                      className={`relative px-5 py-2 font-medium transition-all duration-300 whitespace-nowrap flex items-center gap-1 ${scrolled ? "text-xs" : "text-sm"
+                        } ${isActive
+                          ? "text-zinc-900 dark:text-zinc-50"
+                          : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+                        }`}
+                    >
+                      {isActive && (
+                        <m.div
+                          layoutId="active-pill"
+                          className="absolute inset-0 bg-white dark:bg-zinc-700 shadow-sm rounded-full"
+                          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                        />
+                      )}
+                      {hoveredPath === link.href && !isActive && (
+                        <m.div
+                          layoutId="hover-pill"
+                          className="absolute inset-0 bg-zinc-200/50 dark:bg-zinc-700/40 rounded-full"
+                          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                        />
+                      )}
+                      <span className="relative z-10">{link.label}</span>
+                      {hasSubmenu && (
+                        <svg
+                          className={`relative z-10 w-3 h-3 transition-transform duration-200 ${openSubmenu === link.href ? 'rotate-180' : ''}`}
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      )}
+                    </Link>
+
+                    {/* Dropdown Submenu */}
+                    <AnimatePresence>
+                      {hasSubmenu && openSubmenu === link.href && (
+                        <m.div
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.2 }}
+                          className="absolute top-full left-0 mt-2 min-w-[180px] bg-white dark:bg-zinc-800 rounded-2xl shadow-lg overflow-hidden"
+                        >
+                          {link.submenu.map((sublink) => {
+                            const isSubActive = pathname === sublink.href;
+                            return (
+                              <Link
+                                key={sublink.href}
+                                href={sublink.href}
+                                className={`block px-4 py-3 text-sm font-medium transition-colors ${isSubActive
+                                  ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400'
+                                  : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700/50'
+                                  }`}
+                              >
+                                {sublink.label}
+                              </Link>
+                            );
+                          })}
+                        </m.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 );
               })}
             </div>
@@ -212,22 +272,76 @@ export default function Navbar() {
             >
               <div className="flex flex-col space-y-4">
                 {links.map((link) => {
-                  const isActive = pathname === link.href;
+                  const isActive = pathname === link.href || (link.submenu && link.submenu.some(sub => pathname === sub.href));
+                  const hasSubmenu = 'submenu' in link && link.submenu;
+                  const isSubmenuOpen = openSubmenu === link.href;
+
                   return (
                     <m.div
                       key={link.href}
                       variants={menuItemVariants}
                     >
-                      <Link
-                        href={link.href}
-                        className={`relative flex items-center justify-center rounded-full px-6 py-3 text-lg font-semibold transition-all ${isActive
-                          ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 border border-zinc-200 dark:border-zinc-700"
-                          : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-                          }`}
-                        onClick={toggleMenu}
-                      >
-                        {link.label}
-                      </Link>
+                      {hasSubmenu ? (
+                        <div className="space-y-2">
+                          <button
+                            onClick={() => setOpenSubmenu(isSubmenuOpen ? null : link.href)}
+                            className={`w-full relative flex items-center justify-between rounded-full px-6 py-3 text-lg font-semibold transition-all ${isActive
+                              ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 border border-zinc-200 dark:border-zinc-700"
+                              : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                              }`}
+                          >
+                            <span>{link.label}</span>
+                            <svg
+                              className={`w-4 h-4 transition-transform duration-200 ${isSubmenuOpen ? 'rotate-180' : ''}`}
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </button>
+
+                          <AnimatePresence>
+                            {isSubmenuOpen && (
+                              <m.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="pl-4 space-y-2 overflow-hidden"
+                              >
+                                {link.submenu.map((sublink) => {
+                                  const isSubActive = pathname === sublink.href;
+                                  return (
+                                    <Link
+                                      key={sublink.href}
+                                      href={sublink.href}
+                                      className={`block rounded-full px-6 py-2.5 text-base font-medium transition-all ${isSubActive
+                                        ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400'
+                                        : 'text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                                        }`}
+                                      onClick={toggleMenu}
+                                    >
+                                      {sublink.label}
+                                    </Link>
+                                  );
+                                })}
+                              </m.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      ) : (
+                        <Link
+                          href={link.href}
+                          className={`relative flex items-center justify-center rounded-full px-6 py-3 text-lg font-semibold transition-all ${isActive
+                            ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 border border-zinc-200 dark:border-zinc-700"
+                            : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                            }`}
+                          onClick={toggleMenu}
+                        >
+                          {link.label}
+                        </Link>
+                      )}
                     </m.div>
                   );
                 })}

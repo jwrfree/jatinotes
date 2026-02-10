@@ -8,8 +8,8 @@ import { MotionDiv, staggerContainer } from "@/components/Animations";
 import Link from "next/link";
 
 export const metadata: Metadata = constructMetadata({
-  title: "Arsip Review Buku - Jati Notes",
-  description: "Daftar lengkap ulasan buku yang telah dibaca dan diulas oleh Wruhantojati dalam format arsip terstruktur.",
+  title: "Daftar Buku - Jati Notes",
+  description: "Daftar lengkap buku yang telah dibaca oleh Wruhantojati dalam format tabel yang ringkas dan terstruktur.",
   url: "/buku/reviews",
 });
 
@@ -103,7 +103,7 @@ export default async function AllReviewsPage() {
   // Fungsi untuk membersihkan judul postingan jika tidak ada di mapping
   const getBookTitle = (slug: string, title: string) => {
     if (bookTitles[slug]) return bookTitles[slug];
-    
+
     return title
       .replace(/Review Buku\s*:/i, '')
       .replace(/Review Buku\s*/i, '')
@@ -117,7 +117,7 @@ export default async function AllReviewsPage() {
   return (
     <div className="relative overflow-hidden min-h-screen">
       <BackgroundOrnaments variant="warm" />
-      
+
       <ContentCard maxWidth="max-w-6xl">
         <MotionDiv
           initial="initial"
@@ -125,13 +125,13 @@ export default async function AllReviewsPage() {
           variants={staggerContainer}
         >
           <PageHeader
-            title="Arsip Review"
-            subtitle="Daftar lengkap ulasan buku dalam format yang ringkas dan terstruktur."
+            title="Daftar Buku"
+            subtitle="Semua buku yang telah dibaca dalam format tabel yang ringkas dan terstruktur."
             topContent={
               <div className="flex items-center gap-3">
                 <span className="h-px w-8 bg-amber-500" />
                 <span className="text-sm font-bold text-amber-500 uppercase tracking-widest">
-                  The Library Archive
+                  The Library
                 </span>
               </div>
             }
@@ -149,7 +149,7 @@ export default async function AllReviewsPage() {
               </thead>
               <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/50">
                 {reviews.map((post) => (
-                  <tr 
+                  <tr
                     key={post.id}
                     className="group hover:bg-amber-50/50 dark:hover:bg-amber-900/10 transition-colors duration-300"
                   >
@@ -170,11 +170,11 @@ export default async function AllReviewsPage() {
                             </span>
                             <span className="text-zinc-300 dark:text-zinc-700 md:hidden">•</span>
                             <div className="flex items-center gap-2 md:hidden">
-                                {post.categories?.nodes.filter(c => c.slug !== 'buku').slice(0, 1).map((cat) => (
-                                  <span key={cat.slug} className="text-xs font-medium text-amber-600/60">
-                                    {cat.name}
-                                  </span>
-                                ))}
+                              {post.categories?.nodes.filter(c => c.slug !== 'buku').slice(0, 1).map((cat) => (
+                                <span key={cat.slug} className="text-xs font-medium text-amber-600/60">
+                                  {cat.name}
+                                </span>
+                              ))}
                             </div>
                           </div>
                         </div>
@@ -188,7 +188,7 @@ export default async function AllReviewsPage() {
                     <td className="py-6 align-top hidden md:table-cell pr-4 text-right md:text-left">
                       <div className="flex flex-wrap gap-2 md:justify-start justify-end">
                         {post.categories?.nodes.filter(c => c.slug !== 'buku').map((cat) => (
-                          <span 
+                          <span
                             key={cat.slug}
                             className="text-xs font-medium text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors"
                           >

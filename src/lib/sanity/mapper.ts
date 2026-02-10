@@ -1,5 +1,44 @@
 import { Post, Category } from "@/lib/types";
 
+// Extended types for new Sanity fields
+export interface SanityPost {
+    _id: string;
+    title: string;
+    slug: { current: string } | string;
+    publishedAt: string;
+    excerpt?: string;
+    body: any;
+    wordCount?: number;
+    mainImage?: string;
+    author?: {
+        name: string;
+        image?: string;
+        bio?: string;
+        email?: string;
+        social?: {
+            twitter?: string;
+            linkedin?: string;
+            github?: string;
+            website?: string;
+        };
+    };
+    categories?: Array<{
+        title: string;
+        slug: { current: string } | string;
+        color?: string;
+    }>;
+    featured?: boolean;
+    comments?: any[];
+}
+
+export interface SanityCategory {
+    _id: string;
+    title: string;
+    slug: { current: string } | string;
+    description?: string;
+    color?: string;
+}
+
 export function mapSanityPostToPost(sanityPost: any): Post {
     if (!sanityPost) return sanityPost;
 
@@ -76,13 +115,14 @@ export function mapSanityPostToPost(sanityPost: any): Post {
     };
 }
 
-export function mapSanityCategoryToCategory(sanityCategory: any): Category {
+export function mapSanityCategoryToCategory(sanityCategory: SanityCategory): Category {
     if (!sanityCategory) return sanityCategory;
     return {
         id: sanityCategory._id || '',
         name: sanityCategory.title,
-        slug: sanityCategory.slug?.current || sanityCategory.slug,
+        slug: typeof sanityCategory.slug === 'string' ? sanityCategory.slug : sanityCategory.slug?.current || '',
         description: sanityCategory.description,
+        color: sanityCategory.color,
         count: 0,
         posts: { nodes: [] } // Handled separately
     }

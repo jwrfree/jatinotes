@@ -84,6 +84,7 @@ export type Category = {
   slug: string;
   count?: number;
   description?: string | null;
+  color?: string;
   posts?: {
     nodes: Post[];
     pageInfo?: PageInfo;
