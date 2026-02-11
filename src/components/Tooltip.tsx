@@ -45,7 +45,7 @@ export default function Tooltip({ text, content, className = "" }: TooltipProps)
       onMouseLeave={() => setIsVisible(false)}
     >
       <span 
-        className="cursor-help font-medium text-amber-600 dark:text-amber-500 hover:text-amber-700 dark:hover:text-amber-400 bg-amber-100/50 dark:bg-amber-900/30 rounded px-1 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+        className="cursor-help border-b-2 border-dotted border-amber-500/80 dark:border-amber-400/80 hover:border-transparent hover:bg-amber-200 dark:hover:bg-amber-500/30 hover:text-amber-900 dark:hover:text-amber-100 focus:border-transparent focus:bg-amber-200 dark:focus:bg-amber-500/30 focus:text-amber-900 dark:focus:text-amber-100 transition-all duration-200 rounded px-1 focus:outline-none"
         tabIndex={0}
         role="button"
         onFocus={handleOpen}
@@ -63,7 +63,7 @@ export default function Tooltip({ text, content, className = "" }: TooltipProps)
             exit={{ opacity: 0, y: 5, scale: 0.95 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
             style={coords.tooltip}
-            className="absolute z-50 bottom-full mb-2 px-3 py-2 bg-zinc-100 dark:bg-zinc-200 text-zinc-900 text-xs rounded-lg shadow-xl border border-zinc-200 pointer-events-none min-w-[150px] md:w-max max-w-[min(90vw,250px)] md:max-w-[600px]"
+            className="absolute z-50 bottom-full mb-2 px-3 py-2 bg-zinc-100 dark:bg-zinc-200 text-zinc-900 text-xs rounded-lg shadow-xl pointer-events-none min-w-[150px] md:w-max max-w-[min(90vw,250px)] md:max-w-[600px]"
           >
             {content}
             {/* Arrow */}
