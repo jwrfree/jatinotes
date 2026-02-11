@@ -1,12 +1,9 @@
+
 import { getHomeData } from "@/lib/services";
-import Link from "next/link";
-import Image from "next/image";
 import { MotionDiv, staggerContainer } from "@/components/Animations";
-import { LazyMotionDiv } from "@/components/LazyMotion";
 import { Metadata } from "next";
 import { constructMetadata } from "@/lib/metadata";
 import { Post } from "@/lib/types";
-import PostCard from "@/components/PostCard";
 import PostListItem from "@/components/PostListItem";
 import FeaturedPost from "@/components/FeaturedPost";
 import HeroSection from "@/components/HeroSection";
@@ -15,6 +12,7 @@ import BookCategoryStack from "@/components/BookCategoryStack";
 import BackgroundOrnaments from "@/components/BackgroundOrnaments";
 import DecryptedText from "@/components/DecryptedText";
 import JsonLd from "@/components/JsonLd";
+import Link from "next/link";
 
 // ISR: Regenerate homepage every 60 seconds
 export const revalidate = 60;
@@ -30,16 +28,47 @@ export default async function Home() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Jati Notes",
+    "alternateName": ["JatiNotes", "Wruhanto Jati", "Jati Notes Blog"],
     "url": "https://jatinotes.com",
     "description": "Catatan digital Wruhantojati tentang pengembangan web, desain UI/UX, dan teknologi terbaru.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://jatinotes.com/search?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    },
     "publisher": {
       "@type": "Organization",
       "name": "Jati Notes",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://jatinotes.com/logo.png"
+        "url": "https://jatinotes.com/icon.svg"
       }
-    }
+    },
+    "hasPart": [
+      {
+        "@type": "SiteNavigationElement",
+        "name": "Buku",
+        "url": "https://jatinotes.com/buku"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "name": "Blog",
+        "url": "https://jatinotes.com/blog"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "name": "Meet Jati",
+        "url": "https://jatinotes.com/meet-jati"
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "name": "Teknologi",
+        "url": "https://jatinotes.com/teknologi"
+      }
+    ]
   };
 
   const { posts, blogCategory, techCategory, bookCategory } = await getHomeData();
@@ -98,111 +127,68 @@ export default async function Home() {
           {/* Fade out to reveal next section */}
           <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-white dark:from-zinc-950 to-transparent pointer-events-none" />
 
-          <div className="relative z-10 mx-auto max-w-7xl px-6">
-            <SectionHeading
-              viewAllLink="/teknologi"
-              className="mb-16"
-            >
-              <DecryptedText
-                text="Saya membedah masa depan lewat baris kode dan logika untuk memahami dunia digital."
-                animateOn="both"
-                revealDirection="start"
-                sequential={true}
-                useOriginalCharsOnly={false}
-                className="text-zinc-900 dark:text-zinc-50"
-                encryptedClassName="text-amber-500 opacity-50"
-              />
-            </SectionHeading>
+          <div className="relative mx-auto max-w-7xl px-6">
+            <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-16">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-zinc-50 tracking-tight">
+                  Teknologi & <span className="text-amber-500">Kode</span>
+                </h2>
+                <p className="mt-4 text-zinc-600 dark:text-zinc-400 max-w-lg leading-relaxed">
+                  Catatan teknis seputar pengembangan web, eksperimen coding, dan tool favorit.
+                </p>
+              </div>
+              
+              <Link 
+                href="/teknologi" 
+                className="group inline-flex items-center gap-2 px-6 py-3 bg-zinc-100 dark:bg-zinc-900 rounded-full text-sm font-medium text-zinc-900 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+              >
+                Lihat Semua
+                <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
 
-            <LazyMotionDiv
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-              variants={staggerContainer}
-              className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
-            >
-              {techCategory.posts.nodes.slice(0, 7).map((post: Post, index: number) => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  isWide={index % 7 === 1 || index % 7 === 3}
-                  variant="glass"
-                  accentColor="amber"
-                />
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {techCategory.posts.nodes.map((post: Post) => (
+                <PostCard key={post.id} post={post} />
               ))}
-            </LazyMotionDiv>
+            </div>
           </div>
         </section>
       )}
 
-      {/* Books Section with Stack Category */}
+      {/* Book Reviews Section - Horizontal Scroll */}
       {bookCategory && bookCategory.posts?.nodes && bookCategory.posts.nodes.length > 0 && (
-        <section className="relative z-10 -mt-32 pt-64 pb-32 overflow-hidden bg-zinc-900">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent opacity-50" />
-
-          <div className="relative z-10 mx-auto max-w-7xl px-6">
-            <SectionHeading
-              className="mb-16"
-              h2ClassName="font-medium text-white leading-[1.3] md:leading-[1.2]"
-            >
-              Sejak kecil, saya selalu suka{" "}
-              <Link
-                href={`/category/${bookCategory?.slug || ''}`}
-                className="relative inline-flex items-center group/link align-baseline"
+        <section className="relative z-10 py-32 overflow-hidden">
+          <BackgroundOrnaments variant="subtle" />
+          
+          <div className="relative mx-auto max-w-7xl px-6 mb-12">
+            <div className="flex items-center gap-4 mb-4">
+              <span className="h-px w-12 bg-amber-500" />
+              <span className="text-sm font-semibold text-amber-500 tracking-wider uppercase">Library</span>
+            </div>
+            
+            <div className="flex flex-col md:flex-row justify-between items-end gap-6">
+              <h2 className="text-3xl md:text-5xl font-bold text-zinc-900 dark:text-zinc-50 tracking-tight">
+                Sudut <DecryptedText text="Bacaan" />
+              </h2>
+              
+              <Link 
+                href="/buku"
+                className="text-sm font-medium text-zinc-500 hover:text-amber-600 dark:text-zinc-400 dark:hover:text-amber-400 transition-colors"
               >
-                <span className="relative z-10 transition-colors duration-300 group-hover/link:text-zinc-900">membaca buku</span>
-                <span className="absolute bottom-1 left-0 w-full h-[30%] bg-amber-400/10 -z-0 transition-all duration-700 group-hover/link:h-full group-hover/link:bg-amber-300 rounded-sm" />
-                <div className="relative ml-3 inline-flex h-[0.8em] w-[1.2em] items-center justify-center overflow-hidden rounded-md bg-zinc-800 transition-transform duration-300 group-hover/link:scale-110">
-                  <Image
-                    src="https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=100&auto=format&fit=crop"
-                    alt="Books"
-                    fill
-                    loading="lazy"
-                    className="h-full w-full object-cover opacity-80 group-hover/link:opacity-100"
-                    sizes="48px"
-                  />
-                </div>
-              </Link>
-              . Bagi saya, buku adalah cara terbaik untuk mempelajari hal-hal baru tentang dunia.
-            </SectionHeading>
-
-            <LazyMotionDiv
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-              variants={staggerContainer}
-              className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
-            >
-              {/* Category Stack on the left (Small) */}
-              <BookCategoryStack categories={bookCategory.children?.nodes || []} />
-
-              {/* Wide Card on the right (Besar Kanan) */}
-              <PostCard
-                post={bookCategory.posts.nodes[0]}
-                isWide={true}
-                variant="glass"
-                accentColor="amber"
-              />
-
-              {/* Remaining Cards following pattern: Row 2 (S, W), Row 3 (S, S, S) */}
-              {bookCategory.posts.nodes.slice(1, 6).map((post: Post, index: number) => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  isWide={index === 1} // Index 1 is the Wide card in Row 2
-                  variant="glass"
-                  accentColor="amber"
-                />
-              ))}
-            </LazyMotionDiv>
-
-            <div className="mt-20 flex justify-center">
-              <Link href={`/category/${bookCategory?.slug || ''}`} className="group relative px-8 py-4 bg-white/5 hover:bg-white/10 text-white rounded-full transition-all duration-300 border border-white/10 flex items-center gap-4 overflow-hidden">
-                <span className="relative z-10 font-bold tracking-wide">Jelajahi Perpustakaan Digital</span>
-                <svg className="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                Lihat Rak Buku →
               </Link>
             </div>
+          </div>
+
+          <div className="relative w-full overflow-x-hidden">
+            {/* Gradient Masks for Scroll Hint */}
+            <div className="absolute left-0 top-0 bottom-0 w-12 md:w-32 bg-gradient-to-r from-amber-50/80 dark:from-zinc-950 to-transparent z-20 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-12 md:w-32 bg-gradient-to-l from-amber-50/80 dark:from-zinc-950 to-transparent z-20 pointer-events-none" />
+            
+            <BookCategoryStack posts={bookCategory.posts.nodes} />
           </div>
         </section>
       )}
