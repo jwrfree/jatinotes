@@ -24,7 +24,7 @@ export default defineType({
             name: 'post',
             title: 'Post / Page',
             type: 'reference',
-            to: [{ type: 'post' }, { type: 'page' }],
+            to: [{ type: 'post' }],
         }),
         defineField({
             name: 'approved',

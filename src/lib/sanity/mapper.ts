@@ -148,43 +148,6 @@ export function mapSanityPageToPage(sanityPage: any): any {
                 sourceUrl: sanityPage.mainImage,
                 mediaDetails: { width: 1200, height: 630 }
             }
-        } : null,
-        commentCount: sanityPage.comments?.length || 0,
-        comments: sanityPage.comments ? {
-            nodes: (() => {
-                const wpIdMap: Record<number, string> = {};
-                sanityPage.comments.forEach((c: any) => {
-                    if (c.wordpressId) {
-                        wpIdMap[c.wordpressId] = c._id;
-                    }
-                });
-
-                return sanityPage.comments.map((c: any) => {
-                    let resolvedParentId = c.parentRef || (c.parentCommentId ? String(c.parentCommentId) : null);
-
-                    if (!c.parentRef && c.parentCommentId && wpIdMap[c.parentCommentId]) {
-                        resolvedParentId = wpIdMap[c.parentCommentId];
-                    } else if (!c.parentRef && c.parentCommentId && !wpIdMap[c.parentCommentId]) {
-                        resolvedParentId = null;
-                    }
-
-                    return {
-                        id: c._id,
-                        date: c._createdAt,
-                        content: c.comment,
-                        author: {
-                            node: {
-                                name: c.name,
-                                avatar: {
-                                    url: `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=random`
-                                }
-                            }
-                        },
-                        parentId: resolvedParentId,
-                        children: []
-                    };
-                });
-            })()
-        } : { nodes: [] }
+        } : null
     };
 }

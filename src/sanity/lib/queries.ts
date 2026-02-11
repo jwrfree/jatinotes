@@ -89,15 +89,5 @@ export const PAGE_BY_SLUG_QUERY = defineQuery(`*[_type == "page" && slug.current
   "slug": slug.current,
   excerpt,
   content,
-  "mainImage": mainImage.asset->url,
-  "comments": *[_type == "comment" && post._ref == ^._id && approved == true] | order(_createdAt asc) {
-    _id,
-    _createdAt,
-    name,
-    email,
-    comment,
-    parentCommentId,
-    "parentRef": parent._ref,
-    wordpressId
-  }
+  "mainImage": mainImage.asset->url
 }`);

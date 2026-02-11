@@ -5,7 +5,6 @@ import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
 import BackgroundOrnaments from "@/components/BackgroundOrnaments";
 import Tooltip from "@/components/Tooltip";
-import CommentSection from "@/components/CommentSection";
 import { Metadata } from "next";
 
 export const metadata: Metadata = constructMetadata({
@@ -106,17 +105,6 @@ export default async function MeetJatiPage() {
                 Terima kasih sudah mampir. Selamat membaca, selamat merasa.
               </p>
             </div>
-
-            {page?.id && (
-              <div className="mt-16 border-t border-zinc-200 dark:border-zinc-800 pt-16">
-                 <CommentSection 
-                   comments={page.comments?.nodes || []}
-                   postId={page.id}
-                   commentCount={page.commentCount || 0}
-                   postAuthorName="Jati"
-                 />
-              </div>
-            )}
           </div>
         </MotionDiv>
       </ContentCard>
