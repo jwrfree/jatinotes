@@ -63,13 +63,13 @@ export default function Tooltip({ text, content, className = "" }: TooltipProps)
             exit={{ opacity: 0, y: 5, scale: 0.95 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
             style={coords.tooltip}
-            className="absolute z-50 bottom-full mb-2 px-3 py-2 bg-zinc-100/80 dark:bg-zinc-200/80 backdrop-blur-md text-zinc-900 text-xs rounded-lg shadow-xl pointer-events-none min-w-[150px] md:w-max max-w-[min(90vw,250px)] md:max-w-[600px]"
+            className="absolute z-50 bottom-full mb-2 px-3 py-2 bg-zinc-100/70 dark:bg-zinc-200/70 backdrop-blur-xl text-zinc-900 text-xs rounded-lg shadow-xl pointer-events-none min-w-[150px] md:w-max max-w-[min(90vw,250px)] md:max-w-[600px]"
           >
             {content}
             {/* Arrow */}
             <span 
               style={coords.arrow}
-              className="absolute top-full -mt-1 border-4 border-transparent border-t-zinc-100/80 dark:border-t-zinc-200/80" 
+              className="absolute top-full -mt-1 border-4 border-transparent border-t-zinc-100/70 dark:border-t-zinc-200/70" 
             />
           </m.span>
         )}
