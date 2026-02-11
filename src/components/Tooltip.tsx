@@ -45,7 +45,7 @@ export default function Tooltip({ text, content, className = "" }: TooltipProps)
       onMouseLeave={() => setIsVisible(false)}
     >
       <span 
-        className="cursor-help border-b-2 border-dotted border-amber-500/80 dark:border-amber-400/80 hover:border-transparent hover:bg-amber-200 dark:hover:bg-amber-500/30 hover:text-amber-900 dark:hover:text-amber-100 focus:border-transparent focus:bg-amber-200 dark:focus:bg-amber-500/30 focus:text-amber-900 dark:focus:text-amber-100 transition-all duration-200 rounded px-1 focus:outline-none"
+        className="cursor-help font-medium text-amber-600 dark:text-amber-500 hover:text-amber-700 dark:hover:text-amber-400 bg-amber-100/50 dark:bg-amber-900/30 rounded px-1 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
         tabIndex={0}
         role="button"
         onFocus={handleOpen}
