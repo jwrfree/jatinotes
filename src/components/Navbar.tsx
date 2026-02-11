@@ -127,9 +127,14 @@ export default function Navbar() {
         onMouseLeave={() => setIsHovered(false)}
       >
         <nav className={`mx-auto transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${scrolled || isHovered
-          ? "max-w-[95%] md:max-w-4xl bg-white/80 backdrop-blur-2xl dark:bg-zinc-900/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.1)] border border-zinc-200/50 dark:border-zinc-800/50 py-2 rounded-full"
+          ? "max-w-[95%] md:max-w-4xl bg-white/40 dark:bg-zinc-950/40 shadow-xl shadow-black/5 dark:shadow-white/5 border border-white/20 dark:border-white/10 py-2 rounded-full"
           : "max-w-5xl bg-transparent border-transparent py-4 rounded-[2rem]"
-          }`}>
+          }`}
+          style={{
+            backdropFilter: (scrolled || isHovered) ? "blur(20px)" : "none",
+            WebkitBackdropFilter: (scrolled || isHovered) ? "blur(20px)" : "none",
+          }}
+        >
 
           <div className="flex items-center justify-between px-4 md:px-6">
             <div className="flex-[1.5] flex items-center">

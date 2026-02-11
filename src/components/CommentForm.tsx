@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, startTransition } from "react";
 import { submitCommentAction } from "@/lib/actions";
 import { toast } from "sonner";
 import { Comment } from "@/lib/types";
@@ -69,7 +69,9 @@ export default function CommentForm({ postId, onOptimisticAdd, parentId, onCance
         parentId: parentId || null, // Connect to parent
         children: [],
       };
-      onOptimisticAdd(optimisticComment);
+      startTransition(() => {
+        onOptimisticAdd(optimisticComment);
+      });
 
       // Close reply form immediately if optimistic
       if (onCancel) onCancel();

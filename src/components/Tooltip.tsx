@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
+import { createPortal } from "react-dom";
 
 interface TooltipProps {
   text: string;
@@ -15,6 +16,7 @@ export default function Tooltip({ text, content, className = "" }: TooltipProps)
     tooltip: { left: "50%", transform: "translateX(-50%)", right: "auto" },
     arrow: { left: "50%", transform: "translateX(-50%)", right: "auto" }
   });
+  const [portalCoords, setPortalCoords] = useState({ top: 0, left: 0 });
 
   const handleOpen = (e: React.SyntheticEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -35,6 +37,11 @@ export default function Tooltip({ text, content, className = "" }: TooltipProps)
     }
 
     setCoords({ tooltip: newTooltipStyle, arrow: newArrowStyle });
+    // Set portal position relative to viewport
+    setPortalCoords({
+      top: rect.top - 8, // 8px margin above the trigger
+      left: rect.left + rect.width / 2 // center horizontally
+    });
     setIsVisible(true);
   };
 
@@ -55,25 +62,31 @@ export default function Tooltip({ text, content, className = "" }: TooltipProps)
         {text}
       </span>
       
-      <AnimatePresence>
-        {isVisible && (
-          <m.span
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 5, scale: 0.95 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
-            style={coords.tooltip}
-            className="absolute z-50 bottom-full mb-2 px-3 py-2 bg-zinc-100/70 dark:bg-zinc-200/70 backdrop-blur-xl text-zinc-900 text-xs rounded-lg shadow-xl pointer-events-none min-w-[150px] md:w-max max-w-[min(90vw,250px)] md:max-w-[600px]"
-          >
-            {content}
-            {/* Arrow */}
-            <span 
-              style={coords.arrow}
-              className="absolute top-full -mt-1 border-4 border-transparent border-t-zinc-100/70 dark:border-t-zinc-200/70" 
-            />
-          </m.span>
-        )}
-      </AnimatePresence>
+      {isVisible && createPortal(
+        <m.span
+          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 5, scale: 0.95 }}
+          transition={{ duration: 0.15, ease: "easeOut" }}
+          className="fixed z-[999] px-3 py-2 bg-white/40 dark:bg-zinc-950/40 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg shadow-xl pointer-events-none min-w-[150px] md:w-max max-w-[min(90vw,250px)] md:max-w-[600px] border border-white/20 dark:border-white/10 backdrop-blur-sm"
+          style={{
+              top: portalCoords.top,
+              left: portalCoords.left,
+              transform: "translateX(-50%)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              textShadow: "0 1px 2px rgba(0,0,0,0.1)",
+              filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.15))",
+            }}
+        >
+          {content}
+          {/* Arrow */}
+          <span 
+            className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-white/40 dark:border-t-zinc-950/40" 
+          />
+        </m.span>,
+        document.body
+      )}
     </span>
   );
 }

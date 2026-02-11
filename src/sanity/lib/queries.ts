@@ -91,3 +91,17 @@ export const PAGE_BY_SLUG_QUERY = defineQuery(`*[_type == "page" && slug.current
   content,
   "mainImage": mainImage.asset->url
 }`);
+
+// --- Comment Queries ---
+export const COMMENTS_QUERY = defineQuery(`*[_type == "comment"] | order(_createdAt desc) {
+  _id,
+  _createdAt,
+  name,
+  email,
+  content,
+  status,
+  "post": post->{
+    title,
+    "slug": slug.current
+  }
+}`);

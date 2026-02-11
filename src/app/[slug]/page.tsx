@@ -8,6 +8,7 @@ import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
 import BackgroundOrnaments from "@/components/BackgroundOrnaments";
 import Prose from "@/components/Prose";
+import PortableText from "@/components/PortableText";
 import { Post } from "@/lib/types";
 import PostCard from "@/components/PostCard";
 import Pagination from "@/components/Pagination";
@@ -96,7 +97,13 @@ export default async function DynamicPage({
             </div>
           )}
 
-          <Prose content={page.content} />
+          {Array.isArray(page.content) ? (
+            <div className="prose prose-zinc dark:prose-invert max-w-none">
+              <PortableText value={page.content} />
+            </div>
+          ) : (
+            <Prose content={page.content as string} />
+          )}
         </ContentCard>
       </div>
     );

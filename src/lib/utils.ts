@@ -1,5 +1,8 @@
-export function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>?/gm, '').trim();
+export function stripHtml(input: string | any[]): string {
+  if (Array.isArray(input)) {
+    return extractTextFromPortableText(input);
+  }
+  return (input || '').replace(/<[^>]*>?/gm, '').trim();
 }
 
 /**
