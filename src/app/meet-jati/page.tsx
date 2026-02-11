@@ -5,6 +5,7 @@ import PageHeader from "@/components/PageHeader";
 import ContentCard from "@/components/ContentCard";
 import BackgroundOrnaments from "@/components/BackgroundOrnaments";
 import Tooltip from "@/components/Tooltip";
+import CommentSection from "@/components/CommentSection";
 import { Metadata } from "next";
 
 export const metadata: Metadata = constructMetadata({
@@ -100,7 +101,22 @@ export default async function MeetJatiPage() {
 
               <p>Selamat datang di catatan‑catatan kecilku.<br />
               Kalau suatu saat nanti kita ketemu, online atau offline, semoga kita bisa saling bilang: “oh, ternyata kita sama‑sama masih belajar hidup.”</p>
+
+              <p className="text-xl font-medium text-amber-600 dark:text-amber-500 italic mt-8">
+                Terima kasih sudah mampir. Selamat membaca, selamat merasa.
+              </p>
             </div>
+
+            {page?.id && (
+              <div className="mt-16 border-t border-zinc-200 dark:border-zinc-800 pt-16">
+                 <CommentSection 
+                   comments={page.comments?.nodes || []}
+                   postId={page.id}
+                   commentCount={page.commentCount || 0}
+                   postAuthorName="Jati"
+                 />
+              </div>
+            )}
           </div>
         </MotionDiv>
       </ContentCard>

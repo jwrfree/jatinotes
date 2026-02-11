@@ -78,6 +78,10 @@ export const PageSchema = z.object({
   excerpt: z.string().nullable().optional().transform(val => val ?? ""),
   content: z.union([z.string(), z.array(z.any())]).nullable().optional(),
   featuredImage: FeaturedImageSchema.nullable().optional(),
+  comments: z.object({
+    nodes: z.array(CommentSchema),
+  }).nullable().optional(),
+  commentCount: z.number().nullable().optional().transform(val => val ?? 0),
 });
 
 export type Page = z.infer<typeof PageSchema>;

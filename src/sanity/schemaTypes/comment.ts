@@ -22,9 +22,9 @@ export default defineType({
         }),
         defineField({
             name: 'post',
-            title: 'Post',
+            title: 'Post / Page',
             type: 'reference',
-            to: [{ type: 'post' }],
+            to: [{ type: 'post' }, { type: 'page' }],
         }),
         defineField({
             name: 'approved',
