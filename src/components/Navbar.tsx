@@ -139,13 +139,20 @@ export default function Navbar() {
             </div>
 
             {/* Desktop Navigation - Centered */}
-            <div className={`hidden md:flex items-center transition-all duration-500 rounded-full whitespace-nowrap bg-zinc-200/60 dark:bg-zinc-900/90 ${scrolled
+            <div 
+              onMouseLeave={() => {
+                setHoveredPath(null);
+                setOpenSubmenu(null);
+              }}
+              className={`hidden md:flex items-center transition-all duration-500 rounded-full whitespace-nowrap bg-zinc-200/60 dark:bg-zinc-900/90 ${scrolled
               ? "p-1"
               : "p-1.5"
-              }`}>
+              }`}
+            >
               {links.map((link) => {
                 const isActive = pathname === link.href || (link.submenu && link.submenu.some(sub => pathname === sub.href));
                 const hasSubmenu = 'submenu' in link && link.submenu;
+                const showPill = hoveredPath === link.href || (hoveredPath === null && isActive);
 
                 return (
                   <div
@@ -153,11 +160,7 @@ export default function Navbar() {
                     className="relative"
                     onMouseEnter={() => {
                       setHoveredPath(link.href);
-                      if (hasSubmenu) setOpenSubmenu(link.href);
-                    }}
-                    onMouseLeave={() => {
-                      setHoveredPath(null);
-                      if (hasSubmenu) setOpenSubmenu(null);
+                      setOpenSubmenu(hasSubmenu ? link.href : null);
                     }}
                   >
                     <Link
@@ -168,18 +171,15 @@ export default function Navbar() {
                           : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
                         }`}
                     >
-                      {isActive && (
+                      {showPill && (
                         <m.div
-                          layoutId="active-pill"
-                          className="absolute inset-0 bg-white dark:bg-zinc-700 shadow-sm rounded-full"
-                          transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                        />
-                      )}
-                      {hoveredPath === link.href && !isActive && (
-                        <m.div
-                          layoutId="hover-pill"
-                          className="absolute inset-0 bg-zinc-200/50 dark:bg-zinc-700/40 rounded-full"
-                          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                          layoutId="navbar-pill"
+                          className={`absolute inset-0 rounded-full ${
+                            isActive
+                              ? "bg-white dark:bg-zinc-700 shadow-sm"
+                              : "bg-white/60 dark:bg-zinc-700/40"
+                          }`}
+                          transition={{ type: "spring", stiffness: 250, damping: 25 }}
                         />
                       )}
                       <span className="relative z-10">{link.label}</span>

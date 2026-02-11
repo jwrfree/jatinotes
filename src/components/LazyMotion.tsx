@@ -1,6 +1,6 @@
 "use client";
 
-import { LazyMotion, domAnimation, m } from "framer-motion";
+import { LazyMotion, domMax, m } from "framer-motion";
 import { ReactNode } from "react";
 
 /**
@@ -9,7 +9,7 @@ import { ReactNode } from "react";
  */
 export function LazyMotionWrapper({ children }: { children: ReactNode }) {
     return (
-        <LazyMotion features={domAnimation}>
+        <LazyMotion features={domMax}>
             {children}
         </LazyMotion>
     );

@@ -2,7 +2,7 @@ import { getHomeData } from "@/lib/services";
 import Link from "next/link";
 import Image from "next/image";
 import { MotionDiv, staggerContainer } from "@/components/Animations";
-import { LazyMotionWrapper, LazyMotionDiv } from "@/components/LazyMotion";
+import { LazyMotionDiv } from "@/components/LazyMotion";
 import { Metadata } from "next";
 import { constructMetadata } from "@/lib/metadata";
 import { Post } from "@/lib/types";
@@ -74,7 +74,7 @@ export default async function Home() {
                   variants={staggerContainer}
                   className="space-y-4"
                 >
-                  {posts.map((post: Post) => (
+                  {posts.slice(1).map((post: Post) => (
                     <PostListItem key={post.id} post={post} />
                   ))}
                 </MotionDiv>
@@ -100,7 +100,7 @@ export default async function Home() {
 
           <div className="relative z-10 mx-auto max-w-7xl px-6">
             <SectionHeading
-              viewAllLink={`/category/${techCategory?.slug || ''}`}
+              viewAllLink="/teknologi"
               className="mb-16"
             >
               <DecryptedText
