@@ -1,15 +1,22 @@
-import DOMPurify from "isomorphic-dompurify";
+import sanitizeHtml from 'sanitize-html';
 
 /**
- * Robust HTML sanitization using isomorphic-dompurify
- * Safe for server-side rendering in Vercel
- * Prevents XSS attacks by stripping dangerous tags and attributes
+ * Robust HTML sanitization using sanitize-html
+ * Safe for server-side rendering in Vercel (Node.js environment)
+ * Replaces isomorphic-dompurify to avoid jsdom/ESM issues
  */
 export function sanitize(content: string): string {
   if (!content) return "";
-  return DOMPurify.sanitize(content, {
-    USE_PROFILES: { html: true },
-    ADD_ATTR: ['target', 'rel'], // Allow target="_blank" for links
+  return sanitizeHtml(content, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img', 'iframe' ]),
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      'a': [ 'href', 'name', 'target', 'rel', 'className' ],
+      'img': [ 'src', 'srcset', 'alt', 'title', 'width', 'height', 'loading', 'className' ],
+      'iframe': [ 'src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen' ],
+      '*': ['className', 'style', 'id'] // Allow basic styling attributes
+    },
+    allowedSchemes: [ 'http', 'https', 'mailto', 'tel' ]
   });
 }
 

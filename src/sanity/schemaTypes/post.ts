@@ -79,10 +79,8 @@ export default defineType({
                     type: 'string',
                     title: 'Alt Text',
                     description: 'Deskripsi gambar untuk SEO & accessibility',
-                    validation: (Rule) => Rule.required().warning('Alt text penting untuk SEO'),
                 },
             ],
-            validation: (Rule) => Rule.required(),
             group: 'content',
         }),
         defineField({
