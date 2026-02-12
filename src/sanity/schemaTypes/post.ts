@@ -90,11 +90,7 @@ export default defineType({
             title: 'Author',
             type: 'reference',
             to: { type: 'author' },
-            description: 'Penulis artikel (auto-set ke Anda)',
-            validation: (Rule) => Rule.required(),
-            // Hide this field since you're the only author
-            // To set default: Create one author document first, then this will auto-populate
-            hidden: true,
+            description: 'Penulis artikel',
             group: 'meta',
         }),
         defineField({
