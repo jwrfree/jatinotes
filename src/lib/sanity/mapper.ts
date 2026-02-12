@@ -2,14 +2,14 @@ import { Post, Category, Page } from "@/lib/types";
 import { SanityPost, SanityCategory, SanityComment, SanityPage } from "./types";
 
 export function mapSanityPostToPost(sanityPost: SanityPost | null | undefined): Post | null {
-    if (!sanityPost) return null;
+    if (!sanityPost || !sanityPost._id) return null;
 
     return {
         id: sanityPost._id,
-        databaseId: 0, // Mock ID or hash from _id
-        title: sanityPost.title,
-        slug: typeof sanityPost.slug === 'string' ? sanityPost.slug : sanityPost.slug?.current || "",
-        date: sanityPost.publishedAt,
+        databaseId: 0,
+        title: sanityPost.title || "Untitled Post",
+        slug: typeof sanityPost.slug === 'string' ? sanityPost.slug : sanityPost.slug?.current || `post-${sanityPost._id}`,
+        date: sanityPost.publishedAt || new Date().toISOString(),
         excerpt: sanityPost.excerpt || "",
         content: sanityPost.body, // This will now be PortableTextBlock[], type definition needs update or loose typing
         wordCount: sanityPost.wordCount || 0, // Character count from Sanity
@@ -91,7 +91,7 @@ export function mapSanityCategoryToCategory(sanityCategory: SanityCategory): Cat
     if (!sanityCategory) return sanityCategory;
     return {
         id: sanityCategory._id || '',
-        name: sanityCategory.title,
+        name: sanityCategory.title || 'Uncategorized',
         slug: typeof sanityCategory.slug === 'string' ? sanityCategory.slug : sanityCategory.slug?.current || '',
         parent: sanityCategory.parent,
         description: sanityCategory.description,

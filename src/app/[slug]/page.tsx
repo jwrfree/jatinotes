@@ -255,9 +255,11 @@ export default async function DynamicPage({
                               Featured Tech
                             </span>
                             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 leading-tight">
-                              {posts[0].title}
+                              {posts[0]?.title || "Untitled"}
                             </h2>
-                            <div className="text-zinc-300 line-clamp-3 md:line-clamp-none mb-6 text-sm sm:text-base leading-relaxed hidden sm:block" dangerouslySetInnerHTML={{ __html: stripHtml(posts[0].excerpt || "") }} />
+                            {posts[0]?.excerpt && (
+                              <div className="text-zinc-300 line-clamp-3 md:line-clamp-none mb-6 text-sm sm:text-base leading-relaxed hidden sm:block" dangerouslySetInnerHTML={{ __html: stripHtml(posts[0].excerpt) }} />
+                            )}
                             <div className="flex items-center gap-2 text-white font-bold text-sm group-hover:gap-4 transition-all">
                               Baca Selengkapnya
                               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -281,7 +283,7 @@ export default async function DynamicPage({
                                 {post.featuredImage?.node?.sourceUrl && (
                                   <Image
                                     src={post.featuredImage.node.sourceUrl}
-                                    alt={post.title}
+                                    alt={post.title || ""}
                                     fill
                                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                                     sizes="100px"
@@ -290,10 +292,10 @@ export default async function DynamicPage({
                               </div>
                               <div>
                                 <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-100 leading-snug group-hover:text-amber-600 transition-colors line-clamp-2">
-                                  {post.title}
+                                  {post.title || "Untitled"}
                                 </h4>
                                 <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-                                  {new Date(post.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                  {post.date ? new Date(post.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : "-"}
                                 </p>
                               </div>
                             </Link>

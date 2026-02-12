@@ -32,7 +32,7 @@ export const CategoryRepository = {
 
     const category = mapSanityCategoryToCategory(categoryInfo);
     category.posts = {
-      nodes: posts.map(mapSanityPostToPost),
+      nodes: posts.map(mapSanityPostToPost).filter((post: Post | null): post is Post => post !== null),
       pageInfo: { hasNextPage: false, hasPreviousPage: false } // Mock
     };
 
@@ -68,7 +68,7 @@ export const CategoryRepository = {
     // Fetch posts in 'buku' category or similar
     const posts = await client.fetch(POSTS_BY_CATEGORY_QUERY, { slug: 'buku' });
     return {
-      nodes: posts.map(mapSanityPostToPost),
+      nodes: posts.map(mapSanityPostToPost).filter((post: Post | null): post is Post => post !== null),
       pageInfo: { hasNextPage: false, hasPreviousPage: false }
     };
   }),
