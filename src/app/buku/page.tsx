@@ -305,7 +305,7 @@ export default async function BukuPage() {
                 href={`/buku/genre/${genre.slug}`}
                 className="flex justify-between items-center p-4 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:border-amber-500 dark:hover:border-amber-500 hover:shadow-md transition-all group"
               >
-                <span className="font-bold text-zinc-700 dark:text-zinc-200 group-hover:text-amber-600 transition-colors">{genre.name}</span>
+                <span className="font-semibold text-zinc-700 dark:text-zinc-200 group-hover:text-amber-600 transition-colors">{genre.name}</span>
                 <span className="text-xs font-bold text-zinc-400 bg-zinc-100 dark:bg-zinc-900 px-2 py-1 rounded-md">{genre.count}</span>
               </Link>
             ))}
