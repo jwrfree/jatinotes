@@ -1,10 +1,10 @@
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Background with Notebook Grid Pattern -->
-  <rect width="32" height="32" rx="8" fill="#F8FAFC"/>
+  <rect width="32" height="32" rx="8" fill="#F1F5F9"/>
   
   <!-- Grid Lines -->
-  <path d="M0 8H32M0 16H32M0 24H32" stroke="#E2E8F0" stroke-width="0.5"/>
-  <path d="M8 0V32M16 0V32M24 0V32" stroke="#E2E8F0" stroke-width="0.5"/>
+  <path d="M0 8H32M0 16H32M0 24H32" stroke="#CBD5E1" stroke-width="0.5"/>
+  <path d="M8 0V32M16 0V32M24 0V32" stroke="#CBD5E1" stroke-width="0.5"/>
   
   <!-- Letter J -->
   <text 
@@ -13,7 +13,7 @@
     font-family="Georgia, serif" 
     font-weight="bold" 
     font-size="20" 
-    fill="#0F172A" 
+    fill="#334155" 
     text-anchor="middle"
   >J</text>
 </svg>
