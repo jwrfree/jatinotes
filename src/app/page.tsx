@@ -17,8 +17,8 @@ import BookSection from "@/components/features/BookSection";
 export const revalidate = 60;
 
 export const metadata: Metadata = constructMetadata({
-  title: "Jati Notes | Eksplorasi Teknologi & Desain",
-  description: "Catatan digital Wruhantojati tentang pengembangan web, desain UI/UX, dan teknologi terbaru menggunakan Headless WordPress.",
+  title: "Jati Notes | Menata Isi Kepala Lewat Tulisan & Buku",
+  description: "Catatan digital Wruhantojati tentang pengembangan web, desain UI/UX, dan perjalanan merapikan isi kepala.",
   url: "/",
 });
 
@@ -27,7 +27,7 @@ export default async function Home() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Jati Notes",
-    "alternateName": ["JatiNotes", "Wruhanto Jati", "Jati Notes Blog"],
+    "alternateName": ["JatiNotes", "Wruhantojati", "Jati Notes Blog"],
     "url": "https://jatinotes.com",
     "description": "Catatan digital Wruhantojati tentang pengembangan web, desain UI/UX, dan teknologi terbaru.",
     "potentialAction": {

@@ -8,8 +8,8 @@ import { getBookTitle, getBookAuthor } from "@/lib/book-utils";
 import { Post } from "@/lib/types";
 
 export const metadata: Metadata = constructMetadata({
-  title: "Rak Buku - Jati Notes",
-  description: "Kumpulan buku pilihan yang telah saya baca. Dari pengembangan diri hingga fiksi yang menyentuh hati.",
+  title: "Rak Buku",
+  description: "Menjelajahi dunia lewat kata-kata. Kumpulan ulasan buku dari pengembangan diri hingga fiksi yang melembutkan hati.",
   url: "/buku",
 });
 

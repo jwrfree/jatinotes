@@ -13,8 +13,8 @@ import EmptyState from "@/components/ui/EmptyState";
 import { BookOpen } from "lucide-react";
 
 export const metadata: Metadata = constructMetadata({
-  title: "Blog",
-  description: "Kumpulan artikel dan tutorial terbaru seputar teknologi dan desain.",
+  title: "Jurnal Jati",
+  description: "Kumpulan catatan, tutorial, dan pemikiran yang sedang dirapikan. Sebuah upaya mendokumentasikan proses belajar dan bertumbuh.",
   url: "/blog",
 });
 
