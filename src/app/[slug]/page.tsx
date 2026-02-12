@@ -26,6 +26,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   
+  // Ignore favicon.ico requests
+  if (slug === 'favicon.ico') {
+    return { title: 'Not Found' };
+  }
+
   // Parallel fetch to determine type
   const [page, category] = await Promise.all([
     getPageBySlug(slug),
@@ -64,6 +69,11 @@ export default async function DynamicPage({
 }) {
   const { slug } = await params;
   const { after, before } = await searchParams;
+
+  // Ignore favicon.ico requests
+  if (slug === 'favicon.ico') {
+    return notFound();
+  }
 
   const paginationParams = before 
     ? { last: 12, before } 

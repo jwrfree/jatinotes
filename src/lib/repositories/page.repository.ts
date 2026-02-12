@@ -6,7 +6,12 @@ import { Page } from '../types';
 
 export const PageRepository = {
   getBySlug: cache(async (slug: string): Promise<Page | null> => {
-    const page = await client.fetch(PAGE_BY_SLUG_QUERY, { slug });
-    return mapSanityPageToPage(page);
+    try {
+      const page = await client.fetch(PAGE_BY_SLUG_QUERY, { slug });
+      return mapSanityPageToPage(page);
+    } catch (error) {
+      console.error(`Error fetching page ${slug}:`, error);
+      return null;
+    }
   }),
 };
