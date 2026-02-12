@@ -10,9 +10,9 @@
   <text 
     x="16" 
     y="22" 
-    font-family="Georgia, serif" 
-    font-weight="bold" 
-    font-size="20" 
+    font-family="Inter, system-ui, sans-serif" 
+    font-weight="700" 
+    font-size="18" 
     fill="#334155" 
     text-anchor="middle"
   >J</text>
