@@ -68,21 +68,20 @@ export default function Tooltip({ text, content, className = "" }: TooltipProps)
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 5, scale: 0.95 }}
           transition={{ duration: 0.15, ease: "easeOut" }}
-          className="fixed z-[999] px-3 py-2 bg-white/40 dark:bg-zinc-950/40 text-zinc-900 dark:text-zinc-100 text-xs rounded-lg shadow-xl pointer-events-none min-w-[150px] md:w-max max-w-[min(90vw,250px)] md:max-w-[600px] border border-white/20 dark:border-white/10 backdrop-blur-sm"
+          className="fixed z-[999] px-3 py-2 bg-white/90 dark:bg-zinc-900/95 text-zinc-900 dark:text-zinc-50 text-xs rounded-lg shadow-2xl pointer-events-none min-w-[150px] md:w-max max-w-[min(90vw,250px)] md:max-w-[600px] border border-white/20 dark:border-zinc-800 backdrop-blur-md"
           style={{
               top: portalCoords.top,
               left: portalCoords.left,
-              transform: "translateX(-50%)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              textShadow: "0 1px 2px rgba(0,0,0,0.1)",
-              filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.15))",
+              transform: "translateX(-50%) translateY(-100%) translateY(-8px)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              textShadow: "0 1px 2px rgba(0,0,0,0.05)",
             }}
         >
           {content}
           {/* Arrow */}
           <span 
-            className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-white/40 dark:border-t-zinc-950/40" 
+            className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-white/90 dark:border-t-zinc-900/95" 
           />
         </m.span>,
         document.body

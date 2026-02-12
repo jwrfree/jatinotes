@@ -231,11 +231,15 @@ export default async function DynamicPage({
               whileInView="animate"
               viewport={{ once: true }}
               variants={staggerContainer}
-              className="grid gap-8 sm:grid-cols-2 lg:grid-cols-2"
+              className={`grid gap-8 sm:grid-cols-2 ${slug === 'teknologi' ? 'lg:grid-cols-3' : 'lg:grid-cols-2'}`}
             >
               {posts.map((post: Post) => (
                 <MotionDiv key={post.id} variants={fadeIn}>
-                  <PostCard post={post} variant="minimal" />
+                  <PostCard 
+                    post={post} 
+                    variant={slug === 'teknologi' ? 'tech' : 'minimal'} 
+                    customAspectRatio={slug === 'teknologi' ? 'aspect-[3/2]' : undefined}
+                  />
                 </MotionDiv>
               ))}
             </MotionDiv>
