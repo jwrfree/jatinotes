@@ -1,6 +1,4 @@
 import { getPostsByCategory, getAllGenres } from "@/lib/api";
-import { MotionDiv, staggerContainer, fadeIn } from "@/components/ui/Animations";
-import BackgroundOrnaments from "@/components/ui/BackgroundOrnaments";
 import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";

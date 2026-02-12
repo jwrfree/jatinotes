@@ -110,7 +110,7 @@ export default function Navbar() {
       ]
     },
     { href: "/teknologi", label: "Teknologi" },
-    { href: "/desain", label: "Desain" },
+    // { href: "/desain", label: "Desain" },
     { href: "/meet-jati", label: "Meet Jati" },
   ];
 
@@ -127,13 +127,9 @@ export default function Navbar() {
         onMouseLeave={() => setIsHovered(false)}
       >
         <nav className={`mx-auto transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${scrolled || isHovered
-          ? "max-w-[95%] md:max-w-4xl bg-white/80 dark:bg-zinc-950/80 shadow-xl shadow-black/5 dark:shadow-white/5 border border-white/20 dark:border-white/10 py-2 rounded-full"
-          : "max-w-5xl bg-transparent border-transparent py-4 rounded-[2rem]"
+          ? "max-w-[95%] md:max-w-4xl bg-white/80 dark:bg-zinc-950/80 shadow-xl shadow-black/5 dark:shadow-white/5 border border-white/20 dark:border-white/10 py-2 rounded-full backdrop-blur-xl"
+          : "max-w-5xl bg-transparent border-transparent py-4 rounded-[2rem] backdrop-blur-none"
           }`}
-          style={{
-            backdropFilter: (scrolled || isHovered) ? "blur(20px)" : "none",
-            WebkitBackdropFilter: (scrolled || isHovered) ? "blur(20px)" : "none",
-          }}
         >
 
           <div className="flex items-center justify-between px-4 md:px-6">
