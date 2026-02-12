@@ -4,23 +4,27 @@ import { Post } from "@/lib/types";
 import { stripHtml } from "@/lib/utils";
 import { constructMetadata } from "@/lib/metadata";
 import { processContent } from "@/lib/sanitize";
-import { LocalErrorBoundary } from "@/components/LocalErrorBoundary";
-import CommentSection from "@/components/CommentSection";
-import TableOfContents from "@/components/TableOfContents";
-import ReadingProgress from "@/components/ReadingProgress";
-import PostMeta from "@/components/PostMeta";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
-import Prose from "@/components/Prose";
-import BackgroundOrnaments from "@/components/BackgroundOrnaments";
+import { LocalErrorBoundary } from "@/components/ui/LocalErrorBoundary";
+import TableOfContents from "@/components/features/TableOfContents";
+import ReadingProgress from "@/components/features/ReadingProgress";
+import PostMeta from "@/components/features/PostMeta";
+import PageHeader from "@/components/layout/PageHeader";
+import ContentCard from "@/components/layout/ContentCard";
+import Prose from "@/components/ui/Prose";
+import BackgroundOrnaments from "@/components/ui/BackgroundOrnaments";
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+
+const CommentSection = dynamic(() => import("@/components/features/CommentSection"), {
+  loading: () => <div className="h-96 animate-pulse bg-zinc-100 dark:bg-zinc-900 rounded-2xl" />,
+});
 
 import { notFound } from "next/navigation";
-import { MotionDiv, fadeIn, staggerContainer } from "@/components/Animations";
-import JsonLd from "@/components/JsonLd";
+import { MotionDiv, fadeIn, staggerContainer } from "@/components/ui/Animations";
+import JsonLd from "@/components/features/JsonLd";
 import { Metadata } from "next";
-import PortableText from "@/components/PortableText";
+import PortableText from "@/components/features/PortableText";
 import { extractTocFromPortableText } from "@/lib/sanity/toc";
 
 // Use ISR: regenerate page every 60 seconds if requested
@@ -66,12 +70,12 @@ export async function generateMetadata({
   }
 
   // Use SEO fields if available (like Yoast SEO)
-  const seoTitle = (post as any).seo?.metaTitle || post.title;
-  const seoDescription = (post as any).seo?.metaDescription || post.excerpt || "Baca selengkapnya di Jati Notes";
-  const seoImage = (post as any).seo?.ogImage || post.featuredImage?.node?.sourceUrl;
-  const seoNoIndex = (post as any).seo?.noIndex || false;
-  const seoCanonical = (post as any).seo?.canonicalUrl;
-  const seoKeywords = (post as any).seo?.focusKeyword ? [(post as any).seo.focusKeyword] : undefined;
+  const seoTitle = post.seo?.metaTitle || post.title;
+  const seoDescription = post.seo?.metaDescription || post.excerpt || "Baca selengkapnya di Jati Notes";
+  const seoImage = post.seo?.ogImage || post.featuredImage?.node?.sourceUrl;
+  const seoNoIndex = post.seo?.noIndex || false;
+  const seoCanonical = post.seo?.canonicalUrl;
+  const seoKeywords = post.seo?.focusKeyword ? [post.seo.focusKeyword] : undefined;
 
   return constructMetadata({
     title: seoTitle,
@@ -124,29 +128,62 @@ export default async function PostPage({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    "headline": post.title,
-    "description": typeof post.content === 'string'
-      ? stripHtml(post.excerpt || post.content || "").substring(0, 160)
-      : (post.excerpt || ""),
-    "image": post.featuredImage?.node?.sourceUrl || "https://jatinotes.com/og-image.png",
-    "datePublished": post.date,
-    "author": {
+    headline: post.title,
+    description: stripHtml(post.excerpt || "").substring(0, 160),
+    image: post.featuredImage?.node?.sourceUrl ? [post.featuredImage.node.sourceUrl] : ["https://jatinotes.com/og-image.png"],
+    datePublished: post.date,
+    dateModified: post.date, // Should be modified date if available
+    author: {
       "@type": "Person",
-      "name": post.author?.node?.name || "Wruhantojati",
+      name: post.author?.node?.name || "Wruhanto Jati",
+      url: "https://jatinotes.com/meet-jati",
     },
-    "publisher": {
+    publisher: {
       "@type": "Organization",
-      "name": "Jati Notes",
-      "logo": {
+      name: "Jati Notes",
+      logo: {
         "@type": "ImageObject",
-        "url": "https://jatinotes.com/logo.png"
-      }
-    }
+        url: "https://jatinotes.com/icon.svg",
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://jatinotes.com/posts/${slug}`,
+    },
+    wordCount: post.wordCount,
+    articleBody: stripHtml(typeof post.content === 'string' ? post.content : "").substring(0, 5000), // Approximate for schema
+    keywords: post.categories?.nodes.map((c: any) => c.name).join(", "),
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://jatinotes.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Blog",
+        item: "https://jatinotes.com/blog",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: post.title,
+        item: `https://jatinotes.com/posts/${slug}`,
+      },
+    ],
   };
 
   return (
-    <div className="relative min-h-screen">
+    <article className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <JsonLd data={jsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
       <ReadingProgress />
 
       <BackgroundOrnaments variant="subtle" />
@@ -261,6 +298,6 @@ export default async function PostPage({
 
         </div>
       </div>
-    </div >
+    </article>
   );
 }

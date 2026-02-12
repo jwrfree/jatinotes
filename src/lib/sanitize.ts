@@ -1,11 +1,16 @@
+import DOMPurify from "isomorphic-dompurify";
+
 /**
- * Simple HTML sanitization without external dependencies
+ * Robust HTML sanitization using isomorphic-dompurify
  * Safe for server-side rendering in Vercel
+ * Prevents XSS attacks by stripping dangerous tags and attributes
  */
 export function sanitize(content: string): string {
-  // For WordPress content, we trust the source but still do basic cleanup
-  // This avoids the jsdom/isomorphic-dompurify issue in Vercel
-  return content;
+  if (!content) return "";
+  return DOMPurify.sanitize(content, {
+    USE_PROFILES: { html: true },
+    ADD_ATTR: ['target', 'rel'], // Allow target="_blank" for links
+  });
 }
 
 export type TocItem = {

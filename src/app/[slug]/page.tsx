@@ -3,16 +3,20 @@ import { stripHtml } from "@/lib/utils";
 import { constructMetadata } from "@/lib/metadata";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { MotionDiv, fadeIn, staggerContainer } from "@/components/Animations";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
-import BackgroundOrnaments from "@/components/BackgroundOrnaments";
-import Prose from "@/components/Prose";
-import PortableText from "@/components/PortableText";
+import { MotionDiv, fadeIn, staggerContainer } from "@/components/ui/Animations";
+import PageHeader from "@/components/layout/PageHeader";
+import ContentCard from "@/components/layout/ContentCard";
+import BackgroundOrnaments from "@/components/ui/BackgroundOrnaments";
+import JsonLd from "@/components/features/JsonLd";
+import Prose from "@/components/ui/Prose";
+import PortableText from "@/components/features/PortableText";
 import { Post } from "@/lib/types";
-import PostCard from "@/components/PostCard";
-import Pagination from "@/components/Pagination";
+import PostCard from "@/components/features/PostCard";
+import Pagination from "@/components/ui/Pagination";
 import { Metadata } from "next";
+
+// Use ISR
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,
@@ -71,8 +75,46 @@ export default async function DynamicPage({
   ]);
 
   if (page) {
+    const pageJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: page.title,
+      description: stripHtml(page.excerpt || "").substring(0, 160),
+      url: `https://jatinotes.com/${slug}`,
+      image: page.featuredImage?.node?.sourceUrl,
+      publisher: {
+        "@type": "Organization",
+        name: "Jati Notes",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://jatinotes.com/icon.svg",
+        },
+      },
+    };
+
+    const breadcrumbJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: "https://jatinotes.com",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: page.title,
+          item: `https://jatinotes.com/${slug}`,
+        },
+      ],
+    };
+
     return (
       <div className="relative overflow-hidden">
+        <JsonLd data={pageJsonLd} />
+        <JsonLd data={breadcrumbJsonLd} />
         <BackgroundOrnaments variant="subtle" />
 
         <ContentCard maxWidth="max-w-4xl">
@@ -113,8 +155,51 @@ export default async function DynamicPage({
     const posts = category.posts?.nodes || [];
     const pageInfo = category.posts?.pageInfo;
 
+    const categoryJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: category.name,
+      description: category.description || `Kumpulan artikel kategori ${category.name}`,
+      url: `https://jatinotes.com/${slug}`,
+      publisher: {
+        "@type": "Organization",
+        name: "Jati Notes",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://jatinotes.com/icon.svg",
+        },
+      },
+    };
+
+    const breadcrumbJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: "https://jatinotes.com",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Kategori",
+          item: "https://jatinotes.com/blog", // Fallback to blog for category parent
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: category.name,
+          item: `https://jatinotes.com/${slug}`,
+        },
+      ],
+    };
+
     return (
       <div className="relative overflow-hidden min-h-screen">
+        <JsonLd data={categoryJsonLd} />
+        <JsonLd data={breadcrumbJsonLd} />
         <BackgroundOrnaments variant="subtle" />
 
         <ContentCard>

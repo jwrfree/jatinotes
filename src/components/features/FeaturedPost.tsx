@@ -6,7 +6,7 @@ import { useRef } from 'react';
 import { m, useScroll, useTransform } from 'framer-motion';
 import { Post } from '@/lib/types';
 import { sanitize } from '@/lib/sanitize';
-import { MotionDiv, fadeIn } from '@/components/Animations';
+import { MotionDiv, fadeIn } from '@/components/ui/Animations';
 
 interface FeaturedPostProps {
   post: Post;

@@ -1,6 +1,6 @@
 "use client";
 
-import { MotionSection, fadeIn } from "./Animations";
+import { MotionSection, fadeIn } from "../ui/Animations";
 
 interface HeroSectionProps {
   title?: React.ReactNode;

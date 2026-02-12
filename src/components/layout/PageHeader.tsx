@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { sanitize } from "@/lib/sanitize";
-import DecryptedText from "./DecryptedText";
+import DecryptedText from "../ui/DecryptedText";
 
 interface PageHeaderProps {
   title: string;

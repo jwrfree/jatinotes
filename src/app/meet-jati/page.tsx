@@ -1,10 +1,10 @@
 import { getPageBySlug } from "@/lib/api";
 import { constructMetadata } from "@/lib/metadata";
-import { MotionDiv, staggerContainer } from "@/components/Animations";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
-import BackgroundOrnaments from "@/components/BackgroundOrnaments";
-import Tooltip from "@/components/Tooltip";
+import { MotionDiv, staggerContainer } from "@/components/ui/Animations";
+import PageHeader from "@/components/layout/PageHeader";
+import ContentCard from "@/components/layout/ContentCard";
+import BackgroundOrnaments from "@/components/ui/BackgroundOrnaments";
+import Tooltip from "@/components/ui/Tooltip";
 import { Metadata } from "next";
 
 export const metadata: Metadata = constructMetadata({

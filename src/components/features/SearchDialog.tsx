@@ -7,7 +7,7 @@ import { Post } from "@/lib/types";
 import Link from "next/link";
 import Image from "next/image";
 import { formatDateIndonesian } from "@/lib/utils";
-import { LocalErrorBoundary } from "./LocalErrorBoundary";
+import { LocalErrorBoundary } from "../ui/LocalErrorBoundary";
 
 interface SearchDialogProps {
   isOpen: boolean;

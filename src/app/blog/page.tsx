@@ -1,15 +1,15 @@
 import { getPostsByCategory } from "@/lib/api";
 import { constructMetadata } from "@/lib/metadata";
-import { MotionDiv, staggerContainer } from "@/components/Animations";
-import PageHeader from "@/components/PageHeader";
-import ContentCard from "@/components/ContentCard";
-import BackgroundOrnaments from "@/components/BackgroundOrnaments";
-import PostListItem from "@/components/PostListItem";
-import Pagination from "@/components/Pagination";
+import { MotionDiv, staggerContainer } from "@/components/ui/Animations";
+import PageHeader from "@/components/layout/PageHeader";
+import ContentCard from "@/components/layout/ContentCard";
+import BackgroundOrnaments from "@/components/ui/BackgroundOrnaments";
+import PostListItem from "@/components/features/PostListItem";
+import Pagination from "@/components/ui/Pagination";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { Post } from "@/lib/types";
-import EmptyState from "@/components/EmptyState";
+import EmptyState from "@/components/ui/EmptyState";
 import { BookOpen } from "lucide-react";
 
 export const metadata: Metadata = constructMetadata({

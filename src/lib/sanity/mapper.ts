@@ -1,56 +1,14 @@
-import { Post, Category } from "@/lib/types";
+import { Post, Category, Page } from "@/lib/types";
+import { SanityPost, SanityCategory, SanityComment, SanityPage } from "./types";
 
-// Extended types for new Sanity fields
-export interface SanityPost {
-    _id: string;
-    title: string;
-    slug: { current: string } | string;
-    publishedAt: string;
-    excerpt?: string;
-    body: any;
-    wordCount?: number;
-    mainImage?: string;
-    author?: {
-        name: string;
-        image?: string;
-        bio?: string;
-        email?: string;
-        social?: {
-            twitter?: string;
-            linkedin?: string;
-            github?: string;
-            website?: string;
-        };
-    };
-    categories?: Array<{
-        title: string;
-        slug: { current: string } | string;
-        color?: string;
-    }>;
-    featured?: boolean;
-    comments?: any[];
-    bookTitle?: string;
-    bookAuthor?: string;
-}
-
-export interface SanityCategory {
-    _id: string;
-    title: string;
-    slug: { current: string } | string;
-    description?: string;
-    color?: string;
-    count?: number;
-    parent?: string;
-}
-
-export function mapSanityPostToPost(sanityPost: any): Post {
-    if (!sanityPost) return sanityPost;
+export function mapSanityPostToPost(sanityPost: SanityPost | null | undefined): Post | null {
+    if (!sanityPost) return null;
 
     return {
         id: sanityPost._id,
         databaseId: 0, // Mock ID or hash from _id
         title: sanityPost.title,
-        slug: sanityPost.slug?.current || sanityPost.slug,
+        slug: typeof sanityPost.slug === 'string' ? sanityPost.slug : sanityPost.slug?.current || "",
         date: sanityPost.publishedAt,
         excerpt: sanityPost.excerpt || "",
         content: sanityPost.body, // This will now be PortableTextBlock[], type definition needs update or loose typing
@@ -68,9 +26,9 @@ export function mapSanityPostToPost(sanityPost: any): Post {
             }
         } : null,
         categories: sanityPost.categories ? {
-            nodes: sanityPost.categories.map((c: any) => ({
+            nodes: sanityPost.categories.map((c) => ({
                 name: c.title,
-                slug: c.slug?.current || c.slug
+                slug: typeof c.slug === 'string' ? c.slug : c.slug?.current || ""
             }))
         } : { nodes: [] },
         commentCount: sanityPost.comments?.length || 0,
@@ -78,14 +36,14 @@ export function mapSanityPostToPost(sanityPost: any): Post {
             nodes: (() => {
                 // 1. Build Map: WordPress ID -> Sanity ID
                 const wpIdMap: Record<number, string> = {};
-                sanityPost.comments.forEach((c: any) => {
+                sanityPost.comments.forEach((c) => {
                     if (c.wordpressId) {
                         wpIdMap[c.wordpressId] = c._id;
                     }
                 });
 
                 // 2. Map Comments and Resolve Parent IDs
-                return sanityPost.comments.map((c: any) => {
+                return sanityPost.comments.map((c) => {
                     // Default parent ID: Native Sanity Ref or Legacy WP ID
                     let resolvedParentId = c.parentRef || (c.parentCommentId ? String(c.parentCommentId) : null);
 
@@ -117,7 +75,15 @@ export function mapSanityPostToPost(sanityPost: any): Post {
         } : { nodes: [] },
         tags: { nodes: [] },
         bookTitle: sanityPost.bookTitle,
-        bookAuthor: sanityPost.bookAuthor
+        bookAuthor: sanityPost.bookAuthor,
+        seo: sanityPost.seo ? {
+            metaTitle: sanityPost.seo.metaTitle,
+            metaDescription: sanityPost.seo.metaDescription,
+            focusKeyword: sanityPost.seo.focusKeyword,
+            ogImage: sanityPost.seo.ogImage,
+            noIndex: sanityPost.seo.noIndex,
+            canonicalUrl: sanityPost.seo.canonicalUrl
+        } : null
     };
 }
 
@@ -135,12 +101,12 @@ export function mapSanityCategoryToCategory(sanityCategory: SanityCategory): Cat
     }
 }
 
-export function mapSanityPageToPage(sanityPage: any): any {
-    if (!sanityPage) return sanityPage;
+export function mapSanityPageToPage(sanityPage: SanityPage | null | undefined): Page | null {
+    if (!sanityPage) return null;
     return {
         id: sanityPage._id,
         title: sanityPage.title,
-        slug: sanityPage.slug?.current || sanityPage.slug,
+        slug: typeof sanityPage.slug === 'string' ? sanityPage.slug : (sanityPage.slug as any)?.current || "",
         excerpt: sanityPage.excerpt || "",
         content: sanityPage.content,
         featuredImage: sanityPage.mainImage ? {

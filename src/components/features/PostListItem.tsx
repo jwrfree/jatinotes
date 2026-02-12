@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Post } from "@/lib/types";
 import { calculateReadingTime } from "@/lib/utils";
 import { sanitize } from "@/lib/sanitize";
-import { MotionDiv, fadeIn } from "@/components/Animations";
+import { MotionDiv, fadeIn } from "@/components/ui/Animations";
 
 interface PostListItemProps {
   post: Post;

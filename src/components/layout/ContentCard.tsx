@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { MotionSection, fadeIn } from "./Animations";
+import { MotionSection, fadeIn } from "../ui/Animations";
 
 interface ContentCardProps {
   children: ReactNode;

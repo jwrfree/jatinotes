@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import ContentCard from "@/components/ContentCard";
-import BackgroundOrnaments from "@/components/BackgroundOrnaments";
+import BackgroundOrnaments from "@/components/ui/BackgroundOrnaments";
+import ContentCard from "@/components/layout/ContentCard";
+import { MotionDiv } from "@/components/ui/Animations";
 import { MoveLeft, Home } from "lucide-react";
 
 export default function NotFound() {

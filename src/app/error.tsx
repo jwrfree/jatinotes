@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import ContentCard from "@/components/ContentCard";
-import BackgroundOrnaments from "@/components/BackgroundOrnaments";
+import ContentCard from "@/components/layout/ContentCard";
+import BackgroundOrnaments from "@/components/ui/BackgroundOrnaments";
 import { RefreshCw, Home, AlertCircle } from "lucide-react";
 import Link from "next/link";
 

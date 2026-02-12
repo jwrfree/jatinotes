@@ -12,11 +12,17 @@ interface MetadataProps {
   url?: string;
   canonical?: string;
   keywords?: string[];
+  verification?: {
+    google?: string;
+    yandex?: string;
+    yahoo?: string;
+    other?: Record<string, string | number | (string | number)[]>;
+  };
 }
 
 const DEFAULT_METADATA = {
   siteName: "Jati Notes",
-  defaultDescription: "Blog modern menggunakan Next.js dan Headless WordPress",
+  defaultDescription: "Blog modern tentang buku, teknologi, dan kehidupan.",
   defaultImage: "/og-image.png",
   twitterHandle: "@wruhantojati",
   baseUrl: "https://jatinotes.com",
@@ -34,6 +40,7 @@ export function constructMetadata({
   url,
   canonical,
   keywords,
+  verification,
 }: MetadataProps): Metadata {
   const metaDescription = description || DEFAULT_METADATA.defaultDescription;
   const metaImage = image || DEFAULT_METADATA.defaultImage;
@@ -43,15 +50,18 @@ export function constructMetadata({
   return {
     title,
     description: metaDescription,
+    applicationName: DEFAULT_METADATA.siteName,
     ...(keywords && keywords.length > 0 && { keywords }),
     alternates: {
       canonical: canonicalUrl,
     },
+    verification,
     openGraph: {
       title,
       description: metaDescription,
       url: metaUrl,
       siteName: DEFAULT_METADATA.siteName,
+      locale: "id_ID",
       images: [
         {
           url: metaImage,

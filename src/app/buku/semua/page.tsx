@@ -1,10 +1,10 @@
 import { getAllBookReviews } from "@/lib/api";
 import { constructMetadata } from "@/lib/metadata";
 import { Metadata } from "next";
-import PageHeader from "@/components/PageHeader";
-import BackgroundOrnaments from "@/components/BackgroundOrnaments";
-import { MotionDiv, staggerContainer } from "@/components/Animations";
-import BookList from "./BookList";
+import PageHeader from "@/components/layout/PageHeader";
+import BackgroundOrnaments from "@/components/ui/BackgroundOrnaments";
+import { MotionDiv, staggerContainer } from "@/components/ui/Animations";
+import BookList from "@/components/features/BookList";
 
 export const metadata: Metadata = constructMetadata({
   title: "Daftar Buku - Jati Notes",

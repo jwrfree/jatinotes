@@ -65,6 +65,14 @@ export const PostSchema = z.object({
   }).nullable().optional(),
   bookTitle: z.string().nullable().optional(),
   bookAuthor: z.string().nullable().optional(),
+  seo: z.object({
+    metaTitle: z.string().optional(),
+    metaDescription: z.string().optional(),
+    focusKeyword: z.string().optional(),
+    ogImage: z.string().optional(),
+    noIndex: z.boolean().optional(),
+    canonicalUrl: z.string().optional(),
+  }).nullable().optional(),
 });
 
 export type Author = z.infer<typeof AuthorSchema>;

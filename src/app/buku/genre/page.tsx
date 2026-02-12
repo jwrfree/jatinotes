@@ -1,10 +1,10 @@
 import { getAllGenres } from "@/lib/api";
 import { constructMetadata } from "@/lib/metadata";
 import { Metadata } from "next";
-import ContentCard from "@/components/ContentCard";
-import PageHeader from "@/components/PageHeader";
-import BackgroundOrnaments from "@/components/BackgroundOrnaments";
-import { MotionDiv, staggerContainer, fadeIn } from "@/components/Animations";
+import ContentCard from "@/components/layout/ContentCard";
+import PageHeader from "@/components/layout/PageHeader";
+import BackgroundOrnaments from "@/components/ui/BackgroundOrnaments";
+import { MotionDiv, staggerContainer, fadeIn } from "@/components/ui/Animations";
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
 

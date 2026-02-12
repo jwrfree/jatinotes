@@ -1,6 +1,6 @@
-import SkeletonCard from "@/components/SkeletonCard";
-import BackgroundOrnaments from "@/components/BackgroundOrnaments";
-import ContentCard from "@/components/ContentCard";
+import SkeletonCard from "@/components/features/SkeletonCard";
+import BackgroundOrnaments from "@/components/ui/BackgroundOrnaments";
+import ContentCard from "@/components/layout/ContentCard";
 
 export default function Loading() {
   return (

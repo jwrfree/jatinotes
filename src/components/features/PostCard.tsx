@@ -6,14 +6,15 @@ import { useRef } from "react";
 import { m, useScroll, useTransform } from "framer-motion";
 import { Post } from "@/lib/types";
 import { sanitize } from "@/lib/sanitize";
-import { MotionDiv, fadeIn } from "@/components/Animations";
+import { MotionDiv, fadeIn } from "@/components/ui/Animations";
 
 interface PostCardProps {
   post: Post;
   isWide?: boolean;
   priority?: boolean;
-  variant?: "default" | "glass" | "minimal";
+  variant?: "default" | "glass" | "minimal" | "tech";
   accentColor?: "amber";
+  customAspectRatio?: string;
 }
 
 export default function PostCard({
@@ -21,7 +22,8 @@ export default function PostCard({
   isWide = false,
   priority = false,
   variant = "default",
-  accentColor = "amber"
+  accentColor = "amber",
+  customAspectRatio
 }: PostCardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -37,13 +39,82 @@ export default function PostCard({
 
   const displayTitle = post.title.replace(/[“”]/g, '"');
 
+  if (variant === "tech") {
+    const aspectRatioClass = customAspectRatio || "aspect-[3/2]";
+
+    return (
+      <MotionDiv
+        ref={containerRef}
+        variants={fadeIn}
+        className={`group relative overflow-hidden rounded-3xl bg-zinc-100 dark:bg-zinc-900 shadow-sm transition-all duration-500 hover:shadow-xl ${isWide ? "lg:col-span-2" : "lg:col-span-1"}`}
+      >
+        <Link href={`/posts/${post.slug}`} className="flex flex-col h-full">
+          {/* Image Section - Clear and not covered */}
+          <div className={`relative w-full overflow-hidden ${aspectRatioClass}`}>
+            {post.featuredImage?.node?.sourceUrl && (
+              <m.div
+                style={{ y, height: "120%", top: "-10%" }}
+                className="relative w-full h-full"
+              >
+                <Image
+                  src={post.featuredImage.node.sourceUrl}
+                  alt={post.title}
+                  fill
+                  priority={priority}
+                  loading={priority ? undefined : "lazy"}
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes={isWide
+                    ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 800px"
+                    : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"}
+                />
+              </m.div>
+            )}
+            
+            {/* Tech Label - Stays on image corner */}
+            <div className="absolute top-4 right-4 z-10 bg-black/40 backdrop-blur-md text-[10px] font-mono text-white px-2 py-1 rounded border border-white/10">
+              TECH
+            </div>
+          </div>
+
+          {/* Content Section - Below the image with "Ambient Blur" from the image */}
+          <div className="relative flex-1 flex flex-col overflow-hidden">
+            {/* Background Echo: A very blurred version of the image to provide the "blur" source */}
+            {post.featuredImage?.node?.sourceUrl && (
+              <div className="absolute inset-0 -z-10 overflow-hidden">
+                <Image
+                  src={post.featuredImage.node.sourceUrl}
+                  alt=""
+                  fill
+                  className="object-cover blur-3xl opacity-30 dark:opacity-50 scale-150"
+                />
+              </div>
+            )}
+
+            <div className="flex-1 p-5 md:p-6 backdrop-blur-xl bg-white/40 dark:bg-black/40 border-t border-white/20 dark:border-white/5 flex flex-col">
+              <h3 className={`font-bold leading-tight text-zinc-900 dark:text-zinc-100 mb-2 transition-colors ${accentClasses[accentColor]} ${isWide ? "text-xl md:text-2xl" : "text-lg"}`}>
+                {displayTitle}
+              </h3>
+
+              <div
+                className="text-xs md:text-sm leading-relaxed text-zinc-600 dark:text-zinc-300 line-clamp-2"
+                dangerouslySetInnerHTML={{ __html: sanitize(post.excerpt) }}
+              />
+            </div>
+          </div>
+        </Link>
+      </MotionDiv>
+    );
+  }
+
   if (variant === "glass") {
+    const aspectRatioClass = customAspectRatio || "aspect-[3/4] md:aspect-auto md:h-[450px]";
+
     return (
       <MotionDiv
         ref={containerRef}
         variants={fadeIn}
         className={`group relative overflow-hidden rounded-3xl bg-zinc-100 dark:bg-zinc-800 shadow-md transition-all duration-500 hover:shadow-xl ${isWide ? "lg:col-span-2" : "lg:col-span-1"
-          } aspect-[3/4] md:aspect-auto md:h-[450px]`}
+          } ${aspectRatioClass}`}
       >
         <Link href={`/posts/${post.slug}`} className="block h-full w-full relative">
           {post.featuredImage?.node?.sourceUrl && (

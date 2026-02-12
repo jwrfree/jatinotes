@@ -16,6 +16,7 @@ const components: PortableTextComponents = {
                         width={800} // Default width for optimization
                         height={500} // Aspect ratio approximation
                         className="rounded-lg shadow-md"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 800px"
                     />
                     {value.caption && (
                         <div className="text-center text-sm text-gray-500 mt-2">
