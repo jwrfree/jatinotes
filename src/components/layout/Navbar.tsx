@@ -135,20 +135,20 @@ export default function Navbar() {
           <div className="flex items-center justify-between px-4 md:px-6">
             <div className="flex-[1.5] flex items-center">
               <Link href="/" className={`font-semibold sm:font-bold tracking-tighter text-zinc-900 dark:text-zinc-50 z-50 transition-all duration-500 ${scrolled ? "text-lg" : "text-xl"}`}>
-                Jati<span className="text-amber-500">Notes</span>
+                Jati<span className="text-amber-600 dark:text-amber-500">Notes</span>
               </Link>
             </div>
 
             {/* Desktop Navigation - Centered */}
-            <div 
+            <div
               onMouseLeave={() => {
                 setHoveredPath(null);
                 setOpenSubmenu(null);
               }}
               className={`hidden md:flex items-center transition-all duration-500 rounded-full whitespace-nowrap bg-zinc-200/60 dark:bg-zinc-900/90 ${scrolled
-              ? "p-1"
-              : "p-1.5"
-              }`}
+                ? "p-1"
+                : "p-1.5"
+                }`}
             >
               {links.map((link) => {
                 const isActive = pathname === link.href || (link.submenu && link.submenu.some(sub => pathname === sub.href));
@@ -175,11 +175,10 @@ export default function Navbar() {
                       {showPill && (
                         <m.div
                           layoutId="navbar-pill"
-                          className={`absolute inset-0 rounded-full ${
-                            isActive
+                          className={`absolute inset-0 rounded-full ${isActive
                               ? "bg-white dark:bg-zinc-700 shadow-sm"
                               : "bg-white/60 dark:bg-zinc-700/40"
-                          }`}
+                            }`}
                           transition={{ type: "spring", stiffness: 250, damping: 25 }}
                         />
                       )}

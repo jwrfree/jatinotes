@@ -19,7 +19,7 @@ const components: PortableTextComponents = {
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 800px"
                     />
                     {value.caption && (
-                        <div className="text-center text-sm text-gray-500 mt-2">
+                        <div className="text-center text-sm text-zinc-600 dark:text-zinc-400 mt-2">
                             {value.caption}
                         </div>
                     )}
@@ -44,8 +44,8 @@ const components: PortableTextComponents = {
             const text = value.children?.map((c: any) => c.text).join('') || '';
             return <h4 id={slugify(text)} className="text-lg font-semibold mt-4 mb-2 scroll-mt-24">{children}</h4>
         },
-        blockquote: ({ children }) => <blockquote className="border-l-4 border-amber-500 pl-4 italic my-4">{children}</blockquote>,
-        normal: ({ children }) => <p className="mb-4 leading-relaxed text-zinc-700 dark:text-zinc-300">{children}</p>,
+        blockquote: ({ children }) => <blockquote className="border-l-4 border-amber-500 pl-4 italic my-4 text-zinc-800 dark:text-zinc-200">{children}</blockquote>,
+        normal: ({ children }) => <p className="mb-4 leading-relaxed text-zinc-800 dark:text-zinc-200">{children}</p>,
     },
     list: {
         bullet: ({ children }) => <ul className="list-disc ml-6 mb-4 space-y-2">{children}</ul>,

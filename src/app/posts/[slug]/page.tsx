@@ -15,6 +15,7 @@ import BackgroundOrnaments from "@/components/ui/BackgroundOrnaments";
 import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import ListenToArticle from "@/components/features/ListenToArticle";
 
 const CommentSection = dynamic(() => import("@/components/features/CommentSection"), {
   loading: () => <div className="h-96 animate-pulse bg-zinc-100 dark:bg-zinc-900 rounded-2xl" />,
@@ -123,6 +124,9 @@ export default async function PostPage({
     toc = result.toc;
   }
 
+  // Extract plain text for TTS
+  const plainTextContent = stripHtml(post.content || "");
+
   const isBookReview = post.categories?.nodes?.some(c => c.slug === 'buku');
 
   const jsonLd = {
@@ -209,17 +213,20 @@ export default async function PostPage({
                 <div id="main-article">
                   <PageHeader
                     topContent={
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
                         {post.categories?.nodes.find(c => c.slug !== 'buku')?.name || post.categories?.nodes[0]?.name || 'Blog'}
                       </span>
                     }
                     title={post.title}
                     subtitle={
-                      <PostMeta
-                        authorName={post.author?.node?.name}
-                        date={post.date}
-                        post={post}
-                      />
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between w-full">
+                        <PostMeta
+                          authorName={post.author?.node?.name}
+                          date={post.date}
+                          post={post}
+                        />
+                        <ListenToArticle text={plainTextContent} title={post.title} />
+                      </div>
                     }
                     description={post.excerpt}
                   />
@@ -241,7 +248,7 @@ export default async function PostPage({
                   )}
 
                   {isPortableText ? (
-                    <div className="mt-12 prose prose-zinc dark:prose-invert max-w-none prose-headings:scroll-mt-28 prose-p:leading-relaxed prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-a:text-amber-500 prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50 prose-base md:prose-lg">
+                    <div className="mt-12 prose prose-zinc dark:prose-invert max-w-none prose-headings:scroll-mt-28 prose-p:leading-relaxed prose-p:text-zinc-800 dark:prose-p:text-zinc-200 prose-a:text-amber-500 prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50 prose-base md:prose-lg">
                       <PortableText value={processedContent} />
                     </div>
                   ) : (

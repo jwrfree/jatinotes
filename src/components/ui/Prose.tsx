@@ -20,7 +20,7 @@ export default function Prose({
     xl: "prose-lg md:prose-xl",
   };
 
-  const baseClasses = "prose prose-zinc dark:prose-invert max-w-none prose-headings:scroll-mt-28 prose-p:leading-relaxed prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-a:text-amber-500 prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50";
+  const baseClasses = "prose prose-zinc dark:prose-invert max-w-none prose-headings:scroll-mt-28 prose-p:leading-relaxed prose-p:text-zinc-800 dark:prose-p:text-zinc-200 prose-a:text-amber-500 prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50";
 
   const combinedClasses = `${baseClasses} ${sizeClasses[size]} ${className}`;
 

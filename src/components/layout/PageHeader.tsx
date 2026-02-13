@@ -61,7 +61,7 @@ export default function PageHeader({
 
       {description && (
         <div
-          className="mt-4 text-sm md:text-base text-zinc-500 dark:text-zinc-400 leading-relaxed"
+          className="mt-4 text-sm md:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed"
           dangerouslySetInnerHTML={{ __html: sanitize(description) }}
         />
       )}

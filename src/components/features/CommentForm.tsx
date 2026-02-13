@@ -133,25 +133,33 @@ export default function CommentForm({ postId, onOptimisticAdd, parentId, onCance
         <div className="grid gap-4 md:grid-cols-2">
           <input
             type="text"
+            name="author"
+            id={`comment-author${isReply ? `-${parentId}` : ""}`}
+            autoComplete="name"
             placeholder="Nama Lengkap"
-            className={`block w-full rounded-xl border bg-white/50 backdrop-blur-sm px-4 py-3 text-sm text-zinc-900 transition-all focus:ring-4 focus:ring-amber-500/10 outline-none ${errors.author ? 'border-red-300 focus:border-red-500' : 'border-zinc-200/50 focus:border-amber-500'}`}
+            className={`block w-full rounded-xl border bg-white/50 backdrop-blur-sm px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 transition-all focus:ring-4 focus:ring-amber-500/10 outline-none ${errors.author ? 'border-red-300 focus:border-red-500' : 'border-zinc-200/50 focus:border-amber-500'}`}
             value={formData.author}
             onChange={(e) => setFormData({ ...formData, author: e.target.value })}
           />
           <input
             type="email"
+            name="authorEmail"
+            id={`comment-email${isReply ? `-${parentId}` : ""}`}
+            autoComplete="email"
             placeholder="Email (tidak dipublikasikan)"
-            className={`block w-full rounded-xl border bg-white/50 backdrop-blur-sm px-4 py-3 text-sm text-zinc-900 transition-all focus:ring-4 focus:ring-amber-500/10 outline-none ${errors.authorEmail ? 'border-red-300 focus:border-red-500' : 'border-zinc-200/50 focus:border-amber-500'}`}
+            className={`block w-full rounded-xl border bg-white/50 backdrop-blur-sm px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 transition-all focus:ring-4 focus:ring-amber-500/10 outline-none ${errors.authorEmail ? 'border-red-300 focus:border-red-500' : 'border-zinc-200/50 focus:border-amber-500'}`}
             value={formData.authorEmail}
             onChange={(e) => setFormData({ ...formData, authorEmail: e.target.value })}
           />
         </div>
 
         <textarea
+          name="content"
+          id={`comment-content${isReply ? `-${parentId}` : ""}`}
           rows={isReply ? 3 : 5}
           placeholder={isReply ? "Tulis balasan Anda..." : "Tulis komentar..."}
           autoFocus={autoFocus}
-          className={`block w-full rounded-xl border bg-white/50 backdrop-blur-sm px-4 py-3 text-sm text-zinc-900 transition-all focus:ring-4 focus:ring-amber-500/10 outline-none resize-none ${errors.content ? 'border-red-300 focus:border-red-500' : 'border-zinc-200/50 focus:border-amber-500'}`}
+          className={`block w-full rounded-xl border bg-white/50 backdrop-blur-sm px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 transition-all focus:ring-4 focus:ring-amber-500/10 outline-none resize-none ${errors.content ? 'border-red-300 focus:border-red-500' : 'border-zinc-200/50 focus:border-amber-500'}`}
           value={formData.content}
           onChange={(e) => setFormData({ ...formData, content: e.target.value })}
         />

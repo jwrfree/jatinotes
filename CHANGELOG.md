@@ -14,6 +14,13 @@ Semua perubahan signifikan pada proyek **Jatinotes (Wruhantojati)** akan didokum
   - Integrasi metadata dinamis untuk Blog dan Buku.
 - **Content Engine**: Migrasi penuh dari WordPress ke Sanity CMS dengan dukungan *Portable Text* dan *Image Zoom*.
 - **Infrastructure**: Deployment stabil di Vercel dengan optimasi performa Next.js 14+.
+- **Experience (UX)**:
+  - **Sticky Audio Player**: Penambahan pemutar audio yang melayang (*sticky*) di bagian bawah halaman dengan efek *glassmorphism* premium.
+  - **Auto-Hide**: Player sticky hanya muncul ketika audio aktif dan user telah scroll melewati konten.
+  - **Scroll To Top**: Redesain tombol dengan estetika *frosted glass* yang selaras dengan sticky player.
+- **Accessibility**:
+  - Peningkatan kontras teks pada Navbar Logo (Notes: amber-600) untuk keterbacaan lebih baik.
+  - Optimasi kontras tipografi artikel (Prose text-zinc-800).
 
 ### Perbaikan
 - Bug hydration pada komponen UI (nested buttons).
