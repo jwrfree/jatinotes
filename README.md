@@ -1,61 +1,45 @@
-# JatiNotes
+# Wruhantojati (JatiNotes) 🖋️
 
-Sebuah blog pribadi dan platform catatan digital yang dibangun menggunakan **Next.js** dan **Sanity Headless CMS**.
+> "Sebuah rumah digital untuk catatan teknologi yang teknis dan cerita hidup yang jujur."
 
-## Stack Teknologi
+JatiNotes adalah platform personal branding dan dokumentasi pengetahuan milik **Wruhantojati**. Situs ini bukan sekadar blog, melainkan sebuah artefak digital yang dibangun dengan fokus pada estetika minimalis, performa tinggi, dan struktur data yang solid.
 
-- **Frontend**: Next.js 14+ (App Router), React, TypeScript
-- **CMS**: Sanity.io (Embedded Studio) - Sebelumnya WordPress
-- **Styling**: Tailwind CSS, Framer Motion
-- **Deployment**: Vercel (Recommended)
+## 🎭 Karakter Konten
+Situs ini membagi dua spektrum pemikiran:
+- **Blog (Personal)**: Bergaya *Storytelling* & Jujur. Tempat untuk refleksi diri, opini, dan perjalanan personal yang ditulis secara naratif.
+- **Buku & Teknologi (Proyek)**: Eksplorasi yang **Teknis & Terstruktur**. Dokumentasi mendalam tentang software engineering, arsitektur sistem, dan resolusi masalah teknis.
 
-## Persiapan Lokal
+## 🛠️ Tech Stack & Design System
+Dibangun dengan standar modern untuk memberikan pengalaman membaca yang premium:
+- **Frontend Engine**: [Next.js 14+](https://nextjs.org/) (App Router) & TypeScript.
+- **Content Engine**: Hybrid [Sanity.io](https://www.sanity.io/) (Headless CMS) untuk fleksibilitas konten modern dengan dukungan migrasi data historis dari WordPress.
+- **Design Philosophy**: 
+    - **Premium Aesthetics**: Menggunakan sistem token desain yang presisi—radius kartu 8px dan bayangan tajam (*sharp shadows*) untuk tampilan profesional dan berwibawa (*enterprise-grade look*).
+    - **Dynamic Interaction**: Integrasi Framer Motion untuk mikro-animasi halus dan efek *glassmorphism*.
+    - **Adaptive Layout**: UI yang cerdas beradaptasi antara kenyamanan sentuhan (*touch-friendly*) di mobile dan ketajaman informasi di desktop.
+- **SEO & Identity**: Integrasi JSON-LD Structured Data yang ketat untuk memastikan entitas `Person` (**Wruhantojati**) dan `Website` dikenali secara akurat oleh mesin pencari.
+
+## 🚀 Persiapan Lokal
 
 1.  **Clone Repository**
     ```bash
-    git clone https://github.com/yourusername/jatinotes.git
+    git clone https://github.com/jwrfree/jatinotes.git
     cd jatinotes
     ```
 
 2.  **Install Dependencies**
     ```bash
     npm install
-    # atau
-    yarn install
     ```
 
 3.  **Setup Environment Variables**
-    Buat file `.env.local` dan isi dengan konfigurasi berikut:
-
-    ```env
-    NEXT_PUBLIC_SANITY_PROJECT_ID="0fd6j2sl"
-    NEXT_PUBLIC_SANITY_DATASET="production"
-    # SANITY_API_READ_TOKEN="optional_if_content_is_private"
-    ```
+    Buat file `.env.local` dan isi dengan konfigurasi dari Sanity Project.
 
 4.  **Jalankan Server Development**
     ```bash
     npm run dev
     ```
+    Buka [localhost:3000](http://localhost:3000) untuk melihat situs, atau [/studio](http://localhost:3000/studio) untuk mengelola konten.
 
-    Buka [http://localhost:3000](http://localhost:3000) untuk melihat website.
-    Buka [http://localhost:3000/studio](http://localhost:3000/studio) untuk mengakses CMS (Sanity Studio).
-
-## Fitur Utama
-
-- **Sanity Integration**: Konten dikelola sepenuhnya via Sanity Studio yang tertanam di website.
-- **Portable Text**: Rendering rich text yang fleksibel dengan dukungan gambar (Image Zoom) dan code blocks.
-- **Dynamic Routing**: Halaman blog, kategori, dan single post digenerate secara dinamis.
-- **SEO Optimized**: Metadata otomatis untuk setiap halaman.
-- **Dark Mode**: Dukungan tema gelap/terang.
-
-## Catatan Migrasi (WordPress ke Sanity)
-
-Proyek ini telah dimigrasikan dari WordPress Headless ke Sanity.
-- **Schema**: Post, Author, Category, BlockContent.
-- **Images**: Menggunakan Sanity Image Pipeline (`cdn.sanity.io`).
-- **Legacy Support**: URL slug dipertahankan agar link lama tidak rusak.
-
-## Lisensi
-
-[MIT](LICENSE)
+## 📜 Lisensi
+Situs ini bersifat personal. Kode tersedia di bawah lisensi [MIT](LICENSE). Konten dan tulisan merupakan hak cipta intelektual dari **Wruhantojati**.
