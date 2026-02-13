@@ -181,7 +181,7 @@ export default async function PostPage({
   };
 
   return (
-    <article className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <article className="min-h-screen">
       <JsonLd data={jsonLd} />
       <JsonLd data={breadcrumbJsonLd} />
       <ReadingProgress />

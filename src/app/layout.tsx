@@ -79,7 +79,7 @@ export default function RootLayout({
   return (
     <html lang="id" className="scroll-smooth">
       <body
-        className={`${inter.variable} font-sans antialiased bg-amber-50/60 dark:bg-zinc-950`}
+        className={`${inter.variable} font-sans antialiased dark:bg-zinc-950`}
       >
         <JsonLd data={personJsonLd} />
         <JsonLd data={websiteJsonLd} />

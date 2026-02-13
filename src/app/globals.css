@@ -5,7 +5,7 @@
 @plugin "@tailwindcss/typography";
 
 :root {
-  --background: #ffffff;
+  --background: #fffdf5; /* Consistent warm outer background */
   --foreground: #212021;
 }
 
@@ -42,7 +42,8 @@
 }
 
 body {
-  @apply bg-white dark:bg-zinc-950;
+  /* Removed @apply bg-white to prevent override */
+  @apply dark:bg-zinc-950;
 }
 
 /* Utility to hide scrollbar but keep functionality */
