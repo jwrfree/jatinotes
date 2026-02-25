@@ -8,8 +8,8 @@ import Tooltip from "@/components/ui/Tooltip";
 import { Metadata } from "next";
 
 export const metadata: Metadata = constructMetadata({
-  title: "Meet Jati - Cerita & Perjalanan",
-  description: "Kenali lebih jauh tentang Wruhantojati. Tempat berbagi tulisan pribadi, review buku, ulasan teknologi, dan catatan perjalanan.",
+  title: "Meet Jati - Catatan Pribadi",
+  description: "Kenali lebih jauh tentang Wruhantojati. Catatan pribadi tentang belajar berpikir dan hidup lebih baik — lewat tulisan, buku, dan refleksi sehari‑hari.",
   url: "/meet-jati",
 });
 
@@ -40,7 +40,7 @@ export default async function MeetJatiPage() {
                 <div className="flex items-center gap-3">
                   <span className="h-px w-8 bg-amber-500" />
                   <span className="text-sm font-bold text-amber-500 uppercase tracking-widest">
-                    Penulis & Penjelajah
+                    Catatan Pribadi
                   </span>
                 </div>
               }
@@ -51,7 +51,7 @@ export default async function MeetJatiPage() {
               <p>Hai, aku Jati.<br />
               Sehari‑hari aku kerja sebagai <Tooltip text="mid‑level product designer" content="Desainer produk digital dengan fokus pada UX & Problem Solving" /> yang ngemix antara ngulik masalah orang, mikirin alur produk, dan berantem manis sama constraint dunia nyata.</p>
 
-              <p>Aku suka jalan pelan, tapi isi kepalaku sering lari kenceng. Menulis di sini adalah cara paling masuk akal yang kutemukan untuk merapikan isi kepala, berhenti sebentar, dan belajar hadir. Kadang berupa cerita receh, kadang berupa pertanyaan yang nggak ketemu jawabannya, kadang cuma pengen bilang “aku masih di sini kok”.</p>
+              <p>Aku suka jalan pelan, tapi isi kepalaku sering lari kenceng. Menulis di sini adalah cara paling masuk akal yang kutemukan untuk merapikan isi kepala, berhenti sebentar, dan belajar hadir. Menulis juga jadi cara untuk menguji pikiranku sendiri — kalau nggak bisa ditulis dengan jelas, mungkin belum benar‑benar kupahami. Kadang berupa cerita receh, kadang berupa pertanyaan yang nggak ketemu jawabannya, kadang cuma pengen bilang “aku masih di sini kok”.</p>
 
               <hr className="my-12 border-zinc-200 dark:border-zinc-800" />
 
@@ -71,7 +71,7 @@ export default async function MeetJatiPage() {
               <p>Belakangan ini aku lagi tertarik sama beberapa hal:</p>
               <ul className="list-disc pl-6 space-y-4 mb-12">
                 <li>Pulih dari trauma dan pola lama — Belajar mengenali bagaimana masa lalu main belakang dan nongol di hubungan hari ini, lalu pelan‑pelan memilih respon yang beda.</li>
-                <li>Hubungan yang lebih hangat dengan keluarga dan teman — Especially soal berani ngomong kebutuhan sendiri, berdamai dengan luka lama, dan belajar bahwa kedekatan itu bisa dibangun ulang, pelan tapi mungkin.</li>
+                <li>Hubungan yang lebih hangat dengan keluarga dan teman — Especially soal berani ngomong kebutuhan sendiri, berdamai dengan luka lama, dan sedang mencoba percaya bahwa kedekatan itu bisa dibangun ulang.</li>
                 <li>Buku, film, dan hal‑hal kecil yang bikin hati lembut — Dari cerita perjalanan kecil sampai buku yang kelihatannya sederhana tapi nusuk pelan.</li>
               </ul>
 
@@ -96,7 +96,7 @@ export default async function MeetJatiPage() {
                 <li>Atau cuma butuh teman baca yang juga sedang berkelana pelan‑pelan,</li>
               </ul>
 
-              <p>Mungkin kamu bakal nemu sesuatu di sini. Entah itu kalimat yang bikin kamu ngerasa “loh, kok sama ya”, atau sekadar rasa lega karena ternyata kamu nggak sendirian.</p>
+              <p>Mungkin kamu akan menemukan sesuatu yang relevan, atau mungkin tidak. Dua‑duanya nggak apa‑apa. Entah itu kalimat yang bikin kamu ngerasa “loh, kok sama ya”, atau sekadar rasa lega karena ternyata kamu nggak sendirian.</p>
 
               <p>Selamat datang di catatan‑catatan kecilku.<br />
               Kalau suatu saat nanti kita ketemu, online atau offline, semoga kita bisa saling bilang: “oh, ternyata kita sama‑sama masih belajar hidup.”</p>
