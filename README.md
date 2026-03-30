@@ -11,7 +11,7 @@ Situs ini membagi dua spektrum pemikiran:
 
 ## 🛠️ Tech Stack & Design System
 Dibangun dengan standar modern untuk memberikan pengalaman membaca yang premium:
-- **Frontend Engine**: [Next.js 14+](https://nextjs.org/) (App Router) & TypeScript.
+- **Frontend Engine**: [Next.js 16](https://nextjs.org/) (App Router) & TypeScript.
 - **Content Engine**: Hybrid [Sanity.io](https://www.sanity.io/) (Headless CMS) untuk fleksibilitas konten modern dengan dukungan migrasi data historis dari WordPress.
 - **Design Philosophy**: 
     - **Premium Aesthetics**: Menggunakan sistem token desain yang presisi—radius kartu 8px dan bayangan tajam (*sharp shadows*) untuk tampilan profesional dan berwibawa (*enterprise-grade look*).
@@ -40,6 +40,16 @@ Dibangun dengan standar modern untuk memberikan pengalaman membaca yang premium:
     npm run dev
     ```
     Buka [localhost:3000](http://localhost:3000) untuk melihat situs, atau [/studio](http://localhost:3000/studio) untuk mengelola konten.
+
+## Struktur Repo
+
+- `src/`: aplikasi Next.js, komponen, utilitas, dan integrasi Sanity
+- `scripts/`: helper script lokal, migrasi, dan utilitas debugging
+- `scripts/webhooks/`: script manual untuk menguji flow webhook komentar
+- `docs/`: panduan setup, reference, dan catatan proyek
+- `public/`: aset statis
+- `TASKS.md`: catatan kerja aktif
+- `CHANGELOG.md`: ringkasan perubahan penting
 
 ## 📜 Lisensi
 Situs ini bersifat personal. Kode tersedia di bawah lisensi [MIT](LICENSE). Konten dan tulisan merupakan hak cipta intelektual dari **Wruhantojati**.

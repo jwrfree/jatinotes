@@ -54,4 +54,4 @@
 
 ---
 
-**Next Step**: Buka browser dan verify bahwa post content muncul! 🎯
+**Next Step**: Uji SEO field di Studio, lalu lanjutkan `video embeds` dan optimasi gambar. 🎯

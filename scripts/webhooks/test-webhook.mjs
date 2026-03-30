@@ -1,5 +1,5 @@
 // Test script untuk webhook Sanity - komentar baru (ESM)
-// Cara pakai: node test-webhook.mjs
+// Cara pakai: node scripts/webhooks/test-webhook.mjs
 
 import crypto from 'crypto';
 
