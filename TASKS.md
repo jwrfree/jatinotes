@@ -15,17 +15,9 @@
 
 ## ⚡ Quick Wins (15-30 menit)
 
-- [ ] Fix reading time untuk PortableText content
-  - File: `src/components/PostMeta.tsx`
-  - Add function untuk extract text dari PortableText array
-
-- [ ] Add Related Posts section
-  - File: `src/app/posts/[slug]/page.tsx`
-  - Data sudah ada di query, tinggal render
-
-- [ ] Improve PortableText styling
-  - File: `src/components/PortableText.tsx`
-  - Better blockquote, code blocks, lists
+- [x] Fix reading time untuk PortableText content ✅
+- [x] Add Related Posts section ✅
+- [x] Improve PortableText styling ✅
 
 ## 🚀 High Impact (1-2 jam)
 
@@ -34,10 +26,11 @@
   - Create search component
   - Add to navigation
 
-- [ ] Custom PortableText blocks
-  - Callout boxes
-  - Video embeds
-  - Better code blocks
+- [x] Custom PortableText blocks ✅
+  - [x] Callout boxes
+  - [ ] Video embeds
+  - [x] Better code blocks
+  - [x] Lead paragraphs
 
 - [ ] Image optimization
   - Lazy loading

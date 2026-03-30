@@ -60,7 +60,7 @@ async function seedGenres() {
 
             const patch = client.patch(existing._id)
             let needsUpdate = false
-            let updates: any = {}
+            const updates: Record<string, unknown> = {}
 
             // Update Parent if needed
             if (existing.parent?._ref !== parentId) {
@@ -94,8 +94,8 @@ async function seedGenres() {
                     parent: { _type: 'reference', _ref: parentId }
                 })
                 console.log(`   ✅ Berhasil dibuat!`)
-            } catch (err: any) {
-                console.error(`   ❌ Gagal membuat '${genre.title}':`, err.message)
+            } catch (err: unknown) {
+                console.error(`   ❌ Gagal membuat '${genre.title}':`, err instanceof Error ? err.message : 'Unknown error')
             }
         }
     }

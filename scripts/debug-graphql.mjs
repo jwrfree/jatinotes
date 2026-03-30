@@ -1,5 +1,4 @@
 
-import { createClient } from 'next-sanity'
 import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'

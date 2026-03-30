@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { m, AnimatePresence } from "framer-motion";
+import { m } from "framer-motion";
 import { createPortal } from "react-dom";
 
 interface TooltipProps {
@@ -12,31 +12,11 @@ interface TooltipProps {
 
 export default function Tooltip({ text, content, className = "" }: TooltipProps) {
   const [isVisible, setIsVisible] = useState(false);
-  const [coords, setCoords] = useState({
-    tooltip: { left: "50%", transform: "translateX(-50%)", right: "auto" },
-    arrow: { left: "50%", transform: "translateX(-50%)", right: "auto" }
-  });
+  // Portal position relative to viewport
   const [portalCoords, setPortalCoords] = useState({ top: 0, left: 0 });
 
   const handleOpen = (e: React.SyntheticEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const screenW = window.innerWidth;
-    const threshold = 100; // px from edge to trigger snap
-
-    let newTooltipStyle = { left: "50%", transform: "translateX(-50%)", right: "auto" };
-    let newArrowStyle = { left: "50%", transform: "translateX(-50%)", right: "auto" };
-
-    if (rect.left < threshold) {
-      // Align Left
-      newTooltipStyle = { left: "0", transform: "none", right: "auto" };
-      newArrowStyle = { left: `${rect.width / 2}px`, transform: "translateX(-50%)", right: "auto" };
-    } else if (screenW - rect.right < threshold) {
-      // Align Right
-      newTooltipStyle = { right: "0", left: "auto", transform: "none" };
-      newArrowStyle = { right: `${rect.width / 2}px`, transform: "translateX(50%)", left: "auto" };
-    }
-
-    setCoords({ tooltip: newTooltipStyle, arrow: newArrowStyle });
     // Set portal position relative to viewport
     setPortalCoords({
       top: rect.top - 8, // 8px margin above the trigger

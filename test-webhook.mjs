@@ -1,7 +1,7 @@
-// Test script untuk webhook Sanity - komentar baru
-// Cara pakai: node test-webhook.js
+// Test script untuk webhook Sanity - komentar baru (ESM)
+// Cara pakai: node test-webhook.mjs
 
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 // Konfigurasi
 const WEBHOOK_URL = 'http://localhost:3000/api/webhooks/comment-notification';
@@ -57,7 +57,7 @@ async function sendTestWebhook() {
       console.log('📋 Response:', responseText);
     }
   } catch (error) {
-    console.error('💥 Error:', error.message);
+    console.error('💥 Error:', error instanceof Error ? error.message : String(error));
   }
 }
 

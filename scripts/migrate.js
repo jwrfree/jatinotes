@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('fs');
 const { JSDOM } = require('jsdom');
 const { window } = new JSDOM('');
@@ -21,52 +22,6 @@ function parseHtmlToBlocks(html) {
 
     function generateKey() {
         return Math.random().toString(36).substring(2, 12); // Simple random key
-    }
-
-    function processChildren(node, marks = []) {
-        let spans = [];
-
-        node.childNodes.forEach(child => {
-            if (child.nodeType === 3) { // Text Node
-                const text = child.textContent;
-                if (text) {
-                    spans.push({
-                        _type: 'span',
-                        _key: generateKey(),
-                        marks: [...marks],
-                        text: text
-                    });
-                }
-            } else if (child.nodeType === 1) { // Element
-                const tag = child.tagName.toLowerCase();
-                if (tag === 'br') {
-                    spans.push({ _type: 'span', _key: generateKey(), marks: [], text: '\n' });
-                } else if (tag === 'strong' || tag === 'b') {
-                    spans.push(...processChildren(child, [...marks, 'strong']));
-                } else if (tag === 'em' || tag === 'i') {
-                    spans.push(...processChildren(child, [...marks, 'em']));
-                } else if (tag === 'u') {
-                    spans.push(...processChildren(child, [...marks, 'underline']));
-                } else if (tag === 'code') {
-                    spans.push(...processChildren(child, [...marks, 'code']));
-                } else if (tag === 'a') {
-                    const href = child.getAttribute('href');
-                    const markKey = generateKey();
-                    spans.push(...processChildren(child, [...marks, markKey]));
-                    // We need to store the mark definition somewhere, typically on the block.
-                    // But for this simple parser, we'll attach it to the block later or return it?
-                    // Portable Text defines markDefs on the block.
-                    // We'll handle this by returning spans AND markDefs.
-                    // For simplicity, we'll use a hack or just mutate a passed context.
-                } else if (tag === 'img') {
-                    // Inline image? Not standard in Portable Text usually handled as block.
-                    // Ignore for now in span context.
-                } else {
-                    spans.push(...processChildren(child, marks));
-                }
-            }
-        });
-        return spans;
     }
 
     // Since we need to collect markDefs, we'll simplify: 

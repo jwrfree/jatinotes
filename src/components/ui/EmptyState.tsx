@@ -16,6 +16,37 @@ interface EmptyStateProps {
     className?: string;
 }
 
+interface ActionButtonProps {
+    actionLabel?: string;
+    actionHref?: string;
+    onAction?: () => void;
+}
+
+const ActionButton = ({ actionLabel, actionHref, onAction }: ActionButtonProps) => {
+    const buttonClasses = "inline-flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-full transition-colors";
+
+    if (actionHref) {
+        return (
+            <Link href={actionHref} className={buttonClasses}>
+                {actionLabel}
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+            </Link>
+        );
+    }
+
+    if (onAction) {
+        return (
+            <button onClick={onAction} className={buttonClasses}>
+                {actionLabel}
+            </button>
+        );
+    }
+
+    return null;
+};
+
 export default function EmptyState({
     icon,
     title,
@@ -25,31 +56,6 @@ export default function EmptyState({
     onAction,
     className = ''
 }: EmptyStateProps) {
-    const ActionButton = () => {
-        const buttonClasses = "inline-flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-full transition-colors";
-
-        if (actionHref) {
-            return (
-                <Link href={actionHref} className={buttonClasses}>
-                    {actionLabel}
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                </Link>
-            );
-        }
-
-        if (onAction) {
-            return (
-                <button onClick={onAction} className={buttonClasses}>
-                    {actionLabel}
-                </button>
-            );
-        }
-
-        return null;
-    };
-
     return (
         <div className={`text-center py-20 ${className}`}>
             {icon && (
@@ -66,7 +72,13 @@ export default function EmptyState({
                 {description}
             </p>
 
-            {(actionLabel && (actionHref || onAction)) && <ActionButton />}
+            {(actionLabel && (actionHref || onAction)) && (
+                <ActionButton 
+                    actionLabel={actionLabel} 
+                    actionHref={actionHref} 
+                    onAction={onAction} 
+                />
+            )}
         </div>
     );
 }

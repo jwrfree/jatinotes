@@ -1,4 +1,4 @@
-// Test script to check if Sanity posts have body content
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { createClient } = require('@sanity/client');
 require('dotenv').config({ path: '.env.local' });
 

@@ -3,8 +3,7 @@
 import Link from "next/link";
 import BackgroundOrnaments from "@/components/ui/BackgroundOrnaments";
 import ContentCard from "@/components/layout/ContentCard";
-import { MotionDiv } from "@/components/ui/Animations";
-import { MoveLeft, Home } from "lucide-react";
+import { Home, MoveLeft } from "lucide-react";
 
 export default function NotFound() {
   return (

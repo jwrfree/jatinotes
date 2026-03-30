@@ -1,4 +1,5 @@
 // Debug script to test actual post fetching
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { createClient } = require('@sanity/client');
 require('dotenv').config({ path: '.env.local' });
 
