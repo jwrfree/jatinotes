@@ -3,12 +3,17 @@ import { Category, Post, PageInfo } from '../types';
 import {
   CATEGORIES_QUERY,
   CATEGORIES_WITH_COUNT_QUERY,
-  POSTS_BY_CATEGORY_QUERY,
-  AUTHORS_QUERY,
-  POSTS_BY_AUTHOR_QUERY
+  POSTS_BY_CATEGORY_QUERY
 } from '../../sanity/lib/queries';
 import { client } from '../../sanity/lib/client';
 import { mapSanityCategoryToCategory, mapSanityPostToPost } from '../sanity/mapper';
+
+type CategoryPaginationParams = {
+  first?: number;
+  after?: string;
+  last?: number;
+  before?: string;
+};
 
 export const CategoryRepository = {
   getAll: async () => {
@@ -21,13 +26,11 @@ export const CategoryRepository = {
     }
   },
 
-  getPostsByCategory: cache(async (slug: string, params: { first?: number } = { first: 10 }): Promise<Category | null> => {
+  getPostsByCategory: cache(async (
+    slug: string,
+    params: CategoryPaginationParams = { first: 10 }
+  ): Promise<Category | null> => {
     try {
-      // We need to fetch the category details AND its posts
-      // Sanity query in queries.ts only fetches posts? Let's check. 
-      // POSTS_BY_CATEGORY_QUERY fetches posts.
-      // We need the category info too.
-  
       // Re-using a combined query logic here or fetching in parallel
       const [posts, categoryInfo] = await Promise.all([
         client.fetch(POSTS_BY_CATEGORY_QUERY, { slug }),
@@ -37,9 +40,47 @@ export const CategoryRepository = {
       if (!categoryInfo) return null;
   
       const category = mapSanityCategoryToCategory(categoryInfo);
+      const allNodes = posts
+        .map(mapSanityPostToPost)
+        .filter((post: Post | null): post is Post => post !== null);
+
+      let startIndex = 0;
+      let endIndex = allNodes.length;
+
+      if (params.after) {
+        const afterIndex = allNodes.findIndex((post: Post) => post.id === params.after);
+        if (afterIndex >= 0) {
+          startIndex = afterIndex + 1;
+        }
+      }
+
+      if (params.before) {
+        const beforeIndex = allNodes.findIndex((post: Post) => post.id === params.before);
+        if (beforeIndex >= 0) {
+          endIndex = beforeIndex;
+        }
+      }
+
+      const windowedNodes = allNodes.slice(startIndex, endIndex);
+      const paginatedNodes =
+        typeof params.first === 'number'
+          ? windowedNodes.slice(0, params.first)
+          : typeof params.last === 'number'
+            ? windowedNodes.slice(Math.max(0, windowedNodes.length - params.last))
+            : windowedNodes;
+
       category.posts = {
-        nodes: posts.map(mapSanityPostToPost).filter((post: Post | null): post is Post => post !== null),
-        pageInfo: { hasNextPage: false, hasPreviousPage: false } // Mock
+        nodes: paginatedNodes,
+        pageInfo: {
+          hasNextPage: endIndex < allNodes.length || (
+            typeof params.first === 'number' && windowedNodes.length > paginatedNodes.length
+          ),
+          hasPreviousPage: startIndex > 0 || (
+            typeof params.last === 'number' && windowedNodes.length > paginatedNodes.length
+          ),
+          startCursor: paginatedNodes[0]?.id ?? null,
+          endCursor: paginatedNodes[paginatedNodes.length - 1]?.id ?? null,
+        }
       };
   
       return category;
@@ -58,7 +99,7 @@ export const CategoryRepository = {
       const categories = await client.fetch(CATEGORIES_WITH_COUNT_QUERY);
   
       // 1. Try to filter by parent == 'buku'
-      const bookSubcategories = categories.filter((cat: any) => cat.parent === 'buku');
+      const bookSubcategories = categories.filter((cat: { parent?: string }) => cat.parent === 'buku');
   
       if (bookSubcategories.length > 0) {
         return bookSubcategories.map(mapSanityCategoryToCategory);
@@ -67,7 +108,7 @@ export const CategoryRepository = {
       // 2. Fallback: Filter out 'buku' category itself and non-book categories (Manual Exclusion)
       const excludedCategories = ['buku', 'uncategorized', 'blog', 'desain', 'teknologi', 'coding', 'meet-jati'];
       return categories
-        .filter((cat: any) => !excludedCategories.includes(cat.slug.toLowerCase()))
+        .filter((cat: { slug: string }) => !excludedCategories.includes(cat.slug.toLowerCase()))
         .map(mapSanityCategoryToCategory);
     } catch (error) {
       console.error("Error fetching genres:", error);
@@ -79,13 +120,30 @@ export const CategoryRepository = {
     return CategoryRepository.getPostsByCategory(slug);
   }),
 
-  getAllBookReviews: cache(async (params: { first?: number } = {}): Promise<{ nodes: Post[], pageInfo: PageInfo }> => {
+  getAllBookReviews: cache(async (
+    params: CategoryPaginationParams = { first: 10 }
+  ): Promise<{ nodes: Post[], pageInfo: PageInfo }> => {
     try {
-      // Fetch posts in 'buku' category or similar
       const posts = await client.fetch(POSTS_BY_CATEGORY_QUERY, { slug: 'buku' });
+      const allNodes = posts
+        .map(mapSanityPostToPost)
+        .filter((post: Post | null): post is Post => post !== null);
+
+      let nodes = allNodes;
+      if (typeof params.first === 'number') {
+        nodes = allNodes.slice(0, params.first);
+      } else if (typeof params.last === 'number') {
+        nodes = allNodes.slice(Math.max(0, allNodes.length - params.last));
+      }
+
       return {
-        nodes: posts.map(mapSanityPostToPost).filter((post: Post | null): post is Post => post !== null),
-        pageInfo: { hasNextPage: false, hasPreviousPage: false }
+        nodes,
+        pageInfo: {
+          hasNextPage: typeof params.first === 'number' && allNodes.length > nodes.length,
+          hasPreviousPage: typeof params.last === 'number' && allNodes.length > nodes.length,
+          startCursor: nodes[0]?.id ?? null,
+          endCursor: nodes[nodes.length - 1]?.id ?? null,
+        }
       };
     } catch (error) {
       console.error("Error fetching book reviews:", error);

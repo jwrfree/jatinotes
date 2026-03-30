@@ -1,4 +1,6 @@
-export function stripHtml(input: string | any[]): string {
+import { PortableTextContentNode, Comment } from './types';
+
+export function stripHtml(input: string | PortableTextContentNode[]): string {
   if (Array.isArray(input)) {
     return extractTextFromPortableText(input);
   }
@@ -9,7 +11,7 @@ export function stripHtml(input: string | any[]): string {
  * Calculate reading time from content or Post object
  * Supports HTML strings, PortableText arrays, and Post objects with wordCount
  */
-export function calculateReadingTime(input: string | any[] | { wordCount?: number | null; content?: string | any[] | null }): number {
+export function calculateReadingTime(input: string | PortableTextContentNode[] | { wordCount?: number | null; content?: string | PortableTextContentNode[] | null }): number {
   const wordsPerMinute = 200;
   let characterCount = 0;
 
@@ -46,15 +48,21 @@ export function calculateReadingTime(input: string | any[] | { wordCount?: numbe
 /**
  * Extract plain text from PortableText blocks
  */
-function extractTextFromPortableText(blocks: any[]): string {
+function extractTextFromPortableText(blocks: PortableTextContentNode[]): string {
   if (!blocks || !Array.isArray(blocks)) return '';
 
   return blocks
     .map(block => {
-      if (block._type === 'block' && block.children) {
+      if (block._type === 'block' && 'children' in block && Array.isArray(block.children)) {
         return block.children
-          .map((child: any) => child.text || '')
+          .map((child: { text?: string }) => child.text || '')
           .join(' ');
+      }
+      if (block._type === 'code' && 'code' in block) {
+        return typeof block.code === 'string' ? block.code : '';
+      }
+      if (block._type === 'callout' && 'text' in block) {
+        return typeof block.text === 'string' ? block.text : '';
       }
       return '';
     })
@@ -109,8 +117,6 @@ export function formatDateIndonesian(dateString: string): string {
     day: 'numeric'
   }).format(date);
 }
-
-import { Comment } from './types';
 
 export function organizeComments(nodes: Comment[]): Comment[] {
   const commentMap = new Map<string, Comment>();

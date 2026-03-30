@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { LayoutGrid, List, Book, BookOpen } from "lucide-react";
+import { LayoutGrid, List, Book } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Post } from "@/lib/types";
 import { getBookTitle, getBookAuthor } from "@/lib/book-utils";

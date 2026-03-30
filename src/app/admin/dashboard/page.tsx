@@ -9,8 +9,20 @@ export const metadata = {
   robots: 'noindex, nofollow', // Jangan index halaman admin
 }
 
+interface SanityComment {
+  _id: string;
+  _createdAt: string;
+  name: string;
+  email: string;
+  content: string;
+  status: string;
+  post?: {
+    slug?: { current: string };
+  };
+}
+
 async function CommentsList() {
-  const comments = await client.fetch(COMMENTS_QUERY)
+  const comments: SanityComment[] = await client.fetch(COMMENTS_QUERY)
 
   if (!comments.length) {
     return (
@@ -22,7 +34,7 @@ async function CommentsList() {
 
   return (
     <div className="space-y-4">
-      {comments.map((comment: any) => (
+      {comments.map((comment: SanityComment) => (
         <div key={comment._id} className="bg-white/50 dark:bg-zinc-800/50 rounded-lg p-4 border border-zinc-200 dark:border-zinc-700">
           <div className="flex justify-between items-start mb-2">
             <div>

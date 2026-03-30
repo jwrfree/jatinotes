@@ -1,9 +1,10 @@
+import { PortableTextContentNode } from "@/lib/types";
 import { formatDateIndonesian, calculateReadingTime } from "@/lib/utils";
 
 interface PostMetaProps {
   authorName?: string;
   date: string;
-  post?: { wordCount?: number | null; content?: string | any[] | null }; // Post object with wordCount
+  post?: { wordCount?: number | null; content?: string | PortableTextContentNode[] | null }; // Post object with wordCount
   wordCount?: number; // Or direct wordCount
   className?: string;
 }

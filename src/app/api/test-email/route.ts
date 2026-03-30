@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
 // Endpoint untuk test email notifikasi
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     console.log('🧪 Testing email notification with Resend...')
     console.log('📧 API Key:', process.env.RESEND_API_KEY?.substring(0, 10) + '...')
@@ -83,7 +83,7 @@ export async function GET(req: NextRequest) {
     })
 
   } catch (error) {
-    console.error('💥 Test error:', error)
+    console.error('💥 Test error:', error instanceof Error ? error.message : String(error));
     return NextResponse.json({ 
       error: 'Test failed',
       details: error instanceof Error ? error.message : 'Unknown error'

@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import ContentCard from "@/components/layout/ContentCard";
 import PageHeader from "@/components/layout/PageHeader";
 import BackgroundOrnaments from "@/components/ui/BackgroundOrnaments";
-import { MotionDiv, staggerContainer, fadeIn } from "@/components/ui/Animations";
+import { MotionDiv, staggerContainer } from "@/components/ui/Animations";
 import PostCard from "@/components/features/PostCard";
 import Link from "next/link";
 import { notFound } from "next/navigation";

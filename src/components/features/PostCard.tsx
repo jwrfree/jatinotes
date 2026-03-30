@@ -97,7 +97,7 @@ export default function PostCard({
 
               <div
                 className="text-xs md:text-sm leading-relaxed text-zinc-600 dark:text-zinc-300 line-clamp-2"
-                dangerouslySetInnerHTML={{ __html: sanitize(post.excerpt) }}
+                dangerouslySetInnerHTML={{ __html: sanitize(post.excerpt || "") }}
               />
             </div>
           </div>
@@ -151,7 +151,7 @@ export default function PostCard({
 
               <div
                 className={`text-[10px] md:text-xs leading-relaxed text-zinc-300 line-clamp-2 opacity-90`}
-                dangerouslySetInnerHTML={{ __html: sanitize(post.excerpt) }}
+                dangerouslySetInnerHTML={{ __html: sanitize(post.excerpt || "") }}
               />
             </div>
           </div>
@@ -200,7 +200,7 @@ export default function PostCard({
             </h3>
             <div
               className="mt-3 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2"
-              dangerouslySetInnerHTML={{ __html: sanitize(post.excerpt) }}
+              dangerouslySetInnerHTML={{ __html: sanitize(post.excerpt || "") }}
             />
           </div>
         </Link>
@@ -248,7 +248,7 @@ export default function PostCard({
         </h3>
         <div
           className="mt-3 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2 flex-grow"
-          dangerouslySetInnerHTML={{ __html: sanitize(post.excerpt) }}
+          dangerouslySetInnerHTML={{ __html: sanitize(post.excerpt || "") }}
         />
         <div className="mt-6 flex items-center justify-between pt-6 border-t border-zinc-100 dark:border-zinc-800">
           <div className="flex items-center gap-2">

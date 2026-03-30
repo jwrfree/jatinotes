@@ -23,7 +23,7 @@ export const CommentRepository = {
         return { success: false, message: "Konfigurasi server belum lengkap." };
       }
 
-      const result = await client.create({
+      await client.create({
         _type: 'comment',
         name: input.author,
         email: input.authorEmail,

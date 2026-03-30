@@ -95,7 +95,7 @@ export default defineType({
             bio: 'bio',
         },
         prepare(selection) {
-            const { title, bio } = selection
+            const { bio } = selection
             return {
                 ...selection,
                 subtitle: bio ? bio.substring(0, 60) + (bio.length > 60 ? '...' : '') : 'No bio',

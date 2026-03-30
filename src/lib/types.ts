@@ -1,4 +1,31 @@
 import { z } from "zod";
+import { PortableTextBlock } from "sanity";
+
+const PortableTextNodeSchema = z.record(z.string(), z.unknown());
+
+export type PortableTextContentNode =
+  | PortableTextBlock
+  | {
+      _type: "code";
+      _key?: string;
+      code?: string;
+      language?: string;
+      filename?: string;
+    }
+  | {
+      _type: "callout";
+      _key?: string;
+      type?: "info" | "warning" | "success" | "idea";
+      text?: string;
+    }
+  | Record<string, unknown>
+  | {
+      _type: "image";
+      _key?: string;
+      alt?: string;
+      caption?: string;
+      [key: string]: unknown;
+    };
 
 export const AuthorSchema = z.object({
   node: z.object({
@@ -36,14 +63,60 @@ export const CommentSchema = z.object({
   }).nullable().optional(),
 });
 
-export const PostSchema = z.object({
+export type Author = z.infer<typeof AuthorSchema>;
+export type FeaturedImage = z.infer<typeof FeaturedImageSchema>;
+export type Comment = z.infer<typeof CommentSchema> & {
+  children?: Comment[];
+};
+
+export type Post = {
+  id: string;
+  databaseId?: number | null;
+  title: string;
+  slug: string;
+  date: string;
+  excerpt?: string | null;
+  content?: string | PortableTextContentNode[] | null;
+  wordCount?: number | null;
+  featuredImage?: FeaturedImage | null;
+  author?: Author | null;
+  commentCount?: number | null;
+  comments?: {
+    nodes: z.infer<typeof CommentSchema>[];
+  } | null;
+  categories?: {
+    nodes: Array<{
+      name: string;
+      slug: string;
+    }>;
+  } | null;
+  tags?: {
+    nodes: Array<{
+      name: string;
+      slug: string;
+    }>;
+  } | null;
+  bookTitle?: string | null;
+  bookAuthor?: string | null;
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    focusKeyword?: string;
+    ogImage?: string;
+    noIndex?: boolean;
+    canonicalUrl?: string;
+  } | null;
+  related?: Post[] | null;
+};
+
+export const PostSchema: z.ZodType<Post> = z.lazy(() => z.object({
   id: z.string(),
   databaseId: z.number().nullable().optional(),
   title: z.string(),
   slug: z.string(),
   date: z.string(),
   excerpt: z.string().nullable().optional().transform(val => val ?? ""),
-  content: z.union([z.string(), z.array(z.any())]).nullable().optional(),
+  content: z.union([z.string(), z.array(PortableTextNodeSchema)]).nullable().optional(),
   wordCount: z.number().nullable().optional(), // Character count from Sanity
   featuredImage: FeaturedImageSchema.nullable().optional(),
   author: AuthorSchema.nullable().optional(),
@@ -73,22 +146,26 @@ export const PostSchema = z.object({
     noIndex: z.boolean().optional(),
     canonicalUrl: z.string().optional(),
   }).nullable().optional(),
-});
+  related: z.array(PostSchema).nullable().optional(),
+}));
 
-export type Author = z.infer<typeof AuthorSchema>;
-export type FeaturedImage = z.infer<typeof FeaturedImageSchema>;
-export type Post = z.infer<typeof PostSchema>;
+export type Page = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt?: string | null;
+  content?: string | PortableTextContentNode[] | null;
+  featuredImage?: FeaturedImage | null;
+};
 
-export const PageSchema = z.object({
+export const PageSchema: z.ZodType<Page> = z.object({
   id: z.string(),
   title: z.string(),
   slug: z.string(),
   excerpt: z.string().nullable().optional().transform(val => val ?? ""),
-  content: z.union([z.string(), z.array(z.any())]).nullable().optional(),
+  content: z.union([z.string(), z.array(PortableTextNodeSchema)]).nullable().optional(),
   featuredImage: FeaturedImageSchema.nullable().optional(),
 });
-
-export type Page = z.infer<typeof PageSchema>;
 
 export const PageInfoSchema = z.object({
   hasNextPage: z.boolean(),
@@ -130,7 +207,3 @@ export const CategorySchema: z.ZodType<Category, z.ZodTypeDef, unknown> = z.lazy
     nodes: z.array(CategorySchema),
   }).optional(),
 }));
-
-export type Comment = z.infer<typeof CommentSchema> & {
-  children?: Comment[];
-};

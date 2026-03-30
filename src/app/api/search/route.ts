@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     const posts = await searchPosts(query);
     return NextResponse.json(posts);
   } catch (error) {
-    console.error('Search API Error:', error);
+    console.error('Search API Error:', error instanceof Error ? error.message : String(error));
     return NextResponse.json({ error: 'Failed to fetch search results' }, { status: 500 });
   }
 }

@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { Post, PageInfo } from '../types';
-import { POSTS_QUERY, POSTS_QUERY_LIMITED, POST_BY_SLUG_QUERY } from '../../sanity/lib/queries';
+import { POSTS_QUERY_LIMITED, POST_BY_SLUG_QUERY } from '../../sanity/lib/queries';
 import { client } from '../../sanity/lib/client';
 import { mapSanityPostToPost } from '../sanity/mapper';
 

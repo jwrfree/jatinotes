@@ -1,7 +1,6 @@
 "use server";
 
 import { createComment } from "./api";
-import { revalidatePath } from "next/cache";
 
 const SPAM_KEYWORDS = [
   'slot', 'gacor', 'judol', 'casino', 'bet', 'poker', 'togel', 'jp',
@@ -63,7 +62,7 @@ export async function submitCommentAction(formData: {
       return { success: false, message: res?.message || "Gagal mengirim komentar." };
     }
   } catch (error) {
-    console.error("Action error:", error);
+    console.error("Action error:", error instanceof Error ? error.message : String(error));
     return { success: false, message: "Terjadi kesalahan sistem." };
   }
 }
