@@ -42,7 +42,7 @@ export interface SanityPost {
   slug: string | { current: string }; // Allow both string and object
   publishedAt: string;
   excerpt?: string;
-  body: PortableTextBlock[] | any;
+  body: PortableTextBlock[];
   wordCount?: number;
   mainImage?: string; // URL string from projection
   author?: SanityAuthor;
@@ -63,6 +63,7 @@ export interface SanityPost {
     noIndex?: boolean;
     canonicalUrl?: string;
   };
+  related?: SanityPost[];
 }
 
 export interface SanityPage {
@@ -70,6 +71,6 @@ export interface SanityPage {
   title: string;
   slug: string | { current: string }; // Allow both string and object
   excerpt?: string;
-  content?: PortableTextBlock[] | any;
+  content?: PortableTextBlock[];
   mainImage?: string;
 }

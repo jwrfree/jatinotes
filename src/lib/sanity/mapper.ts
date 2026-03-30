@@ -1,5 +1,5 @@
 import { Post, Category, Page } from "@/lib/types";
-import { SanityPost, SanityCategory, SanityComment, SanityPage } from "./types";
+import { SanityPost, SanityCategory, SanityPage } from "./types";
 
 export function mapSanityPostToPost(sanityPost: SanityPost | null | undefined): Post | null {
     if (!sanityPost || !sanityPost._id) return null;
@@ -83,7 +83,12 @@ export function mapSanityPostToPost(sanityPost: SanityPost | null | undefined): 
             ogImage: sanityPost.seo.ogImage,
             noIndex: sanityPost.seo.noIndex,
             canonicalUrl: sanityPost.seo.canonicalUrl
-        } : null
+        } : null,
+        related: sanityPost.related ? 
+            sanityPost.related
+                .map((rp) => mapSanityPostToPost(rp))
+                .filter((p): p is Post => p !== null) 
+            : []
     };
 }
 
@@ -106,7 +111,7 @@ export function mapSanityPageToPage(sanityPage: SanityPage | null | undefined): 
     return {
         id: sanityPage._id,
         title: sanityPage.title,
-        slug: typeof sanityPage.slug === 'string' ? sanityPage.slug : (sanityPage.slug as any)?.current || "",
+        slug: typeof sanityPage.slug === 'string' ? sanityPage.slug : (sanityPage.slug as { current: string })?.current || "",
         excerpt: sanityPage.excerpt || "",
         content: sanityPage.content,
         featuredImage: sanityPage.mainImage ? {

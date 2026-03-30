@@ -27,6 +27,8 @@ import JsonLd from "@/components/features/JsonLd";
 import { Metadata } from "next";
 import PortableText from "@/components/features/PortableText";
 import { extractTocFromPortableText } from "@/lib/sanity/toc";
+import { PortableTextBlock } from "sanity";
+import RelatedPosts from "@/components/features/RelatedPosts";
 
 // Use ISR: regenerate page every 60 seconds if requested
 export const revalidate = 60;
@@ -113,11 +115,12 @@ export default async function PostPage({
 
   // Determine content type
   const isPortableText = Array.isArray(post.content);
+  const portableTextContent = Array.isArray(post.content) ? post.content : null;
   let processedContent = post.content;
   let toc = [];
 
   if (isPortableText) {
-    toc = extractTocFromPortableText(post.content as any[]);
+    toc = extractTocFromPortableText(post.content as PortableTextBlock[]);
   } else {
     const result = processContent(post.content as string || "");
     processedContent = result.content;
@@ -127,7 +130,7 @@ export default async function PostPage({
   // Extract plain text for TTS
   const plainTextContent = stripHtml(post.content || "");
 
-  const isBookReview = post.categories?.nodes?.some(c => c.slug === 'buku');
+  const isBookReview = post.categories?.nodes?.some((c: { slug: string }) => c.slug === 'buku');
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -156,7 +159,7 @@ export default async function PostPage({
     },
     wordCount: post.wordCount,
     articleBody: stripHtml(typeof post.content === 'string' ? post.content : "").substring(0, 5000), // Approximate for schema
-    keywords: post.categories?.nodes.map((c: any) => c.name).join(", "),
+    keywords: post.categories?.nodes.map((c: { name: string }) => c.name).join(", "),
   };
 
   const breadcrumbJsonLd = {
@@ -214,7 +217,7 @@ export default async function PostPage({
                   <PageHeader
                     topContent={
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
-                        {post.categories?.nodes.find(c => c.slug !== 'buku')?.name || post.categories?.nodes[0]?.name || 'Blog'}
+                        {post.categories?.nodes.find((c: { slug: string; name: string }) => c.slug !== 'buku')?.name || post.categories?.nodes[0]?.name || 'Blog'}
                       </span>
                     }
                     title={post.title}
@@ -228,7 +231,7 @@ export default async function PostPage({
                         <ListenToArticle text={plainTextContent} title={post.title} />
                       </div>
                     }
-                    description={post.excerpt}
+                    description={post.excerpt || undefined}
                   />
 
                   {post.featuredImage?.node?.sourceUrl && (
@@ -249,7 +252,7 @@ export default async function PostPage({
 
                   {isPortableText ? (
                     <div className="mt-12 prose prose-zinc dark:prose-invert max-w-none prose-headings:scroll-mt-28 prose-p:leading-relaxed prose-p:text-zinc-800 dark:prose-p:text-zinc-200 prose-a:text-amber-500 prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50 prose-base md:prose-lg">
-                      <PortableText value={processedContent} />
+                      <PortableText value={portableTextContent} />
                     </div>
                   ) : (
                     <Prose content={processedContent as string} className="mt-12" />
@@ -259,7 +262,7 @@ export default async function PostPage({
             </ContentCard>
 
             {/* 2. Comment Section - No Card Wrapper */}
-            <div className="pb-24">
+            <div className="pb-16 pt-8">
               <LocalErrorBoundary name="Bagian Komentar">
                 <CommentSection
                   comments={post.comments?.nodes || []}
@@ -270,8 +273,13 @@ export default async function PostPage({
               </LocalErrorBoundary>
             </div>
 
-            {/* 3. Navigation Footer */}
-            <div className="flex justify-center pt-4">
+            {/* 3. Related Posts */}
+            <LocalErrorBoundary name="Rekomendasi Tulisan">
+              <RelatedPosts posts={post.related || []} />
+            </LocalErrorBoundary>
+
+            {/* 4. Navigation Footer */}
+            <div className="flex justify-center pt-12">
               <Link
                 href={isBookReview ? "/buku" : "/"}
                 className="group flex items-center gap-3 text-sm font-bold text-amber-500 transition-all hover:gap-5 px-6 py-3 rounded-full bg-white dark:bg-zinc-900"
