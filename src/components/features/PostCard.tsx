@@ -161,6 +161,8 @@ export default function PostCard({
   }
 
   if (variant === "minimal") {
+    const aspectRatioClass = customAspectRatio || (isWide ? "aspect-[16/9]" : "aspect-[3/4]");
+
     return (
       <MotionDiv
         ref={containerRef}
@@ -171,8 +173,7 @@ export default function PostCard({
         <Link href={`/posts/${post.slug}`} className="flex flex-col h-full">
           {post.featuredImage?.node?.sourceUrl && (
             <div
-              className={`relative w-full overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800 transition-all duration-500 group-hover:shadow-xl ${isWide ? "aspect-[16/9]" : "aspect-[3/4]"
-                }`}
+              className={`relative w-full overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800 transition-all duration-500 group-hover:shadow-xl ${aspectRatioClass}`}
             >
               <m.div
                 style={{ y, height: "120%", top: "-10%" }}

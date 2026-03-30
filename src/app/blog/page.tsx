@@ -39,30 +39,31 @@ export default async function BlogListPage({
   const pageInfo = category.posts?.pageInfo;
 
   return (
-    <div className="relative overflow-hidden min-h-screen">
+    <div className="relative min-h-screen overflow-hidden">
       <BackgroundOrnaments variant="subtle" />
 
-      <ContentCard maxWidth="max-w-6xl">
+      <ContentCard maxWidth="max-w-5xl">
         <PageHeader
           title="Blog"
-          useDecryptedText={true}
-          titleClassName="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-7xl"
-          className="mb-16"
+          useDecryptedText={false}
+          titleClassName="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-6xl"
+          className="mb-12"
           topContent={
             <div className="flex items-center gap-4">
               <div className="h-px w-12 bg-amber-500" />
-              <span className="text-sm font-bold text-amber-500">
+              <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-amber-500">
                 Koleksi Catatan
               </span>
             </div>
           }
           subtitle={
             category.description && (
-              <p className="max-w-2xl text-lg md:text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              <p className="max-w-2xl text-base leading-relaxed text-zinc-600 dark:text-zinc-400 md:text-lg">
                 {category.description}
               </p>
             )
           }
+          description="Kumpulan tulisan yang disusun supaya mudah dijelajahi, dari catatan pendek sampai pemikiran yang lebih panjang."
         />
 
         {posts.length > 0 ? (

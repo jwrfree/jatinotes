@@ -30,10 +30,8 @@ import { extractTocFromPortableText } from "@/lib/sanity/toc";
 import { PortableTextBlock } from "sanity";
 import RelatedPosts from "@/components/features/RelatedPosts";
 
-// Use ISR: regenerate page every 60 seconds if requested
 export const revalidate = 60;
 
-// Generate static pages for all posts at build time
 export async function generateStaticParams() {
   try {
     const { nodes: posts } = await PostRepository.getAll({ first: 100 });
@@ -72,7 +70,6 @@ export async function generateMetadata({
     });
   }
 
-  // Use SEO fields if available (like Yoast SEO)
   const seoTitle = post.seo?.metaTitle || post.title;
   const seoDescription = post.seo?.metaDescription || post.excerpt || "Baca selengkapnya di Jati Notes";
   const seoImage = post.seo?.ogImage || post.featuredImage?.node?.sourceUrl;
@@ -113,7 +110,6 @@ export default async function PostPage({
     notFound();
   }
 
-  // Determine content type
   const isPortableText = Array.isArray(post.content);
   const portableTextContent = Array.isArray(post.content) ? post.content : null;
   let processedContent = post.content;
@@ -127,10 +123,9 @@ export default async function PostPage({
     toc = result.toc;
   }
 
-  // Extract plain text for TTS
   const plainTextContent = stripHtml(post.content || "");
 
-  const isBookReview = post.categories?.nodes?.some((c: { slug: string }) => c.slug === 'buku');
+  const isBookReview = post.categories?.nodes?.some((c: { slug: string }) => c.slug === "buku");
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -139,7 +134,7 @@ export default async function PostPage({
     description: stripHtml(post.excerpt || "").substring(0, 160),
     image: post.featuredImage?.node?.sourceUrl ? [post.featuredImage.node.sourceUrl] : ["https://jatinotes.com/og-image.png"],
     datePublished: post.date,
-    dateModified: post.date, // Should be modified date if available
+    dateModified: post.date,
     author: {
       "@type": "Person",
       name: post.author?.node?.name || "Wruhanto Jati",
@@ -158,7 +153,7 @@ export default async function PostPage({
       "@id": `https://jatinotes.com/posts/${slug}`,
     },
     wordCount: post.wordCount,
-    articleBody: stripHtml(typeof post.content === 'string' ? post.content : "").substring(0, 5000), // Approximate for schema
+    articleBody: stripHtml(typeof post.content === "string" ? post.content : "").substring(0, 5000),
     keywords: post.categories?.nodes.map((c: { name: string }) => c.name).join(", "),
   };
 
@@ -195,17 +190,9 @@ export default async function PostPage({
 
       <BackgroundOrnaments variant="subtle" />
 
-      {/* 
-        Original Desktop Layout:
-        - Outer Grid Wrapper (max-w-7xl, grid-cols-12)
-        - Content centered in col-span-8
-      */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-12">
-
-          {/* Main Content Column (Restore Desktop layout) */}
-          <div className="xl:col-span-8 xl:col-start-3 space-y-4">
-            {/* 1. Main Article Content */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="grid grid-cols-1 gap-10 xl:grid-cols-12 xl:gap-12">
+          <div className="space-y-6 xl:col-span-8 xl:col-start-3">
             <ContentCard noBottomPadding noPadding>
               <MotionDiv
                 initial="initial"
@@ -216,13 +203,14 @@ export default async function PostPage({
                 <div id="main-article">
                   <PageHeader
                     topContent={
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
-                        {post.categories?.nodes.find((c: { slug: string; name: string }) => c.slug !== 'buku')?.name || post.categories?.nodes[0]?.name || 'Blog'}
+                      <span className="inline-flex items-center rounded-full border border-zinc-200/80 bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-700 shadow-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
+                        {post.categories?.nodes.find((c: { slug: string; name: string }) => c.slug !== "buku")?.name || post.categories?.nodes[0]?.name || "Blog"}
                       </span>
                     }
                     title={post.title}
+                    titleClassName="text-4xl font-semibold leading-[1.05] tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-6xl"
                     subtitle={
-                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between w-full">
+                      <div className="flex flex-col gap-4 rounded-[1.75rem] border border-zinc-200/70 bg-zinc-50/80 px-4 py-4 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-950/70 md:flex-row md:items-center md:justify-between md:px-5">
                         <PostMeta
                           authorName={post.author?.node?.name}
                           date={post.date}
@@ -231,17 +219,19 @@ export default async function PostPage({
                         <ListenToArticle text={plainTextContent} title={post.title} />
                       </div>
                     }
+                    subtitleClassName="mt-8"
                     description={post.excerpt || undefined}
+                    descriptionClassName="mt-6 max-w-3xl text-base leading-relaxed text-zinc-600 dark:text-zinc-300 sm:text-[1.05rem]"
                   />
 
                   {post.featuredImage?.node?.sourceUrl && (
                     <MotionDiv
                       variants={fadeIn}
-                      className="group relative mt-12 aspect-video w-full mx-auto overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800 shadow-xl"
+                      className="group relative mx-auto mt-10 aspect-video w-full overflow-hidden rounded-[2rem] bg-zinc-100 shadow-2xl shadow-black/10 dark:bg-zinc-800"
                     >
                       <Image
                         src={post.featuredImage.node.sourceUrl}
-                        alt={post.title || ''}
+                        alt={post.title || ""}
                         fill
                         priority
                         className="object-cover transition-transform duration-1000 group-hover:scale-110"
@@ -251,18 +241,17 @@ export default async function PostPage({
                   )}
 
                   {isPortableText ? (
-                    <div className="mt-12 prose prose-zinc dark:prose-invert max-w-none prose-headings:scroll-mt-28 prose-p:leading-relaxed prose-p:text-zinc-800 dark:prose-p:text-zinc-200 prose-a:text-amber-500 prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50 prose-base md:prose-lg">
+                    <div className="mt-10 max-w-none prose prose-zinc prose-base dark:prose-invert md:prose-lg prose-headings:scroll-mt-28 prose-headings:mt-12 prose-headings:mb-4 prose-p:my-5 prose-p:leading-8 prose-p:text-zinc-800 dark:prose-p:text-zinc-200 prose-a:text-amber-500 prose-a:font-medium prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50 prose-ul:my-6 prose-ol:my-6 prose-li:my-1.5 prose-blockquote:border-amber-500/40 prose-blockquote:text-zinc-700 dark:prose-blockquote:text-zinc-300 prose-hr:my-10">
                       <PortableText value={portableTextContent} />
                     </div>
                   ) : (
-                    <Prose content={processedContent as string} className="mt-12" />
+                    <Prose content={processedContent as string} className="mt-10 prose-headings:mt-12 prose-headings:mb-4 prose-p:my-5 prose-p:leading-8 prose-ul:my-6 prose-ol:my-6 prose-li:my-1.5 prose-blockquote:border-amber-500/40 prose-blockquote:text-zinc-700 dark:prose-blockquote:text-zinc-300 prose-hr:my-10" />
                   )}
                 </div>
               </MotionDiv>
             </ContentCard>
 
-            {/* 2. Comment Section - No Card Wrapper */}
-            <div className="pb-16 pt-8">
+            <div className="pb-12 pt-2">
               <LocalErrorBoundary name="Bagian Komentar">
                 <CommentSection
                   comments={post.comments?.nodes || []}
@@ -273,16 +262,14 @@ export default async function PostPage({
               </LocalErrorBoundary>
             </div>
 
-            {/* 3. Related Posts */}
             <LocalErrorBoundary name="Rekomendasi Tulisan">
               <RelatedPosts posts={post.related || []} />
             </LocalErrorBoundary>
 
-            {/* 4. Navigation Footer */}
-            <div className="flex justify-center pt-12">
+            <div className="flex justify-center pb-8 pt-6">
               <Link
                 href={isBookReview ? "/buku" : "/"}
-                className="group flex items-center gap-3 text-sm font-bold text-amber-500 transition-all hover:gap-5 px-6 py-3 rounded-full bg-white dark:bg-zinc-900"
+                className="group flex items-center gap-3 rounded-full bg-white px-6 py-3 text-sm font-bold text-amber-500 shadow-sm transition-all hover:gap-5 dark:bg-zinc-900"
               >
                 <svg
                   viewBox="0 0 16 16"
@@ -297,20 +284,18 @@ export default async function PostPage({
                     strokeLinejoin="round"
                   />
                 </svg>
-                {isBookReview ? 'Kembali ke Rak Buku' : 'Kembali ke Daftar Tulisan'}
+                {isBookReview ? "Kembali ke Rak Buku" : "Kembali ke Daftar Tulisan"}
               </Link>
             </div>
           </div>
 
-          {/* Sidebar TOC - Visible on XL, outside ContentCard (Original Layout) */}
           {toc.length > 0 && (
-            <div className="hidden xl:block xl:col-span-2 relative">
+            <div className="relative hidden xl:col-span-2 xl:block">
               <div className="sticky top-32">
                 <TableOfContents toc={toc} />
               </div>
             </div>
           )}
-
         </div>
       </div>
     </article>

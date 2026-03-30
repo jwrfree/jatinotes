@@ -11,6 +11,9 @@ interface PageHeaderProps {
   useDecryptedText?: boolean;
   accent?: ReactNode;
   topContent?: ReactNode;
+  topContentClassName?: string;
+  subtitleClassName?: string;
+  descriptionClassName?: string;
 }
 
 export default function PageHeader({
@@ -22,20 +25,23 @@ export default function PageHeader({
   useDecryptedText = false,
   accent,
   topContent,
+  topContentClassName = "mb-4",
+  subtitleClassName = "mt-6",
+  descriptionClassName = "mt-5 max-w-3xl text-sm md:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed",
 }: PageHeaderProps) {
   return (
     <header className={`flex flex-col ${className}`}>
       {topContent && (
-        <div className="mb-3">
+        <div className={topContentClassName}>
           {topContent}
         </div>
       )}
 
-      <h1 className={titleClassName}>
+      <h1 className={`max-w-4xl ${titleClassName}`}>
         {useDecryptedText ? (
           <DecryptedText
             text={title}
-            animateOn="view"
+            animateOn="hover"
             revealDirection="start"
             sequential={true}
             useOriginalCharsOnly={false}
@@ -54,18 +60,17 @@ export default function PageHeader({
       )}
 
       {subtitle && (
-        <div className="mt-4">
+        <div className={subtitleClassName}>
           {subtitle}
         </div>
       )}
 
       {description && (
         <div
-          className="mt-4 text-sm md:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed"
+          className={descriptionClassName}
           dangerouslySetInnerHTML={{ __html: sanitize(description) }}
         />
       )}
     </header>
   );
 }
-

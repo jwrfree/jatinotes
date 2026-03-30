@@ -20,14 +20,20 @@ export default function HeroSection({
       initial="initial"
       animate="animate"
       variants={fadeIn}
-      className="relative z-10 pt-32 sm:pt-40 pb-24 sm:pb-32"
+      className="relative z-10 pt-24 sm:pt-28 pb-14 sm:pb-20"
     >
-      <div className="mx-auto max-w-5xl px-6">
-        <div className="max-w-2xl">
-          <h1 className="text-4xl font-semibold sm:font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-6xl mb-6">
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="max-w-3xl">
+          <div className="mb-5 flex items-center gap-4">
+            <span className="h-px w-12 bg-amber-500/80" />
+            <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-600 dark:text-amber-400">
+              Catatan yang dirawat pelan-pelan
+            </span>
+          </div>
+          <h1 className="mb-5 text-4xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-6xl sm:font-bold md:text-7xl">
             {title}
           </h1>
-          <p className="text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
+          <p className="max-w-2xl text-base leading-relaxed text-zinc-600 dark:text-zinc-400 sm:text-lg">
             {description}
           </p>
         </div>

@@ -12,27 +12,26 @@ export default function TechSection({ category }: TechSectionProps) {
   }
 
   return (
-    <section className="relative z-20 py-32 overflow-hidden bg-white dark:bg-zinc-950">
+    <section className="relative z-20 overflow-hidden bg-white py-24 dark:bg-zinc-950 sm:py-28">
       <div className="absolute inset-0 bg-amber-500/[0.02] dark:bg-amber-500/[0.01]" />
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent" />
 
-      {/* Fade out to reveal next section */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-white dark:from-zinc-950 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-white dark:from-zinc-950 to-transparent pointer-events-none" />
 
       <div className="relative mx-auto max-w-7xl px-6">
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-16">
+        <div className="mb-14 flex flex-col items-start justify-between gap-5 md:flex-row md:items-end">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-zinc-50 tracking-tight">
+            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 md:text-4xl">
               Teknologi & <span className="text-amber-500">Kode</span>
             </h2>
-            <p className="mt-4 text-zinc-600 dark:text-zinc-400 max-w-lg leading-relaxed">
+            <p className="mt-3 max-w-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
               Catatan teknis seputar pengembangan web, eksperimen coding, dan tool favorit.
             </p>
           </div>
-          
-          <Link 
-            href="/teknologi" 
-            className="group inline-flex items-center gap-2 px-6 py-3 bg-zinc-100 dark:bg-zinc-900 rounded-full text-sm font-medium text-zinc-900 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+
+          <Link
+            href="/teknologi"
+            className="group inline-flex items-center gap-2 rounded-full bg-zinc-100 px-6 py-3 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
           >
             Lihat Semua
             <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -1,4 +1,3 @@
-
 import { getHomeData } from "@/lib/services";
 import { MotionDiv, staggerContainer } from "@/components/ui/Animations";
 import { Metadata } from "next";
@@ -13,7 +12,6 @@ import JsonLd from "@/components/features/JsonLd";
 import TechSection from "@/components/features/TechSection";
 import BookSection from "@/components/features/BookSection";
 
-// ISR: Regenerate homepage every 60 seconds
 export const revalidate = 60;
 
 export const metadata: Metadata = constructMetadata({
@@ -78,20 +76,19 @@ export default async function Home() {
 
       <BackgroundOrnaments />
 
-      {/* Hero Section */}
       <HeroSection />
 
-      {/* Main Content Section */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 pb-24">
+      <section className="relative z-10 mx-auto -mt-4 max-w-7xl px-6 pb-20 sm:-mt-6 sm:pb-24">
         {posts && posts.length > 0 ? (
-          <div className="space-y-16">
-            {/* Featured Post */}
+          <div className="space-y-14 sm:space-y-16">
             <FeaturedPost post={posts[0]} />
 
-            {/* General Grid (Blog Category Only) */}
-            {blogCategory && posts && posts.length > 0 && (
-              <div className="space-y-12">
-                <SectionHeading>
+            {blogCategory && posts.length > 0 && (
+              <div className="space-y-8 sm:space-y-10">
+                <SectionHeading
+                  viewAllLink="/blog"
+                  h2ClassName="font-semibold text-zinc-900 dark:text-zinc-50 leading-[1.08]"
+                >
                   Saya menulis untuk mengabadikan apa yang melintas di pikiran dan membagikannya kepada dunia.
                 </SectionHeading>
 
@@ -110,17 +107,15 @@ export default async function Home() {
             )}
           </div>
         ) : (
-          <div className="p-20 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-[3rem] text-center">
+          <div className="rounded-[3rem] border-2 border-dashed border-zinc-200 p-20 text-center dark:border-zinc-800">
             <h3 className="text-xl font-medium text-zinc-900 dark:text-zinc-50">Belum Ada Catatan</h3>
             <p className="mt-2 text-zinc-500">Sedang menyusun pemikiran. Tulisan baru akan segera hadir.</p>
           </div>
         )}
       </section>
 
-      {/* Technology Section with Thematic Accent */}
       <TechSection category={techCategory} />
 
-      {/* Book Reviews Section - Horizontal Scroll */}
       <BookSection category={bookCategory} />
     </div>
   );

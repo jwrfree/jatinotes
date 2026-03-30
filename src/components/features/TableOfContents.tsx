@@ -29,12 +29,12 @@ export default function TableOfContents({ toc }: { toc: TocItem[] }) {
   if (toc.length === 0) return null;
 
   return (
-    <nav className="min-w-[180px] animate-fade-in-up">
-      <div className="py-2 max-h-[calc(100vh-8rem)] overflow-y-auto custom-scrollbar">
-        <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-3 px-4">
+    <nav className="min-w-[220px] animate-fade-in-up rounded-[1.75rem] border border-zinc-200/70 bg-white/75 p-4 shadow-xl shadow-black/5 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/75">
+      <div className="max-h-[calc(100vh-10rem)] overflow-y-auto custom-scrollbar pr-1">
+        <h4 className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-500">
           Dalam Tulisan Ini
         </h4>
-        <ul className="space-y-0.5">
+        <ul className="space-y-1">
           {toc.map((item) => (
             <li key={item.id}>
               <button
@@ -42,10 +42,11 @@ export default function TableOfContents({ toc }: { toc: TocItem[] }) {
                   document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth" });
                   setActiveId(item.id);
                 }}
-                className={`text-left text-xs py-1.5 px-4 block w-full transition-all duration-300 border-l-2 ${activeId === item.id
-                    ? "border-amber-500 text-amber-600 dark:text-amber-500 font-medium bg-amber-50/50 dark:bg-amber-500/10 rounded-r-lg"
-                    : "border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:border-zinc-300 dark:hover:border-zinc-700"
-                  }`}
+                className={`block w-full rounded-2xl border px-3 py-2 text-left text-xs leading-relaxed transition-all duration-300 ${
+                  activeId === item.id
+                    ? "border-amber-500/30 bg-amber-50 text-amber-700 shadow-sm dark:bg-amber-500/10 dark:text-amber-400"
+                    : "border-transparent text-zinc-500 hover:border-zinc-200 hover:bg-white/70 hover:text-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-800 dark:hover:bg-zinc-950/60 dark:hover:text-zinc-200"
+                }`}
               >
                 {item.text}
               </button>
