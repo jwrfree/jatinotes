@@ -21,58 +21,21 @@ export const metadata: Metadata = constructMetadata({
 });
 
 export default async function Home() {
-  const jsonLd = {
+  const collectionJsonLd = {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Jati Notes",
-    "alternateName": ["JatiNotes", "Wruhantojati", "Jati Notes Blog"],
+    "@type": "CollectionPage",
+    "name": "Jati Notes — Beranda",
     "url": "https://jatinotes.com",
     "description": "Catatan digital Wruhantojati tentang pengembangan web, desain UI/UX, dan teknologi terbaru.",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://jatinotes.com/search?q={search_term_string}"
-      },
-      "query-input": "required name=search_term_string"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Jati Notes",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://jatinotes.com/icon.svg"
-      }
-    },
-    "hasPart": [
-      {
-        "@type": "SiteNavigationElement",
-        "name": "Buku",
-        "url": "https://jatinotes.com/buku"
-      },
-      {
-        "@type": "SiteNavigationElement",
-        "name": "Blog",
-        "url": "https://jatinotes.com/blog"
-      },
-      {
-        "@type": "SiteNavigationElement",
-        "name": "Meet Jati",
-        "url": "https://jatinotes.com/meet-jati"
-      },
-      {
-        "@type": "SiteNavigationElement",
-        "name": "Teknologi",
-        "url": "https://jatinotes.com/teknologi"
-      }
-    ]
+    "isPartOf": { "@id": "https://jatinotes.com/#website" },
+    "about": { "@id": "https://jatinotes.com/#person" },
   };
 
   const { posts, blogCategory, techCategory, bookCategory } = await getHomeData();
 
   return (
     <div className="relative min-h-screen">
-      <JsonLd data={jsonLd} />
+      <JsonLd data={collectionJsonLd} />
 
       <BackgroundOrnaments />
 

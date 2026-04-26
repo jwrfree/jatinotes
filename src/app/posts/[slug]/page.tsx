@@ -134,10 +134,10 @@ export default async function PostPage({
     description: stripHtml(post.excerpt || "").substring(0, 160),
     image: post.featuredImage?.node?.sourceUrl ? [post.featuredImage.node.sourceUrl] : ["https://jatinotes.com/og-image.png"],
     datePublished: post.date,
-    dateModified: post.date,
+    dateModified: post.modifiedDate || post.date,
     author: {
       "@type": "Person",
-      name: post.author?.node?.name || "Wruhanto Jati",
+      name: post.author?.node?.name || "Wruhantojati",
       url: "https://jatinotes.com/meet-jati",
     },
     publisher: {
@@ -153,7 +153,6 @@ export default async function PostPage({
       "@id": `https://jatinotes.com/posts/${slug}`,
     },
     wordCount: post.wordCount,
-    articleBody: stripHtml(typeof post.content === "string" ? post.content : "").substring(0, 5000),
     keywords: post.categories?.nodes.map((c: { name: string }) => c.name).join(", "),
   };
 
@@ -241,7 +240,7 @@ export default async function PostPage({
                   )}
 
                   {isPortableText ? (
-                    <div className="mt-10 max-w-none prose prose-zinc prose-base dark:prose-invert md:prose-lg prose-headings:scroll-mt-28 prose-headings:mt-12 prose-headings:mb-4 prose-p:my-5 prose-p:leading-8 prose-p:text-zinc-800 dark:prose-p:text-zinc-200 prose-a:text-amber-500 prose-a:font-medium prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50 prose-ul:my-6 prose-ol:my-6 prose-li:my-1.5 prose-blockquote:border-amber-500/40 prose-blockquote:text-zinc-700 dark:prose-blockquote:text-zinc-300 prose-hr:my-10">
+                    <div className="mt-10 max-w-none prose prose-zinc prose-base dark:prose-invert md:prose-lg prose-headings:scroll-mt-28 prose-headings:mt-12 prose-headings:mb-4 prose-p:my-5 prose-p:leading-8 prose-p:text-zinc-800 dark:prose-p:text-zinc-200 prose-a:text-amber-600 prose-a:font-medium prose-strong:text-zinc-900 dark:prose-strong:text-zinc-50 prose-ul:my-6 prose-ol:my-6 prose-li:my-1.5 prose-blockquote:border-amber-500/40 prose-blockquote:text-zinc-700 dark:prose-blockquote:text-zinc-300 prose-hr:my-10">
                       <PortableText value={portableTextContent} />
                     </div>
                   ) : (

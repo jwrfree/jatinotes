@@ -242,7 +242,8 @@ export default function Navbar() {
               <button
                 onClick={toggleMenu}
                 className="group relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:outline-none md:hidden"
-                aria-label="Toggle Menu"
+                aria-label={isOpen ? "Tutup menu navigasi" : "Buka menu navigasi"}
+                aria-expanded={isOpen}
               >
                 <span className={`bg-zinc-900 transition-all duration-300 dark:bg-zinc-50 ${scrolled ? "h-0.5 w-5" : "h-0.5 w-6"} ${isOpen ? "translate-y-2 rotate-45" : ""}`} />
                 <span className={`bg-zinc-900 transition-all duration-300 dark:bg-zinc-50 ${scrolled ? "h-0.5 w-5" : "h-0.5 w-6"} ${isOpen ? "opacity-0" : ""}`} />

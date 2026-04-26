@@ -4,17 +4,16 @@ import { sendNotification } from '@/lib/notifications'
 
 export async function POST(req: NextRequest) {
   try {
+    // Verify webhook secret
+    const secret = req.headers.get('x-sanity-webhook-secret') || req.nextUrl.searchParams.get('secret')
+    if (!process.env.SANITY_WEBHOOK_SECRET || secret !== process.env.SANITY_WEBHOOK_SECRET) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const body = await req.json()
-    console.log('📩 Webhook received:', body)
 
     if (body?.operation === 'create' && body?.document?._type === 'comment') {
       const comment = body.document
-      console.log('💬 New comment detected:', { 
-        author: comment.name, 
-        email: comment.email, 
-        content: comment.content 
-      })
-
       await sendNotification({ 
         type: 'new_comment', 
         comment: { 

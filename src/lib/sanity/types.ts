@@ -38,6 +38,7 @@ export interface SanityComment {
 
 export interface SanityPost {
   _id: string;
+  _updatedAt?: string;
   title: string;
   slug: string | { current: string }; // Allow both string and object
   publishedAt: string;
@@ -45,6 +46,7 @@ export interface SanityPost {
   body: PortableTextBlock[];
   wordCount?: number;
   mainImage?: string; // URL string from projection
+  mainImageAlt?: string;
   author?: SanityAuthor;
   categories?: Array<{
     title: string;

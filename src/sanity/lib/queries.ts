@@ -3,11 +3,13 @@ import { defineQuery } from "next-sanity";
 // --- Post Fields ---
 const postFields = `
   _id,
+  _updatedAt,
   title,
   "slug": coalesce(slug.current, slug),
   excerpt,
   publishedAt,
   "mainImage": mainImage.asset->url,
+  "mainImageAlt": mainImage.alt,
   "author": author->{name, "slug": slug.current, "image": image.asset->url},
   "categories": categories[]->{title, "slug": slug.current},
   "wordCount": length(pt::text(body)),

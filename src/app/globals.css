@@ -21,7 +21,7 @@
   }
 
   .prose a {
-    @apply text-amber-500 no-underline font-medium;
+    @apply text-amber-600 no-underline font-medium;
   }
 
   /* Fix oversized SVGs in prose content */

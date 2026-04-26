@@ -75,6 +75,7 @@ export type Post = {
   title: string;
   slug: string;
   date: string;
+  modifiedDate?: string | null;
   excerpt?: string | null;
   content?: string | PortableTextContentNode[] | null;
   wordCount?: number | null;
@@ -115,6 +116,7 @@ export const PostSchema: z.ZodType<Post> = z.lazy(() => z.object({
   title: z.string(),
   slug: z.string(),
   date: z.string(),
+  modifiedDate: z.string().nullable().optional(),
   excerpt: z.string().nullable().optional().transform(val => val ?? ""),
   content: z.union([z.string(), z.array(PortableTextNodeSchema)]).nullable().optional(),
   wordCount: z.number().nullable().optional(), // Character count from Sanity
