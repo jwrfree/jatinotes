@@ -49,6 +49,7 @@ export default function ListenToArticle({
     const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const processedTextRef = useRef("");
+    const paragraphPauseRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Preprocess text once
     useEffect(() => {
@@ -84,8 +85,12 @@ export default function ListenToArticle({
                 setIdVoices(indonesianVoices);
 
                 if (indonesianVoices.length > 0 && !selectedVoice) {
-                    // Try to restore saved voice
-                    const savedVoiceName = localStorage.getItem(STORAGE_KEY_VOICE);
+                    let savedVoiceName: string | null = null;
+                    try {
+                        savedVoiceName = localStorage.getItem(STORAGE_KEY_VOICE);
+                    } catch {
+                        // localStorage unavailable
+                    }
                     const savedVoice = savedVoiceName
                         ? indonesianVoices.find((v) => v.name === savedVoiceName)
                         : null;
@@ -108,6 +113,7 @@ export default function ListenToArticle({
 
     useEffect(() => {
         return () => {
+            if (paragraphPauseRef.current) clearTimeout(paragraphPauseRef.current);
             if (typeof window !== "undefined" && "speechSynthesis" in window) {
                 window.speechSynthesis.cancel();
             }
@@ -168,6 +174,7 @@ export default function ListenToArticle({
     // Dynamic voice switching
     useEffect(() => {
         if (isPlaying && !isPaused && selectedVoice) {
+            if (paragraphPauseRef.current) clearTimeout(paragraphPauseRef.current);
             window.speechSynthesis.cancel();
             speakNextChunk();
         }
@@ -177,6 +184,7 @@ export default function ListenToArticle({
     // Dynamic rate switching
     useEffect(() => {
         if (isPlaying && !isPaused) {
+            if (paragraphPauseRef.current) clearTimeout(paragraphPauseRef.current);
             window.speechSynthesis.cancel();
             speakNextChunk();
         }
@@ -247,7 +255,10 @@ export default function ListenToArticle({
 
             // Paragraph pause: longer delay between paragraphs
             if (chunk.isLastInParagraph && idx + 1 < chunks.length) {
-                setTimeout(() => speakNextChunk(), 400);
+                paragraphPauseRef.current = setTimeout(() => {
+                    paragraphPauseRef.current = null;
+                    speakNextChunk();
+                }, 400);
             } else {
                 speakNextChunk();
             }
@@ -312,6 +323,10 @@ export default function ListenToArticle({
 
     const handleStop = () => {
         if (!supported) return;
+        if (paragraphPauseRef.current) {
+            clearTimeout(paragraphPauseRef.current);
+            paragraphPauseRef.current = null;
+        }
         if (utteranceRef.current) {
             utteranceRef.current.onerror = null;
             utteranceRef.current.onend = null;
@@ -326,6 +341,10 @@ export default function ListenToArticle({
 
     const handleSkipForward = () => {
         if (!isPlaying && !isPaused) return;
+        if (paragraphPauseRef.current) {
+            clearTimeout(paragraphPauseRef.current);
+            paragraphPauseRef.current = null;
+        }
 
         const chunks = chunksRef.current;
         const currentIdx = currentChunkIndexRef.current;
@@ -356,6 +375,10 @@ export default function ListenToArticle({
 
     const handleSkipBackward = () => {
         if (!isPlaying && !isPaused) return;
+        if (paragraphPauseRef.current) {
+            clearTimeout(paragraphPauseRef.current);
+            paragraphPauseRef.current = null;
+        }
 
         const chunks = chunksRef.current;
         const currentIdx = currentChunkIndexRef.current;
