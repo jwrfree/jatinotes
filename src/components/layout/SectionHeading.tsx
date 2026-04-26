@@ -21,7 +21,7 @@ export default function SectionHeading({
         </h2>
       </div>
       {viewAllLink && (
-        <Link href={viewAllLink} className="group flex items-center gap-3 text-sm font-semibold text-amber-500 shrink-0">
+        <Link href={viewAllLink} className="group flex items-center gap-3 text-sm font-semibold text-amber-600 dark:text-amber-500 shrink-0">
           Lihat Semua
           <span className="w-8 h-px bg-amber-500 transition-all duration-300 group-hover:w-12" />
         </Link>

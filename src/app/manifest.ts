@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Jati Notes',
     short_name: 'JatiNotes',
-    description: 'Blog modern menggunakan Next.js dan Headless WordPress',
+    description: 'Catatan digital Wruhantojati tentang buku, desain, dan perjalanan merapikan isi kepala.',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',

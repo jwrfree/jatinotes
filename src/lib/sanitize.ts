@@ -14,9 +14,10 @@ export function sanitize(content: string): string {
       'a': [ 'href', 'name', 'target', 'rel', 'className' ],
       'img': [ 'src', 'srcset', 'alt', 'title', 'width', 'height', 'loading', 'className' ],
       'iframe': [ 'src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen' ],
-      '*': ['className', 'style', 'id'] // Allow basic styling attributes
+      '*': ['className', 'id']
     },
-    allowedSchemes: [ 'http', 'https', 'mailto', 'tel' ]
+    allowedSchemes: [ 'http', 'https', 'mailto', 'tel' ],
+    allowedIframeHostnames: ['www.youtube.com', 'youtube.com', 'player.vimeo.com', 'open.spotify.com']
   });
 }
 

@@ -23,7 +23,7 @@ interface MetadataProps {
 const DEFAULT_METADATA = {
   siteName: "Jati Notes",
   defaultDescription: "Catatan personal tentang merajut makna dari buku, desain, dan perjalanan merapikan isi kepala.",
-  defaultImage: "/og-image.png",
+  defaultImage: "https://jatinotes.com/og-image.png",
   twitterHandle: "@wruhantojati",
   baseUrl: "https://jatinotes.com",
 };

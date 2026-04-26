@@ -54,7 +54,7 @@ const nextConfig: NextConfig = {
   async headers() {
     const cspHeader = `
       default-src 'self';
-      script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com;
+      script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com;
       style-src 'self' 'unsafe-inline';
       img-src 'self' blob: data: https://*.jatinotes.com https://jatinotes.com https://cdn.sanity.io https://secure.gravatar.com https://*.gravatar.com https://images.unsplash.com https://*.wp.com https://*.googleapis.com https://*.gstatic.com https://www.google-analytics.com https://ui-avatars.com;
       connect-src 'self' https://jatinotes.com https://cdn.sanity.io https://*.api.sanity.io https://www.google-analytics.com https://analytics.google.com;
@@ -97,6 +97,10 @@ const nextConfig: NextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()',
+          },
+          {
+            key: 'X-Robots-Tag',
+            value: 'noimageai',
           },
         ],
       },

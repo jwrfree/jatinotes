@@ -10,6 +10,7 @@ export function mapSanityPostToPost(sanityPost: SanityPost | null | undefined): 
         title: sanityPost.title || "Untitled Post",
         slug: typeof sanityPost.slug === 'string' ? sanityPost.slug : sanityPost.slug?.current || `post-${sanityPost._id}`,
         date: sanityPost.publishedAt || new Date().toISOString(),
+        modifiedDate: sanityPost._updatedAt || null,
         excerpt: sanityPost.excerpt || "",
         content: sanityPost.body, // This will now be PortableTextBlock[], type definition needs update or loose typing
         wordCount: sanityPost.wordCount || 0, // Character count from Sanity

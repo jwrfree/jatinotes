@@ -21,7 +21,7 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
   });
 
   const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
-  const displayTitle = (post.title || "Untitled").replace(/[â€œâ€]/g, '"');
+  const displayTitle = (post.title || "Untitled").replace(/[“”]/g, '"');
   const primaryCategory = post.categories?.nodes.find(
     (category) => !["blog", "buku", "teknologi"].includes(category.slug)
   ) || post.categories?.nodes[0];

@@ -19,9 +19,7 @@ export const metadata: Metadata = {
   ...constructMetadata({
     title: "Jati Notes | Menata Isi Kepala Lewat Tulisan & Buku",
     description: "Ruang berbagi Wruhantojati tentang buku-buku yang mengubah perspektif, catatan desain, hingga perjalanan merapikan isi kepala. Sebuah upaya untuk tetap jujur dan manusiawi.",
-    verification: {
-      google: "google-site-verification-code", // Placeholder - user needs to update this
-    },
+
   }),
   metadataBase: new URL("https://jatinotes.com"),
   title: {
@@ -66,14 +64,7 @@ export default function RootLayout({
     "url": "https://jatinotes.com",
     "publisher": { "@id": "https://jatinotes.com/#person" },
     "author": { "@id": "https://jatinotes.com/#person" },
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://jatinotes.com/search?q={search_term_string}",
-      },
-      "query-input": "required name=search_term_string",
-    }
+    "inLanguage": "id-ID"
   };
 
   return (
