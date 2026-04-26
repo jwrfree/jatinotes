@@ -79,7 +79,8 @@ export function extractTtsTextFromHtml(html: string): string {
   return html
     .replace(/<pre[\s\S]*?<\/pre>/gi, '')
     .replace(/<code[\s\S]*?<\/code>/gi, '')
-    .replace(/<\/(?:p|div|h[1-6]|li|blockquote|br\s*\/?)>/gi, PARAGRAPH_BREAK)
+    .replace(/<br\s*\/?>/gi, PARAGRAPH_BREAK)
+    .replace(/<\/(?:p|div|h[1-6]|li|blockquote)>/gi, PARAGRAPH_BREAK)
     .replace(/<[^>]*>/g, '')
     .replace(/&nbsp;/g, ' ')
     .replace(/&amp;/g, 'dan')
@@ -127,7 +128,7 @@ export function preprocessTtsText(text: string): string {
   result = result.replace(/[*_~`#]/g, '');
 
   // Normalize multiple spaces
-  result = result.replace(/\s+/g, ' ');
+  result = result.replace(/[^\S\n]+/g, ' ');
 
   // Normalize multiple commas
   result = result.replace(/,\s*,/g, ',');
