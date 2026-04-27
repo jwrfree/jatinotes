@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image, { ImageProps } from "next/image";
 import { m, AnimatePresence } from "framer-motion";
 
@@ -12,6 +12,21 @@ export default function ImageZoom({ src, alt, className, ...props }: ImageZoomPr
     const [isOpen, setIsOpen] = useState(false);
     const [imageError, setImageError] = useState(false);
 
+    const close = useCallback(() => setIsOpen(false), []);
+
+    useEffect(() => {
+        if (!isOpen) return;
+        document.body.style.overflow = "hidden";
+        const handleKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") close();
+        };
+        window.addEventListener("keydown", handleKey);
+        return () => {
+            document.body.style.overflow = "unset";
+            window.removeEventListener("keydown", handleKey);
+        };
+    }, [isOpen, close]);
+
     if (imageError) {
         return (
             <div className={`flex items-center justify-center w-full h-full bg-zinc-200 dark:bg-zinc-700 rounded-lg aspect-video ${className}`}>
@@ -22,10 +37,13 @@ export default function ImageZoom({ src, alt, className, ...props }: ImageZoomPr
 
     return (
         <>
-            {/* Thumbnail Image */}
             <div
                 className={`relative cursor-zoom-in overflow-hidden ${className}`}
                 onClick={() => setIsOpen(true)}
+                role="button"
+                tabIndex={0}
+                aria-label={`Perbesar gambar: ${alt}`}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setIsOpen(true); } }}
             >
                 <Image
                     src={src}
@@ -36,12 +54,14 @@ export default function ImageZoom({ src, alt, className, ...props }: ImageZoomPr
                 />
             </div>
 
-            {/* Fullscreen Overlay */}
             <AnimatePresence>
                 {isOpen && (
                     <div
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
-                        onClick={() => setIsOpen(false)}
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm cursor-zoom-out"
+                        onClick={close}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label={`Gambar diperbesar: ${alt}`}
                     >
                         <m.div
                             initial={{ opacity: 0, scale: 0.8 }}
@@ -65,8 +85,10 @@ export default function ImageZoom({ src, alt, className, ...props }: ImageZoomPr
                                 className="absolute top-4 right-4 p-2 text-white bg-black/50 rounded-full hover:bg-black/70 transition-colors"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    setIsOpen(false);
+                                    close();
                                 }}
+                                aria-label="Tutup"
+                                autoFocus
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />

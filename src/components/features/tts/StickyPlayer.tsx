@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Play, Pause, X, SkipForward, SkipBack } from "lucide-react";
 
 const RATE_CYCLE = [1.0, 1.25, 1.5, 1.75, 2.0, 0.75];
@@ -49,7 +49,7 @@ export default function StickyPlayer({
 
     return createPortal(
         <AnimatePresence>
-            <motion.div
+            <m.div
                 key="sticky-player"
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -60,7 +60,7 @@ export default function StickyPlayer({
                 {/* Progress bar */}
                 <div className="w-full px-4">
                     <div className="h-0.5 bg-white/20 rounded-full overflow-hidden w-48">
-                        <motion.div
+                        <m.div
                             className="h-full bg-amber-500 rounded-full"
                             animate={{ width: `${progress}%` }}
                             transition={{ duration: 0.3 }}
@@ -72,7 +72,7 @@ export default function StickyPlayer({
                     <div className="flex gap-0.5 items-end h-3 mr-1">
                         {isPlaying &&
                             [1, 2, 3].map((bar) => (
-                                <motion.div
+                                <m.div
                                     key={bar}
                                     className="w-1 bg-amber-500 rounded-full"
                                     animate={{ height: [4, 16, 4] }}
@@ -94,7 +94,7 @@ export default function StickyPlayer({
 
                     <div className="w-[88px] text-xs font-medium text-zinc-600 dark:text-zinc-300 pr-2 border-r border-zinc-200 dark:border-zinc-700 overflow-hidden">
                         <AnimatePresence mode="wait" initial={false}>
-                            <motion.span
+                            <m.span
                                 key={isPaused ? "paused" : "listening"}
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
@@ -103,7 +103,7 @@ export default function StickyPlayer({
                                 className="block"
                             >
                                 {isPaused ? "Dijeda" : "Mendengarkan"}
-                            </motion.span>
+                            </m.span>
                         </AnimatePresence>
                     </div>
 
@@ -124,7 +124,7 @@ export default function StickyPlayer({
                     >
                         {isPlaying ? (
                             <AnimatePresence mode="wait" initial={false}>
-                                <motion.div
+                                <m.div
                                     key="pause"
                                     initial={{ scale: 0.5, opacity: 0, rotate: -45 }}
                                     animate={{ scale: 1, opacity: 1, rotate: 0 }}
@@ -132,11 +132,11 @@ export default function StickyPlayer({
                                     transition={{ duration: 0.2 }}
                                 >
                                     <Pause className="w-4 h-4 fill-current" />
-                                </motion.div>
+                                </m.div>
                             </AnimatePresence>
                         ) : (
                             <AnimatePresence mode="wait" initial={false}>
-                                <motion.div
+                                <m.div
                                     key="play"
                                     initial={{ scale: 0.5, opacity: 0, rotate: 45 }}
                                     animate={{ scale: 1, opacity: 1, rotate: 0 }}
@@ -144,7 +144,7 @@ export default function StickyPlayer({
                                     transition={{ duration: 0.2 }}
                                 >
                                     <Play className="w-4 h-4 fill-current" />
-                                </motion.div>
+                                </m.div>
                             </AnimatePresence>
                         )}
                     </button>
@@ -177,7 +177,7 @@ export default function StickyPlayer({
                         <X className="w-4 h-4" />
                     </button>
                 </div>
-            </motion.div>
+            </m.div>
         </AnimatePresence>,
         document.body
     );
