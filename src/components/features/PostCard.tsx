@@ -27,7 +27,7 @@ export default function PostCard({
     amber: "group-hover:text-amber-500",
   };
 
-  const displayTitle = (post.title || "Untitled").replace(/[""]/g, '"');
+  const displayTitle = (post.title || "Untitled").replace(/[\u201C\u201D]/g, '"');
 
   if (variant === "tech") {
     const aspectRatioClass = customAspectRatio || "aspect-[3/2]";

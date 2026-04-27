@@ -22,9 +22,9 @@ export default function HeroSection({
     offset: ["start start", "end start"],
   });
 
-  const titleY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
+  const titleY = useTransform(scrollYProgress, [0, 1], [0, 200]);
   const titleOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const descY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const descY = useTransform(scrollYProgress, [0, 1], [0, 150]);
   const descOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
   const badgeScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.9]);
   const badgeOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
@@ -43,25 +43,33 @@ export default function HeroSection({
             </span>
           </m.div>
 
-          <m.h1
-            className="mb-5 text-4xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-6xl sm:font-bold md:text-7xl"
-            style={{ y: titleY, opacity: titleOpacity }}
+          {/* Entrance animation wrapper */}
+          <m.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            {title}
-          </m.h1>
+            {/* Scroll-driven parallax */}
+            <m.h1
+              className="mb-5 text-4xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-6xl sm:font-bold md:text-7xl"
+              style={{ y: titleY, opacity: titleOpacity }}
+            >
+              {title}
+            </m.h1>
+          </m.div>
 
-          <m.p
-            className="max-w-2xl text-base leading-relaxed text-zinc-600 dark:text-zinc-400 sm:text-lg"
-            style={{ y: descY, opacity: descOpacity }}
+          <m.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           >
-            {description}
-          </m.p>
+            <m.p
+              className="max-w-2xl text-base leading-relaxed text-zinc-600 dark:text-zinc-400 sm:text-lg"
+              style={{ y: descY, opacity: descOpacity }}
+            >
+              {description}
+            </m.p>
+          </m.div>
         </div>
       </div>
     </section>
