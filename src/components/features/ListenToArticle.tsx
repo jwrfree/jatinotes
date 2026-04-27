@@ -1,9 +1,18 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import StickyPlayer from "./tts/StickyPlayer";
 import InlinePlayer from "./tts/InlinePlayer";
+import {
+    preprocessTtsText,
+    chunkTtsText,
+    estimateListeningTime,
+    type TtsChunk,
+} from "@/lib/tts";
+
+const STORAGE_KEY_VOICE = "jatinotes-tts-voice";
+const STORAGE_KEY_RATE = "jatinotes-tts-rate";
 
 interface ListenToArticleProps {
     text: string;
@@ -26,14 +35,40 @@ export default function ListenToArticle({
         useState<SpeechSynthesisVoice | null>(null);
     const [showSettings, setShowSettings] = useState(false);
 
+    // Playback controls
+    const [rate, setRate] = useState(1.0);
+    const [progress, setProgress] = useState(0);
+    const [listeningTime, setListeningTime] = useState(0);
+
     // Sticky state
     const [isStickyVisible, setIsStickyVisible] = useState(false);
 
     // Refs
-    const chunksRef = useRef<string[]>([]);
+    const chunksRef = useRef<TtsChunk[]>([]);
     const currentChunkIndexRef = useRef(0);
     const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const processedTextRef = useRef("");
+    const paragraphPauseRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // Preprocess text once
+    useEffect(() => {
+        processedTextRef.current = preprocessTtsText(text);
+        setListeningTime(estimateListeningTime(processedTextRef.current, rate));
+    }, [text, rate]);
+
+    // Restore preferences from localStorage
+    useEffect(() => {
+        try {
+            const savedRate = localStorage.getItem(STORAGE_KEY_RATE);
+            if (savedRate) {
+                const parsed = parseFloat(savedRate);
+                if (parsed >= 0.5 && parsed <= 2.5) setRate(parsed);
+            }
+        } catch {
+            // localStorage unavailable
+        }
+    }, []);
 
     useEffect(() => {
         if (typeof window !== "undefined" && "speechSynthesis" in window) {
@@ -41,7 +76,6 @@ export default function ListenToArticle({
 
             const loadVoices = () => {
                 const availableVoices = window.speechSynthesis.getVoices();
-                // Filter strictly for Indonesian voices
                 const indonesianVoices = availableVoices.filter(
                     (v) =>
                         v.lang.toLowerCase().includes("id-id") ||
@@ -50,13 +84,25 @@ export default function ListenToArticle({
 
                 setIdVoices(indonesianVoices);
 
-                // Auto-select first available or restore selection
                 if (indonesianVoices.length > 0 && !selectedVoice) {
-                    // Prefer "Google Bahasa Indonesia" as it's usually high quality
-                    const googleVoice = indonesianVoices.find((v) =>
-                        v.name.includes("Google")
-                    );
-                    setSelectedVoice(googleVoice || indonesianVoices[0]);
+                    let savedVoiceName: string | null = null;
+                    try {
+                        savedVoiceName = localStorage.getItem(STORAGE_KEY_VOICE);
+                    } catch {
+                        // localStorage unavailable
+                    }
+                    const savedVoice = savedVoiceName
+                        ? indonesianVoices.find((v) => v.name === savedVoiceName)
+                        : null;
+
+                    if (savedVoice) {
+                        setSelectedVoice(savedVoice);
+                    } else {
+                        const googleVoice = indonesianVoices.find((v) =>
+                            v.name.includes("Google")
+                        );
+                        setSelectedVoice(googleVoice || indonesianVoices[0]);
+                    }
                 }
             };
 
@@ -67,6 +113,7 @@ export default function ListenToArticle({
 
     useEffect(() => {
         return () => {
+            if (paragraphPauseRef.current) clearTimeout(paragraphPauseRef.current);
             if (typeof window !== "undefined" && "speechSynthesis" in window) {
                 window.speechSynthesis.cancel();
             }
@@ -78,10 +125,8 @@ export default function ListenToArticle({
         const handleScroll = () => {
             if (!containerRef.current) return;
 
-            // Only show sticky if playing/paused AND user scrolled past the original button
             if (isPlaying || isPaused) {
                 const rect = containerRef.current.getBoundingClientRect();
-                // Check if element is completely scrolled out of view (above the viewport)
                 const isOutOfView = rect.bottom < 0;
                 setIsStickyVisible(isOutOfView);
             } else {
@@ -93,71 +138,105 @@ export default function ListenToArticle({
         return () => window.removeEventListener("scroll", handleScroll);
     }, [isPlaying, isPaused]);
 
+    // Keyboard shortcuts
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (!isPlaying && !isPaused) return;
+
+            const target = e.target as HTMLElement;
+            if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) return;
+
+            switch (e.key) {
+                case " ":
+                    e.preventDefault();
+                    handlePlayPause();
+                    break;
+                case "Escape":
+                    e.preventDefault();
+                    handleStop();
+                    break;
+                case "ArrowRight":
+                    e.preventDefault();
+                    handleSkipForward();
+                    break;
+                case "ArrowLeft":
+                    e.preventDefault();
+                    handleSkipBackward();
+                    break;
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isPlaying, isPaused]);
+
     // Dynamic voice switching
     useEffect(() => {
         if (isPlaying && !isPaused && selectedVoice) {
-            // If playing, restart current chunk with new voice
+            if (paragraphPauseRef.current) clearTimeout(paragraphPauseRef.current);
             window.speechSynthesis.cancel();
             speakNextChunk();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedVoice]);
 
-    // Guess gender helper
+    // Dynamic rate switching
+    useEffect(() => {
+        if (isPlaying && !isPaused) {
+            if (paragraphPauseRef.current) clearTimeout(paragraphPauseRef.current);
+            window.speechSynthesis.cancel();
+            speakNextChunk();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [rate]);
+
+    // Persist preferences
+    const handleVoiceSelect = useCallback((voice: SpeechSynthesisVoice) => {
+        setSelectedVoice(voice);
+        try {
+            localStorage.setItem(STORAGE_KEY_VOICE, voice.name);
+        } catch {
+            // localStorage unavailable
+        }
+    }, []);
+
+    const handleRateChange = useCallback((newRate: number) => {
+        setRate(newRate);
+        try {
+            localStorage.setItem(STORAGE_KEY_RATE, String(newRate));
+        } catch {
+            // localStorage unavailable
+        }
+    }, []);
+
     const getGenderLabel = (name: string) => {
         const lowerName = name.toLowerCase();
-        if (
-            lowerName.includes("andika") ||
-            lowerName.includes("ardi") ||
-            lowerName.includes("david")
-        )
-            return "Cowok";
-        if (
-            lowerName.includes("gadis") ||
-            lowerName.includes("damayanti") ||
-            lowerName.includes("siti")
-        )
-            return "Cewek";
-        if (lowerName.includes("google")) return "Google Voice"; // Usually female-sounding
+        // Male voice indicators
+        if (/andika|ardi|david|gagah|wijaya|male/.test(lowerName)) return "Cowok";
+        // Female voice indicators
+        if (/gadis|damayanti|siti|tuti|female|wanita/.test(lowerName)) return "Cewek";
+        if (lowerName.includes("google")) return "Google Voice";
+        // Use localService as hint
         return "Suara Lainnya";
     };
 
-    const chunkText = (text: string, maxLength: number = 180): string[] => {
-        if (!text) return [];
-        const sentenceRegex = /[^.!?]+[.!?]+(\s|$)/g;
-        const sentences = text.match(sentenceRegex) || [text];
-        const chunks: string[] = [];
-        let currentChunk = "";
-        sentences.forEach((sentence) => {
-            if (currentChunk.length + sentence.length > maxLength) {
-                if (currentChunk) chunks.push(currentChunk.trim());
-                currentChunk = sentence;
-            } else {
-                currentChunk += sentence;
-            }
-        });
-        if (currentChunk) chunks.push(currentChunk.trim());
-        return chunks.reduce((acc: string[], chunk) => {
-            if (chunk.length > maxLength) {
-                const subChunks =
-                    chunk.match(new RegExp(`.{1,${maxLength}}`, "g")) || [chunk];
-                return [...acc, ...subChunks];
-            }
-            return [...acc, chunk];
-        }, []);
-    };
+    const speakNextChunk = useCallback(() => {
+        const chunks = chunksRef.current;
+        const idx = currentChunkIndexRef.current;
 
-    const speakNextChunk = () => {
-        if (currentChunkIndexRef.current >= chunksRef.current.length) {
+        if (idx >= chunks.length) {
             setIsPlaying(false);
             setIsPaused(false);
-            setIsStickyVisible(false); // Hide sticky when finished
+            setIsStickyVisible(false);
+            setProgress(100);
             currentChunkIndexRef.current = 0;
+            toast.success("Selesai mendengarkan");
             return;
         }
 
-        const chunk = chunksRef.current[currentChunkIndexRef.current];
-        const utterance = new SpeechSynthesisUtterance(chunk);
+        const chunk = chunks[idx];
+        const utterance = new SpeechSynthesisUtterance(chunk.text);
         utteranceRef.current = utterance;
 
         if (selectedVoice) {
@@ -167,25 +246,41 @@ export default function ListenToArticle({
             utterance.lang = "id-ID";
         }
 
-        utterance.rate = 1.0;
+        utterance.rate = rate;
         utterance.pitch = 1.0;
 
         utterance.onend = () => {
             currentChunkIndexRef.current += 1;
-            speakNextChunk();
+            setProgress(Math.round(((idx + 1) / chunks.length) * 100));
+
+            // Paragraph pause: longer delay between paragraphs
+            if (chunk.isLastInParagraph && idx + 1 < chunks.length) {
+                paragraphPauseRef.current = setTimeout(() => {
+                    paragraphPauseRef.current = null;
+                    speakNextChunk();
+                }, 400);
+            } else {
+                speakNextChunk();
+            }
         };
 
         utterance.onerror = (e) => {
             if (e.error === "interrupted" || e.error === "canceled") return;
-            console.error("Speech synthesis error details:", e);
-            toast.error(`Gagal memutar audio: ${e.error}`);
-            setIsPlaying(false);
-            setIsPaused(false);
-            setIsStickyVisible(false);
+            console.error("Speech synthesis error:", e);
+            // Skip failed chunk and continue
+            currentChunkIndexRef.current += 1;
+            if (currentChunkIndexRef.current < chunks.length) {
+                speakNextChunk();
+            } else {
+                setIsPlaying(false);
+                setIsPaused(false);
+                setIsStickyVisible(false);
+                toast.error(`Gagal memutar audio: ${e.error}`);
+            }
         };
 
         window.speechSynthesis.speak(utterance);
-    };
+    }, [selectedVoice, rate]);
 
     const handlePlayPause = () => {
         if (!supported) return;
@@ -210,9 +305,10 @@ export default function ListenToArticle({
             utteranceRef.current.onend = null;
         }
 
-        const chunks = chunkText(text, 200);
+        const chunks = chunkTtsText(processedTextRef.current, 350);
         chunksRef.current = chunks;
         currentChunkIndexRef.current = 0;
+        setProgress(0);
 
         if (chunks.length === 0) {
             toast.error("Tidak ada teks yang dapat dibaca.");
@@ -227,6 +323,10 @@ export default function ListenToArticle({
 
     const handleStop = () => {
         if (!supported) return;
+        if (paragraphPauseRef.current) {
+            clearTimeout(paragraphPauseRef.current);
+            paragraphPauseRef.current = null;
+        }
         if (utteranceRef.current) {
             utteranceRef.current.onerror = null;
             utteranceRef.current.onend = null;
@@ -235,13 +335,90 @@ export default function ListenToArticle({
         setIsPlaying(false);
         setIsPaused(false);
         setIsStickyVisible(false);
+        setProgress(0);
         currentChunkIndexRef.current = 0;
+    };
+
+    const handleSkipForward = () => {
+        if (!isPlaying && !isPaused) return;
+        if (paragraphPauseRef.current) {
+            clearTimeout(paragraphPauseRef.current);
+            paragraphPauseRef.current = null;
+        }
+
+        const chunks = chunksRef.current;
+        const currentIdx = currentChunkIndexRef.current;
+        const currentParagraph = chunks[currentIdx]?.paragraphIndex ?? 0;
+
+        // Find next paragraph boundary
+        let nextIdx = currentIdx + 1;
+        while (nextIdx < chunks.length && chunks[nextIdx].paragraphIndex === currentParagraph) {
+            nextIdx++;
+        }
+
+        if (nextIdx >= chunks.length) {
+            handleStop();
+            return;
+        }
+
+        window.speechSynthesis.cancel();
+        if (utteranceRef.current) {
+            utteranceRef.current.onerror = null;
+            utteranceRef.current.onend = null;
+        }
+        currentChunkIndexRef.current = nextIdx;
+        setProgress(Math.round((nextIdx / chunks.length) * 100));
+        setIsPlaying(true);
+        setIsPaused(false);
+        speakNextChunk();
+    };
+
+    const handleSkipBackward = () => {
+        if (!isPlaying && !isPaused) return;
+        if (paragraphPauseRef.current) {
+            clearTimeout(paragraphPauseRef.current);
+            paragraphPauseRef.current = null;
+        }
+
+        const chunks = chunksRef.current;
+        const currentIdx = currentChunkIndexRef.current;
+        const currentParagraph = chunks[currentIdx]?.paragraphIndex ?? 0;
+
+        // Find start of current paragraph, then previous paragraph
+        let prevIdx = currentIdx;
+        while (prevIdx > 0 && chunks[prevIdx].paragraphIndex === currentParagraph) {
+            prevIdx--;
+        }
+        // If we were at the start of a paragraph, go to previous paragraph start
+        if (prevIdx > 0) {
+            const prevParagraph = chunks[prevIdx].paragraphIndex;
+            while (prevIdx > 0 && chunks[prevIdx - 1].paragraphIndex === prevParagraph) {
+                prevIdx--;
+            }
+        }
+
+        window.speechSynthesis.cancel();
+        if (utteranceRef.current) {
+            utteranceRef.current.onerror = null;
+            utteranceRef.current.onend = null;
+        }
+        currentChunkIndexRef.current = prevIdx;
+        setProgress(Math.round((prevIdx / chunks.length) * 100));
+        setIsPlaying(true);
+        setIsPaused(false);
+        speakNextChunk();
     };
 
     if (!supported) return null;
 
     return (
         <>
+            {/* ARIA live region for state announcements */}
+            <div aria-live="polite" aria-atomic="true" className="sr-only">
+                {isPlaying && "Sedang memutar"}
+                {isPaused && "Dijeda"}
+            </div>
+
             {/* Main In-Place Controller */}
             <div ref={containerRef}>
                 <InlinePlayer
@@ -249,12 +426,18 @@ export default function ListenToArticle({
                     isPaused={isPaused}
                     onPlayPause={handlePlayPause}
                     onStop={handleStop}
+                    onSkipForward={handleSkipForward}
+                    onSkipBackward={handleSkipBackward}
                     voices={idVoices}
                     selectedVoice={selectedVoice}
-                    onSelectVoice={setSelectedVoice}
+                    onSelectVoice={handleVoiceSelect}
+                    rate={rate}
+                    onRateChange={handleRateChange}
+                    progress={progress}
                     showSettings={showSettings}
                     setShowSettings={setShowSettings}
                     getGenderLabel={getGenderLabel}
+                    listeningTime={listeningTime}
                     className={className}
                 />
             </div>
@@ -266,6 +449,11 @@ export default function ListenToArticle({
                 isPaused={isPaused}
                 onPlayPause={handlePlayPause}
                 onStop={handleStop}
+                onSkipForward={handleSkipForward}
+                onSkipBackward={handleSkipBackward}
+                progress={progress}
+                rate={rate}
+                onRateChange={handleRateChange}
             />
         </>
     );

@@ -1,6 +1,6 @@
 import { getPostBySlug } from "@/lib/api";
 import { PostRepository } from "@/lib/repositories/post.repository";
-import { Post } from "@/lib/types";
+import { Post, PortableTextContentNode } from "@/lib/types";
 import { stripHtml } from "@/lib/utils";
 import { constructMetadata } from "@/lib/metadata";
 import { processContent } from "@/lib/sanitize";
@@ -16,6 +16,7 @@ import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import ListenToArticle from "@/components/features/ListenToArticle";
+import { extractTtsText, extractTtsTextFromHtml } from "@/lib/tts";
 
 const CommentSection = dynamic(() => import("@/components/features/CommentSection"), {
   loading: () => <div className="h-96 animate-pulse bg-zinc-100 dark:bg-zinc-900 rounded-2xl" />,
@@ -123,7 +124,9 @@ export default async function PostPage({
     toc = result.toc;
   }
 
-  const plainTextContent = stripHtml(post.content || "");
+  const ttsText = isPortableText
+    ? extractTtsText(post.content as PortableTextContentNode[])
+    : extractTtsTextFromHtml(post.content as string || "");
 
   const isBookReview = post.categories?.nodes?.some((c: { slug: string }) => c.slug === "buku");
 
@@ -215,7 +218,7 @@ export default async function PostPage({
                           date={post.date}
                           post={post}
                         />
-                        <ListenToArticle text={plainTextContent} title={post.title} />
+                        <ListenToArticle text={ttsText} title={post.title} />
                       </div>
                     }
                     subtitleClassName="mt-8"
