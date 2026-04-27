@@ -25,7 +25,7 @@ export default function ScrollToTop() {
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", toggleVisibility);
+    window.addEventListener("scroll", toggleVisibility, { passive: true });
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
@@ -39,7 +39,7 @@ export default function ScrollToTop() {
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
           onClick={scrollToTop}
           aria-label="Scroll to top"
-          className="fixed bottom-6 right-8 z-40 flex h-10 w-10 items-center justify-center rounded-full bg-white/70 dark:bg-zinc-950/70 backdrop-blur-2xl border border-white/50 dark:border-white/10 ring-1 ring-white/50 dark:ring-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] text-zinc-600 dark:text-zinc-300 transition-transform hover:scale-110 active:scale-95"
+          className="fixed bottom-6 right-8 z-40 flex h-11 w-11 items-center justify-center rounded-full bg-white/70 dark:bg-zinc-950/70 backdrop-blur-2xl border border-white/50 dark:border-white/10 ring-1 ring-white/50 dark:ring-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] text-zinc-600 dark:text-zinc-300 transition-transform hover:scale-110 active:scale-95"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

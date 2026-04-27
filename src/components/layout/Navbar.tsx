@@ -11,7 +11,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
 
   // Search States
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -22,22 +21,22 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      // Always visible, only track scrolled state
-      setScrolled(currentScrollY > 20);
-      setLastScrollY(currentScrollY);
+      setScrolled(window.scrollY > 20);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setIsOpen(false);
         setIsSearchOpen(false);
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(prev => !prev);
       }
     };
 
@@ -51,6 +50,7 @@ export default function Navbar() {
     } else {
       document.body.style.overflow = 'unset';
     }
+    return () => { document.body.style.overflow = 'unset'; };
   }, [isOpen, isSearchOpen]);
 
   const toggleMenu = () => setIsOpen(!isOpen);

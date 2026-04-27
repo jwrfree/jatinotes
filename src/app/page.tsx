@@ -11,6 +11,11 @@ import BackgroundOrnaments from "@/components/ui/BackgroundOrnaments";
 import JsonLd from "@/components/features/JsonLd";
 import TechSection from "@/components/features/TechSection";
 import BookSection from "@/components/features/BookSection";
+import ShowcaseCarousel from "@/components/features/ShowcaseCarousel";
+import StickyFeatures from "@/components/features/StickyFeatures";
+import StatsSection from "@/components/features/StatsSection";
+import ScrollStorySection from "@/components/features/ScrollStorySection";
+import CTASection from "@/components/features/CTASection";
 
 export const revalidate = 60;
 
@@ -77,9 +82,19 @@ export default async function Home() {
         )}
       </section>
 
+      <ScrollStorySection />
+
+      <ShowcaseCarousel />
+
       <TechSection category={techCategory} />
 
+      <StickyFeatures />
+
       <BookSection category={bookCategory} />
+
+      <StatsSection />
+
+      <CTASection />
     </div>
   );
 }

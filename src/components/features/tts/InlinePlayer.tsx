@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
     Play,
     Pause,
@@ -77,7 +77,7 @@ export default function InlinePlayer({
         <div className={`flex flex-col gap-2 ${className}`}>
             <div className="flex items-center gap-2">
                 {/* Play/Pause Button */}
-                <motion.button
+                <m.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={onPlayPause}
@@ -94,13 +94,13 @@ export default function InlinePlayer({
                         <>
                             <Pause className="w-4 h-4" />
                             <span>Jeda</span>
-                            <motion.div
+                            <m.div
                                 className="flex gap-0.5 items-end h-3 ml-1"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                             >
                                 {[1, 2, 3].map((bar) => (
-                                    <motion.div
+                                    <m.div
                                         key={bar}
                                         className="w-0.5 bg-current rounded-full"
                                         animate={{
@@ -113,7 +113,7 @@ export default function InlinePlayer({
                                         }}
                                     />
                                 ))}
-                            </motion.div>
+                            </m.div>
                         </>
                     ) : (
                         <>
@@ -130,13 +130,13 @@ export default function InlinePlayer({
                             )}
                         </>
                     )}
-                </motion.button>
+                </m.button>
 
                 {/* Skip Controls (visible when playing/paused) */}
                 <AnimatePresence>
                     {isActive && (
                         <>
-                            <motion.button
+                            <m.button
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.8 }}
@@ -146,8 +146,8 @@ export default function InlinePlayer({
                                 title="Paragraf sebelumnya (←)"
                             >
                                 <SkipBack className="w-4 h-4" />
-                            </motion.button>
-                            <motion.button
+                            </m.button>
+                            <m.button
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.8 }}
@@ -157,14 +157,14 @@ export default function InlinePlayer({
                                 title="Paragraf selanjutnya (→)"
                             >
                                 <SkipForward className="w-4 h-4" />
-                            </motion.button>
+                            </m.button>
                         </>
                     )}
                 </AnimatePresence>
 
                 {/* Settings Toggle */}
                 <div className="relative">
-                    <motion.button
+                    <m.button
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         onClick={() => setShowSettings(!showSettings)}
@@ -175,12 +175,12 @@ export default function InlinePlayer({
                         aria-label="Pengaturan Suara"
                     >
                         <Settings2 className="w-4 h-4 text-current" />
-                    </motion.button>
+                    </m.button>
 
                     {/* Settings Dropdown */}
                     <AnimatePresence>
                         {showSettings && (
-                            <motion.div
+                            <m.div
                                 ref={settingsRef}
                                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -288,7 +288,7 @@ export default function InlinePlayer({
                                         ))}
                                     </div>
                                 )}
-                            </motion.div>
+                            </m.div>
                         )}
                     </AnimatePresence>
                 </div>
@@ -296,7 +296,7 @@ export default function InlinePlayer({
                 {/* Stop Button */}
                 <AnimatePresence>
                     {isActive && (
-                        <motion.button
+                        <m.button
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.8 }}
@@ -306,7 +306,7 @@ export default function InlinePlayer({
                             title="Berhenti (Esc)"
                         >
                             <Square className="w-4 h-4 fill-current" />
-                        </motion.button>
+                        </m.button>
                     )}
                 </AnimatePresence>
             </div>
@@ -314,7 +314,7 @@ export default function InlinePlayer({
             {/* Progress Bar */}
             <AnimatePresence>
                 {isActive && (
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
@@ -322,7 +322,7 @@ export default function InlinePlayer({
                     >
                         <div className="flex items-center gap-2">
                             <div className="flex-1 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
-                                <motion.div
+                                <m.div
                                     className="h-full bg-amber-500 rounded-full"
                                     initial={{ width: 0 }}
                                     animate={{ width: `${progress}%` }}
@@ -333,7 +333,7 @@ export default function InlinePlayer({
                                 {progress}%
                             </span>
                         </div>
-                    </motion.div>
+                    </m.div>
                 )}
             </AnimatePresence>
         </div>

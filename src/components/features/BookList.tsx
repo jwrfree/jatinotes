@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { LayoutGrid, List, Book } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Post } from "@/lib/types";
 import { getBookTitle, getBookAuthor } from "@/lib/book-utils";
 
@@ -46,7 +46,7 @@ export default function BookList({ posts }: BookListProps) {
             <AnimatePresence mode="wait">
                 {viewMode === "grid" ? (
                     /* GRID VIEW */
-                    <motion.div
+                    <m.div
                         key="grid"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -98,10 +98,10 @@ export default function BookList({ posts }: BookListProps) {
                                 </Link>
                             </div>
                         ))}
-                    </motion.div>
+                    </m.div>
                 ) : (
                     /* TABLE VIEW */
-                    <motion.div
+                    <m.div
                         key="table"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -189,7 +189,7 @@ export default function BookList({ posts }: BookListProps) {
                                 ))}
                             </tbody>
                         </table>
-                    </motion.div>
+                    </m.div>
                 )}
             </AnimatePresence>
 

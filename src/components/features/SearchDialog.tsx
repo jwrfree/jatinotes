@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { m, AnimatePresence } from "framer-motion";
 import { Search, X, Loader2, ArrowRight, FileText, Calendar, User } from "lucide-react";
 import { Post } from "@/lib/types";
@@ -15,6 +16,7 @@ interface SearchDialogProps {
 }
 
 export default function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Post[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -47,14 +49,14 @@ export default function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
         e.preventDefault();
         const selectedPost = searchResults[selectedIndex];
         if (selectedPost) {
-          window.location.href = `/posts/${selectedPost.slug}`;
+          router.push(`/posts/${selectedPost.slug}`);
           onClose();
         }
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose, searchResults, selectedIndex]);
+  }, [isOpen, onClose, searchResults, selectedIndex, router]);
 
   // Scroll selected item into view
   useEffect(() => {

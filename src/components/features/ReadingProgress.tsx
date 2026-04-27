@@ -42,8 +42,8 @@ export default function ReadingProgress() {
       scrollProgress.set(p);
     };
 
-    window.addEventListener("scroll", updateProgress);
-    window.addEventListener("resize", updateProgress);
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    window.addEventListener("resize", updateProgress, { passive: true });
 
     // Initial calls fixes hydration mismatch
     updateProgress();
