@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { m, useScroll, useTransform, useInView } from "framer-motion";
 import { Sparkles, Zap, Layers, Eye } from "lucide-react";
+import ScrollReveal3D from "@/components/ui/ScrollReveal3D";
 
 const FEATURES = [
   {
@@ -37,7 +38,6 @@ const FEATURES = [
 
 export default function StickyFeatures() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { once: true, margin: "-20% 0px" });
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -68,41 +68,40 @@ export default function StickyFeatures() {
 
         <div className="grid gap-6 md:grid-cols-2">
           {FEATURES.map((feature, i) => (
-            <m.div
+            <ScrollReveal3D
               key={feature.title}
-              initial={{ opacity: 0, y: 50, scale: 0.95 }}
-              animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-              transition={{
-                duration: 0.7,
-                delay: i * 0.12,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="group relative overflow-hidden rounded-3xl border border-zinc-200/60 dark:border-zinc-800/60 bg-white dark:bg-zinc-900 p-8 md:p-10 transition-all duration-500 hover:shadow-2xl hover:shadow-black/5 dark:hover:shadow-black/20"
+              rotateXFrom={-45}
+              scaleFrom={0.9}
+              yFrom={60}
+              origin="bottom center"
+              offset={["start end", "center center"]}
             >
-              <div
-                className={`absolute inset-0 bg-gradient-to-br ${feature.visual} opacity-0 transition-opacity duration-700 group-hover:opacity-100`}
-              />
+              <div className="group relative overflow-hidden rounded-3xl border border-zinc-200/60 dark:border-zinc-800/60 bg-white dark:bg-zinc-900 p-8 md:p-10 transition-all duration-500 hover:shadow-2xl hover:shadow-black/5 dark:hover:shadow-black/20">
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${feature.visual} opacity-0 transition-opacity duration-700 group-hover:opacity-100`}
+                />
 
-              <div className="relative z-10">
-                <m.div
-                  className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-500 dark:bg-amber-500/20"
-                  whileHover={{ rotate: 5, scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                >
-                  <feature.icon className="h-6 w-6" />
-                </m.div>
+                <div className="relative z-10">
+                  <m.div
+                    className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-500 dark:bg-amber-500/20"
+                    whileHover={{ rotate: 5, scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                  >
+                    <feature.icon className="h-6 w-6" />
+                  </m.div>
 
-                <h3 className="mb-3 text-xl font-bold text-zinc-900 dark:text-zinc-50">
-                  {feature.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-                  {feature.description}
-                </p>
+                  <h3 className="mb-3 text-xl font-bold text-zinc-900 dark:text-zinc-50">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                    {feature.description}
+                  </p>
+                </div>
+
+                {/* Decorative glow */}
+                <div className="absolute -bottom-20 -right-20 h-40 w-40 rounded-full bg-amber-500/5 blur-3xl transition-all duration-700 group-hover:bg-amber-500/15 group-hover:scale-150" />
               </div>
-
-              {/* Decorative glow */}
-              <div className="absolute -bottom-20 -right-20 h-40 w-40 rounded-full bg-amber-500/5 blur-3xl transition-all duration-700 group-hover:bg-amber-500/15 group-hover:scale-150" />
-            </m.div>
+            </ScrollReveal3D>
           ))}
         </div>
       </div>
