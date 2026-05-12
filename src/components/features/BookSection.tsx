@@ -6,6 +6,7 @@ import { m, useScroll, useTransform, useInView } from "framer-motion";
 import { Post, Category } from "@/lib/types";
 import PostCard from "@/components/features/PostCard";
 import BackgroundOrnaments from "@/components/ui/BackgroundOrnaments";
+import ScrollReveal3D from "@/components/ui/ScrollReveal3D";
 
 interface BookSectionProps {
   category: Category | null;
@@ -58,18 +59,16 @@ export default function BookSection({ category }: BookSectionProps) {
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {category.posts.nodes.map((post: Post, i: number) => (
-            <m.div
+            <ScrollReveal3D
               key={post.id}
-              initial={{ opacity: 0, y: 50, scale: 0.95 }}
-              animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-              transition={{
-                duration: 0.7,
-                delay: i * 0.12,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+              rotateXFrom={-40}
+              scaleFrom={0.88}
+              yFrom={50}
+              origin="bottom center"
+              offset={["start end", "center center"]}
             >
               <PostCard post={post} variant="glass" />
-            </m.div>
+            </ScrollReveal3D>
           ))}
         </div>
       </div>

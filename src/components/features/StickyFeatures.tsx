@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { m, useScroll, useTransform, useInView } from "framer-motion";
 import { Sparkles, Zap, Layers, Eye } from "lucide-react";
+import ScrollReveal3D from "@/components/ui/ScrollReveal3D";
 
 const FEATURES = [
   {
@@ -68,17 +69,17 @@ export default function StickyFeatures() {
 
         <div className="grid gap-6 md:grid-cols-2">
           {FEATURES.map((feature, i) => (
-            <m.div
+            <ScrollReveal3D
               key={feature.title}
-              initial={{ opacity: 0, y: 50, scale: 0.95 }}
-              animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-              transition={{
-                duration: 0.7,
-                delay: i * 0.12,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="group relative overflow-hidden rounded-3xl border border-zinc-200/60 dark:border-zinc-800/60 bg-white dark:bg-zinc-900 p-8 md:p-10 transition-all duration-500 hover:shadow-2xl hover:shadow-black/5 dark:hover:shadow-black/20"
+              rotateXFrom={-45}
+              scaleFrom={0.9}
+              yFrom={60}
+              origin="bottom center"
+              offset={["start end", "center center"]}
             >
+              <div
+                className="group relative overflow-hidden rounded-3xl border border-zinc-200/60 dark:border-zinc-800/60 bg-white dark:bg-zinc-900 p-8 md:p-10 transition-all duration-500 hover:shadow-2xl hover:shadow-black/5 dark:hover:shadow-black/20"
+              >
               <div
                 className={`absolute inset-0 bg-gradient-to-br ${feature.visual} opacity-0 transition-opacity duration-700 group-hover:opacity-100`}
               />
@@ -102,7 +103,8 @@ export default function StickyFeatures() {
 
               {/* Decorative glow */}
               <div className="absolute -bottom-20 -right-20 h-40 w-40 rounded-full bg-amber-500/5 blur-3xl transition-all duration-700 group-hover:bg-amber-500/15 group-hover:scale-150" />
-            </m.div>
+              </div>
+            </ScrollReveal3D>
           ))}
         </div>
       </div>

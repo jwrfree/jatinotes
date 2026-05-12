@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { m, useScroll, useTransform, useInView, PanInfo } from "framer-motion";
 import { ChevronLeft, ChevronRight, Pen, Code2, BookOpen } from "lucide-react";
+import ScrollReveal3D from "@/components/ui/ScrollReveal3D";
 
 const SHOWCASE_ITEMS = [
   {
@@ -78,43 +79,44 @@ export default function ShowcaseCarousel() {
         {/* Desktop grid */}
         <div className="hidden md:grid md:grid-cols-3 gap-6">
           {SHOWCASE_ITEMS.map((item, i) => (
-            <m.div
+            <ScrollReveal3D
               key={item.title}
-              initial={{ opacity: 0, y: 60 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 0.7,
-                delay: i * 0.15,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              whileHover={{ y: -8, transition: { duration: 0.3 } }}
+              rotateXFrom={-50}
+              scaleFrom={0.88}
+              yFrom={60}
+              origin="bottom center"
+              offset={["start end", "center center"]}
             >
-              <Link
-                href={item.link}
-                className="group relative flex flex-col rounded-3xl border border-zinc-200/60 dark:border-zinc-800/60 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl p-8 transition-shadow duration-500 hover:shadow-2xl hover:shadow-black/5 dark:hover:shadow-black/20"
+              <m.div
+                whileHover={{ y: -8, transition: { duration: 0.3 } }}
               >
-                <div
-                  className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${item.color} opacity-0 transition-opacity duration-500 group-hover:opacity-100`}
-                />
-                <div className="relative z-10">
+                <Link
+                  href={item.link}
+                  className="group relative flex flex-col rounded-3xl border border-zinc-200/60 dark:border-zinc-800/60 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl p-8 transition-shadow duration-500 hover:shadow-2xl hover:shadow-black/5 dark:hover:shadow-black/20"
+                >
                   <div
-                    className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-800 ${item.accent} transition-transform duration-500 group-hover:scale-110`}
-                  >
-                    <item.icon className="h-6 w-6" />
+                    className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${item.color} opacity-0 transition-opacity duration-500 group-hover:opacity-100`}
+                  />
+                  <div className="relative z-10">
+                    <div
+                      className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-800 ${item.accent} transition-transform duration-500 group-hover:scale-110`}
+                    >
+                      <item.icon className="h-6 w-6" />
+                    </div>
+                    <h3 className="mb-3 text-xl font-bold text-zinc-900 dark:text-zinc-50">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                      {item.description}
+                    </p>
+                    <div className="mt-6 flex items-center gap-2 text-sm font-medium text-amber-600 dark:text-amber-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      Jelajahi
+                      <ChevronRight className="h-4 w-4" />
+                    </div>
                   </div>
-                  <h3 className="mb-3 text-xl font-bold text-zinc-900 dark:text-zinc-50">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-                    {item.description}
-                  </p>
-                  <div className="mt-6 flex items-center gap-2 text-sm font-medium text-amber-600 dark:text-amber-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    Jelajahi
-                    <ChevronRight className="h-4 w-4" />
-                  </div>
-                </div>
-              </Link>
-            </m.div>
+                </Link>
+              </m.div>
+            </ScrollReveal3D>
           ))}
         </div>
 

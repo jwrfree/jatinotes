@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { m, useScroll, useTransform, useInView } from "framer-motion";
 import { Post, Category } from "@/lib/types";
 import PostCard from "@/components/features/PostCard";
+import ScrollReveal3D from "@/components/ui/ScrollReveal3D";
 
 interface TechSectionProps {
   category: Category | null;
@@ -60,18 +61,16 @@ export default function TechSection({ category }: TechSectionProps) {
 
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {category.posts.nodes.map((post: Post, i: number) => (
-            <m.div
+            <ScrollReveal3D
               key={post.id}
-              initial={{ opacity: 0, y: 50 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 0.7,
-                delay: i * 0.12,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+              rotateXFrom={-40}
+              scaleFrom={0.88}
+              yFrom={50}
+              origin="bottom center"
+              offset={["start end", "center center"]}
             >
               <PostCard post={post} variant="tech" customAspectRatio="aspect-[3/2]" />
-            </m.div>
+            </ScrollReveal3D>
           ))}
         </div>
       </div>
